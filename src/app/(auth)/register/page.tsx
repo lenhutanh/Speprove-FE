@@ -8,7 +8,7 @@ import { storageKeys } from '@/constants'
 import { useNavigate } from '@/hooks'
 import { useRegisterMutation } from '@/queries'
 import route from '@/routes'
-import { registerSchema } from '@/schemaValidations'
+import { registerSchema } from '@/validations'
 import { RegisterBodyType } from '@/types'
 import { setData } from '@/utils'
 import Image from 'next/image'
@@ -63,6 +63,7 @@ export default function RegisterPage() {
                   control={form.control}
                   label='Password'
                   name='password'
+                  placeholder='••••••••'
                   type='password'
                   required
                 />
@@ -74,13 +75,14 @@ export default function RegisterPage() {
                   control={form.control}
                   label='Confirm Password'
                   name='confirmedPassword'
+                  placeholder='••••••••'
                   type='password'
                   required
                 />
               </Col>
             </Row>
             <Button type='submit' className={'w-full'}>
-              Login
+              Sign up
             </Button>
           </>
         )}

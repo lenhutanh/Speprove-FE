@@ -1,5 +1,14 @@
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
+export type PaginationMeta = {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+  hasNext: boolean
+  hasPrev: boolean
+}
+
 export type ApiConfig = {
   baseUrl: string
   headers?: Record<string, string>
@@ -22,8 +31,8 @@ export type Payload = {
 }
 
 export type ApiResponse<T> = {
-  data?: T
+  success: boolean
   message?: string
-  success?: boolean
-  meta?: any
+  data: T
+  meta?: PaginationMeta
 }

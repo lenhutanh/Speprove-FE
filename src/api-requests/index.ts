@@ -1,3 +1,7 @@
 export { default as accountApiRequest } from './account.api-request'
+export { default as attemptApiResponse } from './attempt.api-request'
 export { default as authApiRequest } from './auth.api-request'
+export { default as forecastQuestionApiRequest } from './forecast-question.api-request'
+export { default as forecastTopicApiRequest } from './forecast-topic.api-request'
 export { default as forecastApiRequest } from './forecast.api-request'
+export { default as speakingSessionApiRequest } from './speaking-session.api-request'

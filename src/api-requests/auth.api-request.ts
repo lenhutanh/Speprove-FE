@@ -1,6 +1,7 @@
 import apiConfig from '@/constants/api-config'
 import {
   ApiResponse,
+  ForgotPasswordType,
   LoginBodyType,
   RegisterBodyType,
   VerifyOtpBodyType,
@@ -21,6 +22,10 @@ const authApiRequest = {
       body,
     }),
   logout: () => http.post<ApiResponse<any>>(apiConfig.auth.logout),
+  forgotPassword: (body: ForgotPasswordType) =>
+    http.post<ApiResponse<any>>(apiConfig.auth.forgotPassword, {
+      body,
+    }),
 }
 
 export default authApiRequest

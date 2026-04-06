@@ -7,6 +7,7 @@ const route = defineRoute({
   forgotPassword: '/forgot-password',
   verifyOtp: '/verify-otp',
   changePassword: '/change-password',
+  forecast: '/forecast',
 })
 
 export default route

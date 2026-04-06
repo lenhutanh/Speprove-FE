@@ -7,7 +7,7 @@ import { storageKeys } from '@/constants'
 import { useNavigate } from '@/hooks'
 import { useVerifyOtpMutation } from '@/queries'
 import route from '@/routes'
-import { verifyOtpSchema } from '@/schemaValidations'
+import { verifyOtpSchema } from '@/validations'
 import { VerifyOtpBodyType } from '@/types'
 import { getData, removeData } from '@/utils'
 

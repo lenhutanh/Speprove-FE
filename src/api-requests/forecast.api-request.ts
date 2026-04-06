@@ -1,11 +1,15 @@
 import { apiConfig } from '@/constants'
-import { ApiResponse, ForecastResType, ForecastSearchType } from '@/types'
+import { ApiResponse, ForecastQueryType, ForecastType } from '@/types'
 import { http } from '@/utils'
 
 const forecastApiRequest = {
-  getList: (params?: ForecastSearchType) =>
-    http.get<ApiResponse<ForecastResType[]>>(apiConfig.forecast.getList, {
+  getList: (params?: ForecastQueryType) =>
+    http.get<ApiResponse<ForecastType[]>>(apiConfig.forecast.getList, {
       params,
+    }),
+  getById: (id: string) =>
+    http.get<ApiResponse<ForecastType>>(apiConfig.forecast.getById, {
+      pathParams: { id },
     }),
 }
 

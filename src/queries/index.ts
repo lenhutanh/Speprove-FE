@@ -1,3 +1,7 @@
 export * from './account.query'
+export * from './attempt.query'
 export * from './auth.query'
+export * from './forecast-question.query'
+export * from './forecast-topic.query'
 export * from './forecast.query'
+export * from './speaking-session.query'
