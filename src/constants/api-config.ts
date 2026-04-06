@@ -57,6 +57,62 @@ const apiConfig = defineApiConfig({
       method: 'GET',
       headers: baseHeader,
     },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/forecast/:id`,
+      method: 'GET',
+      headers: baseHeader,
+    },
+  },
+  forecastTopic: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/forecast-topic`,
+      method: 'GET',
+      headers: baseHeader,
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/forecast-topic/:id`,
+      method: 'GET',
+      headers: baseHeader,
+    },
+  },
+  forecastQuestion: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/forecast-question`,
+      method: 'GET',
+      headers: baseHeader,
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/forecast-question/:id`,
+      method: 'GET',
+      headers: baseHeader,
+    },
+  },
+  speakingSession: {
+    create: {
+      baseUrl: `${AppConstants.apiUrl}v1/speaking-session`,
+      method: 'POST',
+      headers: baseHeader,
+    },
+  },
+  file: {
+    uploadAudio: {
+      baseUrl: `${AppConstants.apiUrl}v1/file/upload-audio`,
+      method: 'POST',
+      headers: {},
+      isUpload: true,
+    },
+  },
+  attempt: {
+    create: {
+      baseUrl: `${AppConstants.apiUrl}v1/attempt`,
+      method: 'POST',
+      headers: baseHeader,
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/attempt/:id`,
+      method: 'GET',
+      headers: baseHeader,
+    },
   },
 })
 

@@ -1,5 +1,4 @@
 import { Header } from '@/components/app/header'
-import { Container } from '@/components/layout'
 
 export default function ForecastLayout({
   children,
@@ -9,7 +8,7 @@ export default function ForecastLayout({
   return (
     <>
       <Header />
-      <Container>{children}</Container>
+      {children}
     </>
   )
 }

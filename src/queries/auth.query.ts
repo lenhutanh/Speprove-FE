@@ -1,7 +1,12 @@
 import { authApiRequest } from '@/api-requests'
 import route from '@/routes'
 import { useAuthStore } from '@/store'
-import { LoginBodyType, RegisterBodyType, VerifyOtpBodyType } from '@/types'
+import {
+  ForgotPasswordType,
+  LoginBodyType,
+  RegisterBodyType,
+  VerifyOtpBodyType,
+} from '@/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export const useRegisterMutation = () => {
@@ -34,5 +39,13 @@ export const useLogoutMutation = () => {
       queryClient.clear()
       window.location.href = route.home
     },
+  })
+}
+
+export const useForgotPasswordMutation = () => {
+  return useMutation({
+    mutationKey: ['forgot-password'],
+    mutationFn: (body: ForgotPasswordType) =>
+      authApiRequest.forgotPassword(body),
   })
 }

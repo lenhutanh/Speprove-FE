@@ -1,15 +1,25 @@
-import { BaseSearchType } from './search.type'
+import { forecastQuerySchema } from '@/validations'
+import z from 'zod'
 
-export type ForecastResType = {
+export type ForecastType = {
+  id: string
   name: string
   slug: string
-  description: string
-  thumbnail: string
   quarter: number
   year: number
-  status: number
+  thumbnail: string | null
+  description: string | null
+  validFrom: string
+  validTo: string
+  isActive: boolean
+  createdAt: string
+
+  stats?: {
+    totalQuestions: number
+    totalTopics: number
+    practicedQuestions: number
+    completedTopics: number
+  }
 }
 
-export type ForecastSearchType = {
-  status?: number
-} & BaseSearchType
+export type ForecastQueryType = z.infer<typeof forecastQuerySchema>

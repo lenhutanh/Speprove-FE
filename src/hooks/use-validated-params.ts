@@ -20,7 +20,7 @@ export default function useValidatedParams<T extends z.ZodRawShape>(
   useEffect(() => {
     if (validation.invalidKeys.length === 0) return
     const cleaned = new URLSearchParams(searchParams.toString())
-    validation.invalidKeys.forEach((key) => cleaned.delete(key))
+    validation.invalidKeys.forEach((key) => cleaned.delete(key as any))
     router.replace(
       cleaned.toString() ? `${pathname}?${cleaned.toString()}` : pathname,
       { scroll: false },

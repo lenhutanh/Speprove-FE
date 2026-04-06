@@ -6,16 +6,16 @@ import ForecastList from './_components/forecast-list'
 
 import { useValidatedParams } from '@/hooks'
 import { useForecastListQuery } from '@/queries'
-import { baseSearchSchema } from '@/schemaValidations'
+import { forecastQuerySchema } from '@/validations/forecast.schema'
 
 export default function ForecastPage() {
-  const params = useValidatedParams(baseSearchSchema)
+  const params = useValidatedParams(forecastQuerySchema)
   const forecastListQuery = useForecastListQuery({ params, enabled: true })
   const forecasts = forecastListQuery?.data?.data || []
   return (
     <Container>
       <ForecastList forecasts={forecasts} />
-      <AppPagination totalPages={forecastListQuery?.data?.meta?.totalPages} />
+      <AppPagination meta={forecastListQuery?.data?.meta} />
     </Container>
   )
 }
