@@ -16,7 +16,7 @@ import Link from 'next/link'
 
 export default function LoginPage() {
   const loginMutation = useLoginMutation()
-  const profileQuery = useProfileQuery()
+  const profileQuery = useProfileQuery(false)
   const { setUser, setAuthenticated } = useAuthStore()
   const navigate = useNavigate()
   const defaultValues: LoginBodyType = {
@@ -27,11 +27,12 @@ export default function LoginPage() {
     await loginMutation.mutateAsync(values, {
       onSuccess: async (res) => {
         if (res.success) {
-          const res = await profileQuery.refetch()
-          const user = res?.data?.data as UserResType
-          setUser(user)
-          setAuthenticated(true)
-          navigate(route.home)
+          const { data: profileRes } = await profileQuery.refetch()
+          if (profileRes?.data) {
+            setUser(profileRes.data)
+            setAuthenticated(true)
+            navigate(route.home)
+          }
         }
       },
     })

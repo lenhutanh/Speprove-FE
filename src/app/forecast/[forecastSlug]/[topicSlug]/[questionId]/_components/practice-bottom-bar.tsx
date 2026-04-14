@@ -19,8 +19,8 @@ interface PracticeBottomBarProps {
   forecastSlug: string
   topicSlug: string
   questionId: string
-  prevSlug?: string
-  nextSlug?: string
+  prev?: { id: string, content: string }
+  next?: { id: string, content: string }
 }
 
 function formatTime(seconds: number): string {
@@ -163,8 +163,8 @@ export default function PracticeBottomBar({
   forecastSlug,
   topicSlug,
   questionId,
-  prevSlug,
-  nextSlug,
+  prev,
+  next,
 }: PracticeBottomBarProps) {
   const [phase, setPhase] = useState<Phase>('idle')
   const [submitting, setSubmitting] = useState(false)
@@ -372,14 +372,13 @@ export default function PracticeBottomBar({
   return (
     <div className="flex items-center justify-between px-6 bg-background border-t border-border shrink-0 h-26">
       {/* Prev */}
-      {prevSlug ? (
-        <Link
-          href={`/forecast/${forecastSlug}/${topicSlug}/${prevSlug}`}
-          className="flex items-center gap-1.5 px-3.5 py-2 text-xs text-muted-foreground border border-border rounded-lg hover:bg-muted/50 transition-colors"
-        >
-          <ChevronLeft className="w-3.5 h-3.5" />
-          Câu trước
-        </Link>
+      {prev ? (
+        <Button variant="outline" asChild>
+          <Link href={`/forecast/${forecastSlug}/${topicSlug}/${prev.id}`}>
+            <ChevronLeft className="w-3.5 h-3.5" />
+            Câu trước
+          </Link>
+        </Button>
       ) : (
         <div className="w-24" />
       )}
@@ -491,14 +490,13 @@ export default function PracticeBottomBar({
       </div>
 
       {/* Next */}
-      {nextSlug ? (
-        <Link
-          href={`/forecast/${forecastSlug}/${topicSlug}/${nextSlug}`}
-          className="flex items-center gap-1.5 px-3.5 py-2 text-xs text-muted-foreground border border-border rounded-lg hover:bg-muted/50 transition-colors"
-        >
-          Câu tiếp
-          <ChevronRight className="w-3.5 h-3.5" />
-        </Link>
+      {next ? (
+        <Button variant="outline" asChild>
+          <Link href={`/forecast/${forecastSlug}/${topicSlug}/${next.id}`}>
+            Câu sau
+            <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+        </Button>
       ) : (
         <div className="w-24" />
       )}

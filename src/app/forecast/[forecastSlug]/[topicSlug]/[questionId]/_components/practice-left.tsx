@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { ForecastQuestionType } from '@/types'
 import PracticeHistory from './practice-history'
+import { AudioPlayer } from '@/components/ui/audio-player'
 
 interface PracticeLeftProps {
   question: ForecastQuestionType
@@ -66,9 +67,12 @@ function QuestionTab({
         </span>
       </div>
 
-      <h2 className="text-[15px] font-semibold text-slate-800 leading-relaxed mb-5">
-        {question.content}
-      </h2>
+      <div className='flex gap-2'>
+        <AudioPlayer url={question.audioUrl} autoPlay variant="minimal" />
+        <h2 className="text-[15px] font-semibold text-slate-800 leading-relaxed mb-5">
+          {question.content}
+        </h2>
+      </div>
 
       {question.part === 2 && question.bulletPoints && (
         <div className="pl-4 border-l-2 border-primary">

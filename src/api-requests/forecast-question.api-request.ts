@@ -14,11 +14,12 @@ const forecastQuestionApiRequest = {
         params,
       },
     ),
-  getById: (id: string) =>
+  getById: (id: string, voiceId?: string | null) =>
     http.get<ApiResponse<ForecastQuestionType>>(
       apiConfig.forecastQuestion.getById,
       {
         pathParams: { id },
+        params: { voiceId },
       },
     ),
 }

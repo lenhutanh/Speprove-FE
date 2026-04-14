@@ -1,0 +1,9 @@
+export type VoiceType = {
+  id: string
+  name: string
+  voiceCode: string
+  gender: number
+  locale: string
+  sampleAudioUrl: string
+  isDefault: boolean
+}

@@ -3,17 +3,15 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import HistoryItem from './history-item'
 import { CalendarIcon } from 'lucide-react'
-// import { usePracticeHistoryListQuery } from '@/queries'
-// import { PracticeHistoryType } from '@/types'
+import { useAttemptListQuery } from '@/queries'
+import { useParams } from 'next/navigation'
+import { useAuthStore } from '@/store'
 
 export default function PracticeHistory() {
-  // const historyQuery = usePracticeHistoryListQuery({ ... })
-  // const histories = historyQuery.data?.data ?? []
-  // const isLoading = historyQuery.isLoading
-
-  const isLoading = false
-  const histories: any[] = []
-
+  const { questionId } = useParams<{ questionId: string }>()
+  const { isAuthenticated } = useAuthStore()
+  const { data, isLoading } = useAttemptListQuery({ enabled: !!questionId && isAuthenticated, params: { forecastQuestionId: questionId } })
+  const histories = data?.data || []
   return (
     <div className="h-full overflow-y-auto p-3 space-y-2">
       {isLoading &&
@@ -35,7 +33,7 @@ export default function PracticeHistory() {
       )}
 
       {!isLoading &&
-        histories.map((h) => <HistoryItem key={h._id} history={h} />)}
+        histories.map((h) => <HistoryItem key={h.id} history={h} />)}
     </div>
   )
 }

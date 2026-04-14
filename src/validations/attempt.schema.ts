@@ -6,3 +6,7 @@ export const createAttemptSchema = z.object({
   forecastQuestionId: z.string(),
   audioFileId: z.string(),
 })
+
+export const attemptQuerySchema = z.object({
+  forecastQuestionId: z.string(),
+})

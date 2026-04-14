@@ -1,5 +1,5 @@
 import attemptApiRequest from '@/api-requests/attempt.api-request'
-import { CreateAttemptBodyType } from '@/types'
+import { AttemptQueryType, CreateAttemptBodyType } from '@/types'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 export const useCreateAttemptMutation = () => {
@@ -17,5 +17,19 @@ export const useAttemptQuery = (
     queryKey: ['attempt', id],
     queryFn: () => attemptApiRequest.getDetails(id),
     ...options,
+  })
+}
+
+export const useAttemptListQuery = ({
+  enabled = false,
+  params,
+}: {
+  enabled: boolean
+  params: AttemptQueryType
+}) => {
+  return useQuery({
+    queryKey: ['attempt-list', params],
+    queryFn: () => attemptApiRequest.getList(params),
+    enabled,
   })
 }

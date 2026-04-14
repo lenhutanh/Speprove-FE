@@ -1,5 +1,5 @@
 import { apiConfig } from '@/constants'
-import { ApiResponse, AttemptResponseDto, CreateAttemptBodyType } from '@/types'
+import { ApiResponse, AttemptQueryType, AttemptResponseDto, CreateAttemptBodyType } from '@/types'
 import { http } from '@/utils'
 
 const attemptApiRequest = {
@@ -10,6 +10,10 @@ const attemptApiRequest = {
   getDetails: (id: string) =>
     http.get<ApiResponse<AttemptResponseDto>>(apiConfig.attempt.getById, {
       pathParams: { id },
+    }),
+  getList: (params: AttemptQueryType) =>
+    http.get<ApiResponse<AttemptResponseDto[]>>(apiConfig.attempt.getList, {
+      params,
     }),
 }
 

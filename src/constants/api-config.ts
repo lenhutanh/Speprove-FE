@@ -113,6 +113,18 @@ const apiConfig = defineApiConfig({
       method: 'GET',
       headers: baseHeader,
     },
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/attempt`,
+      method: 'GET',
+      headers: baseHeader,
+    },
+  },
+  voice: {
+    getDefault: {
+      baseUrl: `${AppConstants.apiUrl}v1/voice/default`,
+      method: 'GET',
+      headers: baseHeader,
+    },
   },
 })
 
