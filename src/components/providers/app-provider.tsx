@@ -1,7 +1,7 @@
 'use client'
 
-import { useProfileQuery } from '@/queries'
-import { useAuthStore } from '@/store'
+import { useDefaultVoiceQuery, useProfileQuery } from '@/queries'
+import { useAppPreference, useAuthStore } from '@/store'
 import { setData } from '@/utils'
 import { useEffect } from 'react'
 
@@ -10,26 +10,40 @@ export default function AppProvider({
 }: {
   children: React.ReactNode
 }) {
-  const { setUser, setLoading, setAuthenticated, logout } = useAuthStore()
+  const { setUser, setLoading, setAuthenticated, logout, isAuthenticated, user } = useAuthStore()
+  const { voiceId, setVoiceId } = useAppPreference()
 
-  // React Query sẽ tự động fetch khi component mount
-  const { data, isLoading, isError } = useProfileQuery()
+  const { data: profileData, isLoading: isProfileLoading, isError: isProfileError } = useProfileQuery(isAuthenticated)
 
-  // Set theme một lần duy nhất
+  const { data: defaultVoiceData } = useDefaultVoiceQuery()
+
   useEffect(() => {
     setData('theme', 'light')
   }, [])
 
   useEffect(() => {
-    setLoading(isLoading)
+    setLoading(isProfileLoading)
 
-    if (data?.data) {
-      setUser(data.data)
+    if (profileData?.data) {
+      setUser(profileData.data)
       setAuthenticated(true)
-    } else if (!isLoading && isError) {
+    } else if (!isProfileLoading && isProfileError) {
       logout()
     }
-  }, [data, isLoading, isError, setUser, setAuthenticated, logout, setLoading])
+  }, [profileData, isProfileLoading, isProfileError, setUser, setAuthenticated, logout, setLoading])
+
+  useEffect(() => {
+    if (isAuthenticated && user?.selectedVoiceId) {
+      if (voiceId !== user.selectedVoiceId) {
+        setVoiceId(user.selectedVoiceId)
+      }
+      return
+    }
+
+    if (!voiceId && defaultVoiceData?.data) {
+      setVoiceId(defaultVoiceData.data.id || defaultVoiceData.data.id)
+    }
+  }, [isAuthenticated, user, voiceId, defaultVoiceData, setVoiceId])
 
   return <>{children}</>
 }

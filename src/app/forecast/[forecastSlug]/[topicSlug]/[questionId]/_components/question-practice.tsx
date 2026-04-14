@@ -9,6 +9,7 @@ import PracticeBottomBar from './practice-bottom-bar'
 import { Breadcrumb } from '@/components/breadcumb'
 import route from '@/routes'
 import { HEADER_HEIGHT } from '@/constants'
+import { useAppPreference } from '@/store'
 
 export default function QuestionPractice() {
   const { forecastSlug, topicSlug, questionId } = useParams<{
@@ -17,7 +18,9 @@ export default function QuestionPractice() {
     questionId: string
   }>()
 
-  const questionQuery = useForecastQuestionQuery(questionId)
+  const { voiceId } = useAppPreference()
+
+  const questionQuery = useForecastQuestionQuery(questionId, voiceId)
   const question = questionQuery.data?.data
 
   if (questionQuery.isLoading) return <PracticeSkeleton />
@@ -46,9 +49,12 @@ export default function QuestionPractice() {
       </div>
 
       <PracticeBottomBar
+        key={questionId}
         forecastSlug={forecastSlug}
         topicSlug={topicSlug}
         questionId={questionId}
+        prev={question.prev}
+        next={question.next}
       />
     </div>
   )

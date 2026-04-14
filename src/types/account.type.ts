@@ -12,4 +12,5 @@ export type UserResType = {
   status: number
   createdAt: string
   updatedAt: string
+  selectedVoiceId: string
 }

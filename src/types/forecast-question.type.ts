@@ -15,6 +15,9 @@ type BaseForecastQuestion = {
   content: string
   practicedAt?: string | null
   band?: number | string | null
+  audioUrl: string
+  prev?: { id: string; content: string }
+  next?: { id: string; content: string }
 }
 
 export type ForecastQuestionType = BaseForecastQuestion &

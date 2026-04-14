@@ -16,9 +16,10 @@ export const useForecastQuestionListQuery = ({
   })
 }
 
-export const useForecastQuestionQuery = (id: string) => {
+export const useForecastQuestionQuery = (id: string, voiceId?: string | null) => {
   return useQuery({
-    queryKey: ['forecast-question', id],
-    queryFn: () => forecastQuestionApiRequest.getById(id),
+    queryKey: ['forecast-question', id, voiceId], 
+    queryFn: () => forecastQuestionApiRequest.getById(id, voiceId),
+    enabled: !!id, 
   })
 }
