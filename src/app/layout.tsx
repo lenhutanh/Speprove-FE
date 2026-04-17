@@ -3,11 +3,11 @@ import {
   QueryProvider,
   ThemeProvider,
 } from '@/components/providers'
+import { Toaster } from '@/components/ui/sonner'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Suspense } from 'react'
 import './globals.css'
-import { Toaster } from '@/components/ui/sonner'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -44,7 +44,7 @@ export default function RootLayout({
             <AppProvider>
               {/* <NextTopLoader color='#64b496' showSpinner={false} /> */}
               <Suspense>{children}</Suspense>
-              <Toaster position="top-center" richColors closeButton />
+              <Toaster position='bottom-right' richColors closeButton />
             </AppProvider>
           </ThemeProvider>
         </QueryProvider>

@@ -8,6 +8,7 @@ const route = defineRoute({
   verifyOtp: '/verify-otp',
   changePassword: '/change-password',
   forecast: '/forecast',
+  payment: '/payment',
 })
 
 export default route

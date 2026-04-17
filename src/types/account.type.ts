@@ -7,6 +7,7 @@ export type UserResType = {
   fullName?: string
   phone?: string
   kind: number
+  avatarUrl?: string
   isSuperAdmin: boolean
   group: GroupResType
   status: number

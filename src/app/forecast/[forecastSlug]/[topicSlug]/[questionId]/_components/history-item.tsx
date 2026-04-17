@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import { ChevronDown, ChevronRight } from 'lucide-react'
+import { AudioPlayer } from '@/components/ui/audio-player'
 import { cn } from '@/lib/utils'
+import { AttemptResponseDto } from '@/types'
 import { formatDistanceToNow } from 'date-fns'
 import { vi } from 'date-fns/locale'
-import { AttemptResponseDto } from '@/types'
-import { AudioPlayer } from '@/components/ui/audio-player'
+import { ChevronDown, ChevronRight } from 'lucide-react'
+import { useState } from 'react'
 import { CriteriaTabs } from './criteria-tabs'
 
 interface HistoryItemProps {
@@ -17,7 +17,10 @@ export default function HistoryItem({ history }: HistoryItemProps) {
   const [open, setOpen] = useState(false)
 
   const { audioUrl, evaluation, speechMetrics, createdAt } = history
-  const timeAgo = formatDistanceToNow(new Date(createdAt), { addSuffix: true, locale: vi })
+  const timeAgo = formatDistanceToNow(new Date(createdAt), {
+    addSuffix: true,
+    locale: vi,
+  })
 
   const overall = evaluation?.overall
   const overallColor =
@@ -28,37 +31,50 @@ export default function HistoryItem({ history }: HistoryItemProps) {
         : { dot: 'bg-muted-foreground', pill: 'bg-muted text-muted-foreground' }
 
   return (
-    <div className={cn(
-      'border rounded-lg overflow-hidden',
-      open ? 'border-border' : 'border-border/60'
-    )}>
+    <div
+      className={cn(
+        'overflow-hidden rounded-lg border',
+        open ? 'border-border' : 'border-border/60',
+      )}
+    >
       {/* Header */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-3 py-2.5 bg-background hover:bg-muted/40 transition-colors rounded-lg"
+        className='bg-background hover:bg-muted/40 flex w-full items-center justify-between rounded-lg px-3 py-2.5 transition-colors'
         style={{ borderRadius: open ? '8px 8px 0 0' : undefined }}
       >
-        <div className="flex items-center gap-2">
-          <div className={cn('w-2 h-2 rounded-full flex-shrink-0', overallColor.dot)} />
-          <span className="text-xs text-muted-foreground">{timeAgo}</span>
+        <div className='flex items-center gap-2'>
+          <div
+            className={cn(
+              'h-2 w-2 flex-shrink-0 rounded-full',
+              overallColor.dot,
+            )}
+          />
+          <span className='text-muted-foreground text-sm'>{timeAgo}</span>
           {overall != null && (
-            <span className={cn('text-xs px-1.5 py-0.5 rounded font-medium', overallColor.pill)}>
+            <span
+              className={cn(
+                'rounded px-1.5 py-0.5 text-sm font-medium',
+                overallColor.pill,
+              )}
+            >
               Band {overall}
             </span>
           )}
         </div>
-        {open
-          ? <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
-          : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
-        }
+        {open ? (
+          <ChevronDown className='text-muted-foreground h-3.5 w-3.5' />
+        ) : (
+          <ChevronRight className='text-muted-foreground h-3.5 w-3.5' />
+        )}
       </button>
 
       {/* Body */}
       {open && (
-        <div className="border-t border-border">
+        <div className='border-border border-t'>
           {/* Audio */}
-          <div className="px-3 py-2 border-b border-border bg-muted/20">
-            <AudioPlayer url={audioUrl} variant="full" />
+          <div className='border-border bg-muted/20 border-b px-3 py-2'>
+            <AudioPlayer url={audioUrl!} variant='full' />
           </div>
 
           {/* Speech metrics */}
@@ -87,7 +103,7 @@ export default function HistoryItem({ history }: HistoryItemProps) {
             <CriteriaTabs
               evaluation={evaluation}
               speechMetrics={speechMetrics}
-              audioUrl={audioUrl}
+              audioUrl={audioUrl!}
             />
           )}
         </div>

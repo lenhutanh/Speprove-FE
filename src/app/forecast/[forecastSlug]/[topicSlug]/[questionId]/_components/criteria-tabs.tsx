@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Evaluation, SpeechMetrics } from '@/types'
+import { useState } from 'react'
 import { TranscriptHighlight } from './transcript-highlight'
 
 type CriteriaTab = 'fluency' | 'pronunciation' | 'lexical' | 'grammar'
@@ -14,9 +14,20 @@ interface CriteriaTabsProps {
 }
 
 function bandColor(band: number) {
-  if (band >= 7) return { pill: 'bg-emerald-50 text-emerald-700', badge: 'bg-emerald-50 text-emerald-700 border-emerald-100' }
-  if (band >= 6) return { pill: 'bg-amber-50 text-amber-700', badge: 'bg-amber-50 text-amber-700 border-amber-100' }
-  return { pill: 'bg-muted text-muted-foreground', badge: 'bg-muted text-muted-foreground border-border' }
+  if (band >= 7)
+    return {
+      pill: 'bg-emerald-50 text-emerald-700',
+      badge: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+    }
+  if (band >= 6)
+    return {
+      pill: 'bg-amber-50 text-amber-700',
+      badge: 'bg-amber-50 text-amber-700 border-amber-100',
+    }
+  return {
+    pill: 'bg-muted text-muted-foreground',
+    badge: 'bg-muted text-muted-foreground border-border',
+  }
 }
 
 const TAB_LABELS: Record<CriteriaTab, string> = {
@@ -26,7 +37,11 @@ const TAB_LABELS: Record<CriteriaTab, string> = {
   grammar: 'Grammar',
 }
 
-export function CriteriaTabs({ evaluation, speechMetrics, audioUrl }: CriteriaTabsProps) {
+export function CriteriaTabs({
+  evaluation,
+  speechMetrics,
+  audioUrl,
+}: CriteriaTabsProps) {
   const [activeTab, setActiveTab] = useState<CriteriaTab>('fluency')
 
   const tabs: { key: CriteriaTab; band: number | undefined }[] = [
@@ -48,7 +63,7 @@ export function CriteriaTabs({ evaluation, speechMetrics, audioUrl }: CriteriaTa
   return (
     <div>
       {/* Tab bar */}
-      <div className="flex border-b border-border overflow-x-auto scrollbar-none">
+      <div className='border-border scrollbar-none flex overflow-x-auto border-b'>
         {tabs.map(({ key, band }) => {
           const isActive = activeTab === key
           const bc = bandColor(band ?? 0)
@@ -57,18 +72,20 @@ export function CriteriaTabs({ evaluation, speechMetrics, audioUrl }: CriteriaTa
               key={key}
               onClick={() => setActiveTab(key)}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium whitespace-nowrap border-b-2 -mb-px transition-colors flex-shrink-0',
+                '-mb-px flex flex-shrink-0 items-center gap-1.5 border-b-2 px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors',
                 isActive
                   ? 'border-emerald-500 text-emerald-700'
-                  : 'border-transparent text-muted-foreground hover:text-foreground'
+                  : 'text-muted-foreground hover:text-foreground border-transparent',
               )}
             >
               {TAB_LABELS[key]}
               {band !== undefined && (
-                <span className={cn(
-                  'text-[10px] font-medium px-1.5 py-px rounded-full',
-                  isActive ? bc.pill : 'bg-muted text-muted-foreground'
-                )}>
+                <span
+                  className={cn(
+                    'rounded-full px-1.5 py-px text-[10px] font-medium',
+                    isActive ? bc.pill : 'bg-muted text-muted-foreground',
+                  )}
+                >
                   {band}
                 </span>
               )}
@@ -78,10 +95,10 @@ export function CriteriaTabs({ evaluation, speechMetrics, audioUrl }: CriteriaTa
       </div>
 
       {/* Tab content */}
-      <div className="bg-background">
+      <div className='bg-background'>
         {/* Transcript with highlights */}
-        <div className="px-3 py-2.5 border-b border-border">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-2">
+        <div className='border-border border-b px-3 py-2.5'>
+          <p className='text-muted-foreground mb-2 text-[10px] font-medium tracking-wide uppercase'>
             Transcript
           </p>
           <TranscriptHighlight
@@ -94,19 +111,25 @@ export function CriteriaTabs({ evaluation, speechMetrics, audioUrl }: CriteriaTa
 
         {/* Feedback */}
         {activeFeedback && (
-          <div className="px-3 py-2.5">
-            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-2">
+          <div className='px-3 py-2.5'>
+            <p className='text-muted-foreground mb-2 text-[10px] font-medium tracking-wide uppercase'>
               Nhận xét
             </p>
-            <div className="flex items-start gap-2.5">
-              <div className={cn(
-                'flex-shrink-0 w-9 h-9 rounded-md border flex flex-col items-center justify-center',
-                colors.badge
-              )}>
-                <span className="text-sm font-medium leading-none">{activeFeedback.band}</span>
-                <span className="text-[9px] mt-0.5 opacity-70 uppercase tracking-wide">band</span>
+            <div className='flex items-start gap-2.5'>
+              <div
+                className={cn(
+                  'flex h-9 w-9 flex-shrink-0 flex-col items-center justify-center rounded-md border',
+                  colors.badge,
+                )}
+              >
+                <span className='text-sm leading-none font-medium'>
+                  {activeFeedback.band}
+                </span>
+                <span className='mt-0.5 text-[9px] tracking-wide uppercase opacity-70'>
+                  band
+                </span>
               </div>
-              <p className="text-xs text-muted-foreground leading-relaxed pt-0.5">
+              <p className='text-muted-foreground pt-0.5 text-sm leading-relaxed'>
                 {activeFeedback.feedback}
               </p>
             </div>

@@ -126,6 +126,25 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
     },
   },
+  creditPackage: {
+    getAll: {
+      baseUrl: `${AppConstants.apiUrl}v1/credit-package`,
+      method: 'GET',
+      headers: baseHeader,
+    },
+  },
+  payment: {
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/payment/:id`,
+      method: 'GET',
+      headers: baseHeader,
+    },
+    create: {
+      baseUrl: `${AppConstants.apiUrl}v1/payment`,
+      method: 'POST',
+      headers: baseHeader,
+    },
+  },
 })
 
 export default apiConfig
