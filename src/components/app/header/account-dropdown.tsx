@@ -7,24 +7,39 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useLogoutMutation } from '@/queries'
 import route from '@/routes'
+import { useAuthStore } from '@/store'
 import Link from 'next/link'
+
+const defaultAvatar = 'https://github.com/shadcn.png'
 
 export default function AccountDropdown() {
   const { mutate } = useLogoutMutation()
+  const { user } = useAuthStore()
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className='self-center'>
         <Avatar className='h-10 w-10 cursor-pointer'>
-          <AvatarImage src='https://github.com/shadcn.png' alt='@shadcn' />
+          <AvatarImage
+            src={user?.avatarUrl || defaultAvatar}
+            alt={user?.fullName}
+          />
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
         <DropdownMenuItem asChild>
           <Link href={route.home}>
             <Avatar className='h-10 w-10'>
-              <AvatarImage src='https://github.com/shadcn.png' alt='@shadcn' />
+              <AvatarImage
+                src={user?.avatarUrl || defaultAvatar}
+                alt={user?.fullName}
+              />
             </Avatar>
-            <span className='font-semibold'>Lê Nhựt Anh</span>
+            <span className='font-semibold'>{user?.fullName}</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href={route.payment} className='font-medium'>
+            Nạp điểm
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem

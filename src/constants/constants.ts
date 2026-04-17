@@ -70,3 +70,32 @@ export const FILE_KIND = {
   AUDIO: 'audio',
   IMAGE: 'image',
 } as const
+
+export const BANK_BIN_MAP: Record<string, string> = {
+  '970422': 'MB Bank',
+  '970415': 'Vietinbank',
+  '970436': 'Vietcombank',
+  '970418': 'BIDV',
+  '970407': 'Techcombank',
+  '970432': 'VPBank',
+  '970423': 'TPBank',
+  '970431': 'Eximbank',
+}
+
+export const PAYMENT_METHOD = {
+  BANK_TRANSFER: 'bank_transfer',
+} as const
+
+export type PaymentMethodType =
+  (typeof PAYMENT_METHOD)[keyof typeof PAYMENT_METHOD]
+
+export const PAYMENT_STATUS = {
+  PENDING: 'pending',
+  SUCCESS: 'success',
+  FAILED: 'failed',
+  CANCELED: 'canceled',
+  EXPIRED: 'expired',
+} as const
+
+export type PaymentStatusType =
+  (typeof PAYMENT_STATUS)[keyof typeof PAYMENT_STATUS]

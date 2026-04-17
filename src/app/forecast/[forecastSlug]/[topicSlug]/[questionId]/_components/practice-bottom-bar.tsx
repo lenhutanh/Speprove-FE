@@ -1,17 +1,28 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
-import { ChevronLeft, ChevronRight, Mic, Square, Play, Pause, Trash2, Send, CheckCircle2 } from 'lucide-react'
-import { toast } from 'sonner'
-import RecordRTC from 'recordrtc'
-import { useCreateAttemptMutation, useAttemptQuery } from '@/queries'
-import { AUDIO_PURPOSE, SPEAKING_SESSION_MODE } from '@/constants'
-import { uploadAudioSchema } from '@/validations/file.schema'
-import { useUploadAudioMutation } from '@/queries/file.query'
-import { UploadAudioBodyType } from '@/types'
+import { AudioPlayer } from '@/components/ui/audio-player'
 import { Button } from '@/components/ui/button'
+import { AUDIO_PURPOSE, SPEAKING_SESSION_MODE } from '@/constants'
 import { cn } from '@/lib/utils'
+import { useAttemptQuery, useCreateAttemptMutation } from '@/queries'
+import { useUploadAudioMutation } from '@/queries/file.query'
+import route from '@/routes'
+import { useAuthStore } from '@/store'
+import { UploadAudioBodyType } from '@/types'
+import { uploadAudioSchema } from '@/validations/file.schema'
+import {
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Mic,
+  Send,
+  Square,
+  Trash2,
+} from 'lucide-react'
 import Link from 'next/link'
+import { useEffect, useRef, useState } from 'react'
+import RecordRTC from 'recordrtc'
+import { toast } from 'sonner'
 
 type Phase = 'idle' | 'recording' | 'recorded' | 'processing'
 
@@ -19,8 +30,8 @@ interface PracticeBottomBarProps {
   forecastSlug: string
   topicSlug: string
   questionId: string
-  prev?: { id: string, content: string }
-  next?: { id: string, content: string }
+  prev?: { id: string; content: string }
+  next?: { id: string; content: string }
 }
 
 function formatTime(seconds: number): string {
@@ -29,11 +40,18 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`
 }
 
-const STATUS_MAP: Record<number, { label: string; isDone: boolean; isFailed: boolean }> = {
+const STATUS_MAP: Record<
+  number,
+  { label: string; isDone: boolean; isFailed: boolean }
+> = {
   0: { label: 'Đang chuẩn bị...', isDone: false, isFailed: false },
   1: { label: 'Đang xử lý...', isDone: false, isFailed: false },
   2: { label: 'Hoàn thành!', isDone: true, isFailed: false },
-  3: { label: 'Có lỗi xảy ra, vui lòng thử lại.', isDone: false, isFailed: true },
+  3: {
+    label: 'Có lỗi xảy ra, vui lòng thử lại.',
+    isDone: false,
+    isFailed: true,
+  },
 }
 
 function AudioVisualizer({ analyser }: { analyser: AnalyserNode | null }) {
@@ -89,7 +107,7 @@ function AudioVisualizer({ analyser }: { analyser: AnalyserNode | null }) {
       ref={canvasRef}
       width={120}
       height={120}
-      className="absolute inset-0 pointer-events-none"
+      className='pointer-events-none absolute inset-0'
     />
   )
 }
@@ -122,36 +140,41 @@ function ProcessingStatus({
   }, [data])
 
   return (
-    <div className="flex flex-col items-center gap-2 min-w-[220px]">
+    <div className='flex min-w-55 flex-col items-center gap-2'>
       {!isDone && !isFailed && (
-        <div className="flex items-center gap-2">
+        <div className='flex items-center gap-2'>
           {/* Animated dots */}
-          <div className="flex items-center gap-1">
+          <div className='flex items-center gap-1'>
             {[0, 1, 2].map((i) => (
               <span
                 key={i}
-                className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce"
-                style={{ animationDelay: `${i * 0.15}s`, animationDuration: '0.9s' }}
+                className='h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-400'
+                style={{
+                  animationDelay: `${i * 0.15}s`,
+                  animationDuration: '0.9s',
+                }}
               />
             ))}
           </div>
           {/* Spinner */}
-          <div className="w-4 h-4 border-2 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+          <div className='h-4 w-4 animate-spin rounded-full border-2 border-indigo-200 border-t-indigo-500' />
         </div>
       )}
 
       {isDone && (
-        <CheckCircle2 className="w-5 h-5 text-emerald-500 animate-in fade-in zoom-in duration-300" />
+        <CheckCircle2 className='animate-in fade-in zoom-in h-5 w-5 text-emerald-500 duration-300' />
       )}
 
-      {isFailed && (
-        <span className="text-destructive text-lg">✕</span>
-      )}
+      {isFailed && <span className='text-destructive text-lg'>✕</span>}
 
       <p
         className={cn(
-          'text-xs text-center leading-relaxed transition-all duration-300',
-          isDone ? 'text-emerald-600 font-medium' : isFailed ? 'text-destructive' : 'text-muted-foreground'
+          'text-center text-xs leading-relaxed transition-all duration-300',
+          isDone
+            ? 'font-medium text-emerald-600'
+            : isFailed
+              ? 'text-destructive'
+              : 'text-muted-foreground',
         )}
       >
         {label}
@@ -169,9 +192,6 @@ export default function PracticeBottomBar({
   const [phase, setPhase] = useState<Phase>('idle')
   const [submitting, setSubmitting] = useState(false)
   const [recordingSeconds, setRecordingSeconds] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [playbackTime, setPlaybackTime] = useState(0)
-  const [duration, setDuration] = useState(0)
   const [attemptId, setAttemptId] = useState<string | null>(null)
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null)
 
@@ -180,16 +200,20 @@ export default function PracticeBottomBar({
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const blobRef = useRef<Blob | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
-  const seekBarRef = useRef<HTMLDivElement>(null)
   const audioCtxRef = useRef<AudioContext | null>(null)
+  const [blobUrl, setBlobUrl] = useState<string | null>(null)
 
   const uploadAudioMutation = useUploadAudioMutation()
   const createAttemptMutation = useCreateAttemptMutation()
 
+  const { isAuthenticated } = useAuthStore()
+
   useEffect(() => {
     return () => {
       stopTimer()
-      streamRef.current?.getTracks().forEach((t: { stop: () => any }) => t.stop())
+      streamRef.current
+        ?.getTracks()
+        .forEach((t: { stop: () => any }) => t.stop())
       audioCtxRef.current?.close()
       if (audioRef.current) {
         audioRef.current.pause()
@@ -206,6 +230,19 @@ export default function PracticeBottomBar({
   }
 
   const startRecording = async () => {
+    if (!isAuthenticated) {
+      toast.error(
+        <p>
+          Vui lòng&nbsp;
+          <Link href={route.login} className='text-primary'>
+            đăng nhập
+          </Link>
+          &nbsp;để luyện tập
+        </p>,
+      )
+      return
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       streamRef.current = stream
@@ -250,57 +287,36 @@ export default function PracticeBottomBar({
     if (recorderRef.current) {
       recorderRef.current.stopRecording(() => {
         const blob = recorderRef.current!.getBlob()
+        const url = URL.createObjectURL(blob)
+        setBlobUrl(url)
         blobRef.current = blob
 
-        const url = URL.createObjectURL(blob)
         const audio = new Audio(url)
         audioRef.current = audio
 
-        audio.onloadedmetadata = () => setDuration(audio.duration)
-        audio.ontimeupdate = () => setPlaybackTime(audio.currentTime)
         audio.onended = () => {
-          setIsPlaying(false)
-          setPlaybackTime(0)
           audio.currentTime = 0
         }
 
-        streamRef.current?.getTracks().forEach((t: { stop: () => any }) => t.stop())
+        streamRef.current
+          ?.getTracks()
+          .forEach((t: { stop: () => any }) => t.stop())
         streamRef.current = null
         setPhase('recorded')
       })
     }
   }
 
-  const togglePlayback = () => {
-    const audio = audioRef.current
-    if (!audio) return
-    if (audio.paused) {
-      audio.play()
-      setIsPlaying(true)
-    } else {
-      audio.pause()
-      setIsPlaying(false)
-    }
-  }
-
-  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    const audio = audioRef.current
-    if (!audio || !audio.duration || !seekBarRef.current) return
-    const rect = seekBarRef.current.getBoundingClientRect()
-    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
-    audio.currentTime = ratio * audio.duration
-    setPlaybackTime(audio.currentTime)
-  }
-
   const deleteRecording = () => {
+    if (blobUrl) {
+      URL.revokeObjectURL(blobUrl)
+      setBlobUrl(null)
+    }
     if (audioRef.current) {
       audioRef.current.pause()
       audioRef.current = null
     }
     blobRef.current = null
-    setIsPlaying(false)
-    setPlaybackTime(0)
-    setDuration(0)
     setRecordingSeconds(0)
     setPhase('idle')
     if (recorderRef.current) {
@@ -319,7 +335,10 @@ export default function PracticeBottomBar({
     }
 
     const file = new File([blob], `recording.webm`, { type: 'audio/webm' })
-    const payload: UploadAudioBodyType = { audio: file, purpose: AUDIO_PURPOSE.PRACTICE }
+    const payload: UploadAudioBodyType = {
+      audio: file,
+      purpose: AUDIO_PURPOSE.PRACTICE,
+    }
 
     const validation = uploadAudioSchema.safeParse(payload)
     if (!validation.success) {
@@ -367,37 +386,33 @@ export default function PracticeBottomBar({
     setAttemptId(null)
   }
 
-  const progress = duration > 0 ? (playbackTime / duration) * 100 : 0
-
   return (
-    <div className="flex items-center justify-between px-6 bg-background border-t border-border shrink-0 h-26">
+    <div className='bg-background flex h-26 shrink-0 items-center justify-between px-6'>
       {/* Prev */}
       {prev ? (
-        <Button variant="outline" asChild>
+        <Button variant='outline' asChild>
           <Link href={`/forecast/${forecastSlug}/${topicSlug}/${prev.id}`}>
-            <ChevronLeft className="w-3.5 h-3.5" />
+            <ChevronLeft className='h-3.5 w-3.5' />
             Câu trước
           </Link>
         </Button>
       ) : (
-        <div className="w-24" />
+        <div className='w-24' />
       )}
 
       {/* Center controls */}
-      <div className="flex flex-col items-center gap-1.5">
-
+      <div className='flex flex-col items-center gap-1.5'>
         {/* IDLE */}
         {phase === 'idle' && (
           <>
             <Button
-              variant="destructive"
+              variant='destructive'
               onClick={startRecording}
-              size="icon-lg"
-              className="rounded-full transition-all active:scale-120 cursor-pointer"
+              className='h-12 w-12 cursor-pointer rounded-full transition-all active:scale-120'
             >
-              <Mic className="w-4 h-4 text-white" />
+              <Mic className='text-white' />
             </Button>
-            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+            <span className='text-muted-foreground text-[10px] font-medium tracking-wider uppercase'>
               Ghi âm
             </span>
           </>
@@ -406,18 +421,18 @@ export default function PracticeBottomBar({
         {/* RECORDING — mic button + canvas visualizer */}
         {phase === 'recording' && (
           <>
-            <div className="relative w-[120px] h-[120px] flex items-center justify-center">
+            <div className='relative flex h-[120px] w-[120px] items-center justify-center'>
               <AudioVisualizer analyser={analyser} />
               <Button
-                variant="destructive"
+                variant='destructive'
                 onClick={stopRecording}
-                size="icon-lg"
-                className="rounded-full z-10 animate-pulse active:scale-120 cursor-pointer"
+                size='icon-lg'
+                className='z-10 animate-pulse cursor-pointer rounded-full active:scale-120'
               >
-                <Square className="w-3.5 h-3.5 text-white fill-white" />
+                <Square className='h-3.5 w-3.5 fill-white text-white' />
               </Button>
             </div>
-            <span className="text-[11px] font-medium text-muted-foreground tabular-nums -mt-2">
+            <span className='text-muted-foreground -mt-2 text-[11px] font-medium tabular-nums'>
               {formatTime(recordingSeconds)}
             </span>
           </>
@@ -425,56 +440,31 @@ export default function PracticeBottomBar({
 
         {/* RECORDED — playback + submit */}
         {phase === 'recorded' && (
-          <div className="flex items-center gap-2">
+          <div className='flex items-center gap-2'>
             <Button
-              variant="outline"
+              variant='outline'
               onClick={deleteRecording}
               disabled={submitting}
-              size="icon"
-              className="rounded-full shrink-0"
+              size='icon'
+              className='shrink-0 rounded-full'
             >
-              <Trash2 className="w-3.5 h-3.5 text-destructive" />
+              <Trash2 className='text-destructive h-3.5 w-3.5' />
             </Button>
 
-            <div className="flex items-center gap-2 bg-muted/50 border border-border rounded-full px-2 py-1.5">
-              <button
-                onClick={togglePlayback}
-                disabled={submitting}
-                className="w-7 h-7 rounded-full bg-primary flex items-center justify-center transition-all active:scale-95 disabled:opacity-40 shrink-0"
-              >
-                {isPlaying
-                  ? <Pause className="w-3 h-3 text-white fill-white" />
-                  : <Play className="w-3 h-3 text-white fill-white" />
-                }
-              </button>
-              <div
-                ref={seekBarRef}
-                onClick={handleSeek}
-                className="w-60 h-1 bg-border rounded-full cursor-pointer relative overflow-hidden"
-              >
-                <div
-                  className="absolute inset-y-0 left-0 bg-primary rounded-full transition-[width] duration-100"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <span className="text-[11px] text-muted-foreground tabular-nums shrink-0">
-                {formatTime(playbackTime)}
-                <span className="text-muted-foreground/50"> / </span>
-                {formatTime(duration)}
-              </span>
-            </div>
+            <AudioPlayer url={blobUrl!} variant='full' className='w-lg' />
 
             <Button
-              variant="outline"
+              variant='outline'
               onClick={handleSubmit}
               disabled={submitting}
-              size="icon"
-              className="rounded-full shrink-0"
+              size='icon'
+              className='shrink-0 rounded-full'
             >
-              {submitting
-                ? <span className="w-3.5 h-3.5 border-2 border-muted-foreground/40 border-t-muted-foreground rounded-full animate-spin" />
-                : <Send className="w-3.5 h-3.5" />
-              }
+              {submitting ? (
+                <span className='border-muted-foreground/40 border-t-muted-foreground h-3.5 w-3.5 animate-spin rounded-full border-2' />
+              ) : (
+                <Send className='h-3.5 w-3.5' />
+              )}
             </Button>
           </div>
         )}
@@ -491,14 +481,14 @@ export default function PracticeBottomBar({
 
       {/* Next */}
       {next ? (
-        <Button variant="outline" asChild>
+        <Button variant='outline' asChild>
           <Link href={`/forecast/${forecastSlug}/${topicSlug}/${next.id}`}>
             Câu sau
-            <ChevronRight className="w-3.5 h-3.5" />
+            <ChevronRight className='h-3.5 w-3.5' />
           </Link>
         </Button>
       ) : (
-        <div className="w-24" />
+        <div className='w-24' />
       )}
     </div>
   )

@@ -7,10 +7,9 @@ import { Separator } from '@/components/ui/separator'
 import { useNavigate } from '@/hooks'
 import { useLoginMutation, useProfileQuery } from '@/queries'
 import route from '@/routes'
-import { loginSchema } from '@/validations'
 import { useAuthStore } from '@/store/use-auth-store'
 import { LoginBodyType } from '@/types'
-import { UserResType } from '@/types/account.type'
+import { loginSchema } from '@/validations'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -79,7 +78,7 @@ export default function LoginPage() {
               <Col>
                 <Link
                   href={route.forgotPassword}
-                  className="ml-auto text-sm underline-offset-4 hover:underline"
+                  className='ml-auto text-sm underline-offset-4 hover:underline'
                 >
                   Forgot your password?
                 </Link>
@@ -101,7 +100,7 @@ export default function LoginPage() {
         Login with Google
       </Button>
       <div className='text-center'>
-        <span>Don&apos;t have an account? </span>
+        <span>Don&apos;t have an account?</span>
         <Link href={route.register} className='underline'>
           Sign up
         </Link>
