@@ -1,3 +1,4 @@
+import { ErrorCodes } from '@/constants'
 import envConfig from '@/envConfig'
 import { useAuthStore } from '@/store'
 import { ApiConfig, Payload } from '@/types/api.type'
@@ -50,45 +51,102 @@ const sendRequest = async <T>(
 
   const response = await fetch(fullUrl, fetchOptions)
 
-  // 1. Xử lý 401: Token không tồn tại hoặc hoàn toàn không hợp lệ
-  if (response.status === 401) {
-    if (isClient()) useAuthStore.getState().logout()
-    throw new Error('Unauthorized')
-  }
-
-  // 2. Xử lý 410: Access Token hết hạn nhưng có thể refresh
-  if (response.status === 410 && !isRetry && !ignoreAuth) {
-    if (!refreshTokenPromise) {
-      refreshTokenPromise = (async () => {
-        try {
-          const res = await fetch(
-            `${envConfig.NEXT_PUBLIC_API_ENDPOINT_URL}/auth/refresh`,
-            {
-              method: 'POST',
-              credentials: 'include',
-            },
-          )
-          if (!res.ok) throw new Error('Refresh failed')
-          return true
-        } catch (error) {
-          if (isClient()) useAuthStore.getState().logout()
-          return false
-        } finally {
-          refreshTokenPromise = null
-        }
-      })()
-    }
-
-    const success = await refreshTokenPromise
-    if (success) {
-      return sendRequest<T>(apiConfig, payload, true)
-    }
-  }
-
   if (!response.ok) {
     const errorRes = await response.json().catch(() => ({}))
-    throw { status: response.status, ...errorRes }
+
+    // 1. Xử lý 401: Token không tồn tại hoặc hoàn toàn không hợp lệ
+    if (
+      response.status === 401 &&
+      (errorRes.errorCode === ErrorCodes.SESSION_EXPIRED ||
+        errorRes.errorCode === ErrorCodes.INVALID_TOKEN ||
+        errorRes.errorCode === ErrorCodes.TOKEN_MISSING)
+    ) {
+      if (isClient()) useAuthStore.getState().logout()
+      throw errorRes
+    }
+
+    // 2. Xử lý 410: Access Token hết hạn nhưng có thể refresh
+    if (
+      response.status === 401 &&
+      !isRetry &&
+      !ignoreAuth &&
+      errorRes.errorCode === ErrorCodes.TOKEN_EXPIRED
+    ) {
+      if (!refreshTokenPromise) {
+        refreshTokenPromise = (async () => {
+          try {
+            const res = await fetch(
+              `${envConfig.NEXT_PUBLIC_API_ENDPOINT_URL}/auth/refresh`,
+              {
+                method: 'POST',
+                credentials: 'include',
+              },
+            )
+            if (!res.ok) throw new Error('Refresh failed')
+            return true
+          } catch (error) {
+            if (isClient()) useAuthStore.getState().logout()
+            return false
+          } finally {
+            refreshTokenPromise = null
+          }
+        })()
+      }
+
+      const success = await refreshTokenPromise
+      if (success) {
+        return sendRequest<T>(apiConfig, payload, true)
+      } else {
+        throw errorRes
+      }
+    }
+
+    return errorRes
   }
+
+  return response.json() as Promise<T>
+  // const response = await fetch(fullUrl, fetchOptions)
+  // console.log('🚀 ~ sendRequest ~ response:', response)
+
+  // // 1. Xử lý 401: Token không tồn tại hoặc hoàn toàn không hợp lệ
+  // if (response.status === 401) {
+  //   if (isClient()) useAuthStore.getState().logout()
+  //   throw new Error('Unauthorized')
+  // }
+
+  // // 2. Xử lý 410: Access Token hết hạn nhưng có thể refresh
+  // if (response.status === 410 && !isRetry && !ignoreAuth) {
+  //   if (!refreshTokenPromise) {
+  //     refreshTokenPromise = (async () => {
+  //       try {
+  //         const res = await fetch(
+  //           `${envConfig.NEXT_PUBLIC_API_ENDPOINT_URL}/auth/refresh`,
+  //           {
+  //             method: 'POST',
+  //             credentials: 'include',
+  //           },
+  //         )
+  //         if (!res.ok) throw new Error('Refresh failed')
+  //         return true
+  //       } catch (error) {
+  //         if (isClient()) useAuthStore.getState().logout()
+  //         return false
+  //       } finally {
+  //         refreshTokenPromise = null
+  //       }
+  //     })()
+  //   }
+
+  //   const success = await refreshTokenPromise
+  //   if (success) {
+  //     return sendRequest<T>(apiConfig, payload, true)
+  //   }
+  // }
+
+  // if (!response.ok) {
+  //   const errorRes = await response.json().catch(() => ({}))
+  //   throw { status: response.status, ...errorRes }
+  // }
 
   return response.json() as Promise<T>
 }

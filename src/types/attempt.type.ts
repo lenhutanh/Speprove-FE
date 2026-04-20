@@ -1,4 +1,8 @@
-import { attemptQuerySchema, createAttemptSchema } from '@/validations'
+import {
+  attemptQuerySchema,
+  createAttemptSchema,
+  getLeaderboardQuerySchema,
+} from '@/validations'
 import z from 'zod'
 
 export type CreateAttemptBodyType = z.infer<typeof createAttemptSchema>
@@ -92,6 +96,7 @@ export type AttemptResponseDto = {
   part: number
   order: number
   status: number
+  isPublic: boolean
   speechMetrics?: SpeechMetrics
   evaluation?: Evaluation
   createdAt: string
@@ -99,3 +104,25 @@ export type AttemptResponseDto = {
 }
 
 export type AttemptQueryType = z.infer<typeof attemptQuerySchema>
+
+export type AttemptLeaderBoardType = {
+  id: string
+  audioUrl?: string
+  duration?: number
+  transcript?: string
+  scores: {
+    overall: number | null
+    fluency: number | null
+    pronunciation: number | null
+    lexical: number | null
+    grammar: number | null
+  }
+  user: {
+    id: string
+    fullName: string
+    avatar?: string
+  }
+  createdAt: Date
+}
+
+export type GetLeaderboardQueryType = z.infer<typeof getLeaderboardQuerySchema>

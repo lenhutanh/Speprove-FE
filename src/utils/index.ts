@@ -1,5 +1,6 @@
 export * from './error-form.util'
+export * from './file.util'
+export * from './get-initials.util'
 export * from './http.util'
 export * from './params.util'
 export * from './storage.util'
-export * from './file.util'

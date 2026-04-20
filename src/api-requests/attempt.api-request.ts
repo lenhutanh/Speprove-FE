@@ -1,5 +1,12 @@
 import { apiConfig } from '@/constants'
-import { ApiResponse, AttemptQueryType, AttemptResponseDto, CreateAttemptBodyType } from '@/types'
+import {
+  ApiResponse,
+  AttemptLeaderBoardType,
+  AttemptQueryType,
+  AttemptResponseDto,
+  CreateAttemptBodyType,
+  GetLeaderboardQueryType,
+} from '@/types'
 import { http } from '@/utils'
 
 const attemptApiRequest = {
@@ -14,6 +21,18 @@ const attemptApiRequest = {
   getList: (params: AttemptQueryType) =>
     http.get<ApiResponse<AttemptResponseDto[]>>(apiConfig.attempt.getList, {
       params,
+    }),
+  getLeaderBoard: (params: GetLeaderboardQueryType) =>
+    http.get<ApiResponse<AttemptLeaderBoardType[]>>(
+      apiConfig.attempt.getLeaderboard,
+      {
+        params,
+      },
+    ),
+  toggleShare: (id: string, isPublic: boolean) =>
+    http.put<ApiResponse<AttemptResponseDto>>(apiConfig.attempt.toggleShare, {
+      pathParams: { id },
+      body: { isPublic },
     }),
 }
 

@@ -35,4 +35,6 @@ export type ApiResponse<T> = {
   message?: string
   data: T
   meta?: PaginationMeta
+  errorCode?: string
+  errors?: Record<string, string>
 }

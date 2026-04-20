@@ -118,6 +118,16 @@ const apiConfig = defineApiConfig({
       method: 'GET',
       headers: baseHeader,
     },
+    getLeaderboard: {
+      baseUrl: `${AppConstants.apiUrl}v1/attempt/leaderboard`,
+      method: 'GET',
+      headers: baseHeader,
+    },
+    toggleShare: {
+      baseUrl: `${AppConstants.apiUrl}v1/attempt/:id/share`,
+      method: 'PUT',
+      headers: baseHeader,
+    },
   },
   voice: {
     getDefault: {

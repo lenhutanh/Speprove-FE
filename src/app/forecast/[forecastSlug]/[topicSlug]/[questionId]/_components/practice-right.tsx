@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import { AIResultType, ForecastQuestionType } from '@/types'
+import { ForecastQuestionType } from '@/types'
 import { useState } from 'react'
 import AIAssistant from './ai-assistant'
 import PracticeLeaderboard from './practice-leaderboard'
@@ -25,21 +25,10 @@ const AI_OPTIONS = [
 
 export default function PracticeRight({ question }: PracticeRightProps) {
   const [active, setActive] = useState<RightTab>('ai')
-  const [results, setResults] = useState<AIResultType[]>([])
   const [loading, setLoading] = useState(false)
 
   async function handleOption(key: string, label: string) {
     setLoading(true)
-    try {
-      const res = await fetch('/api/ai-assist', {
-        method: 'POST',
-        body: JSON.stringify({ questionId: question._id, type: key }),
-      })
-      const data = await res.json()
-      setResults((prev) => [{ label, content: data.result }, ...prev])
-    } finally {
-      setLoading(false)
-    }
   }
 
   return (
@@ -66,14 +55,13 @@ export default function PracticeRight({ question }: PracticeRightProps) {
       <div className='flex flex-1 flex-col overflow-hidden'>
         {active === 'ai' && (
           <AIAssistant
-            results={results}
             options={AI_OPTIONS}
             loading={loading}
             onOption={handleOption}
           />
         )}
         {active === 'leaderboard' && (
-          <PracticeLeaderboard questionId={question._id} />
+          <PracticeLeaderboard questionId={question.id} />
         )}
       </div>
     </div>
