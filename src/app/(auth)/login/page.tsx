@@ -12,6 +12,7 @@ import { LoginBodyType } from '@/types'
 import { loginSchema } from '@/validations'
 import Image from 'next/image'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 export default function LoginPage() {
   const loginMutation = useLoginMutation()
@@ -23,18 +24,22 @@ export default function LoginPage() {
     password: '',
   }
   const onSubmit = async (values: LoginBodyType) => {
-    await loginMutation.mutateAsync(values, {
-      onSuccess: async (res) => {
-        if (res.success) {
-          const { data: profileRes } = await profileQuery.refetch()
-          if (profileRes?.data) {
-            setUser(profileRes.data)
-            setAuthenticated(true)
-            navigate(route.home)
-          }
-        }
-      },
-    })
+    const res = await loginMutation.mutateAsync(values)
+
+    if (res.success) {
+      const { data: profileRes } = await profileQuery.refetch()
+      if (profileRes?.data) {
+        setUser(profileRes.data)
+        setAuthenticated(true)
+        navigate(route.home)
+      }
+    } else {
+      if (!res.errors || Object.keys(res.errors).length === 0) {
+        toast.error(res.message)
+      }
+    }
+
+    return res
   }
 
   return (

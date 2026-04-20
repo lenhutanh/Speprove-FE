@@ -10,3 +10,8 @@ export const createAttemptSchema = z.object({
 export const attemptQuerySchema = z.object({
   forecastQuestionId: z.string(),
 })
+
+export const getLeaderboardQuerySchema = z.object({
+  forecastQuestionId: z.string(),
+  band: z.coerce.number().int().min(6).max(8),
+})

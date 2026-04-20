@@ -1,30 +1,50 @@
 'use client'
 
 import { Skeleton } from '@/components/ui/skeleton'
-import HistoryItem from './history-item'
-import { CalendarIcon } from 'lucide-react'
 import { useAttemptListQuery } from '@/queries'
-import { useParams } from 'next/navigation'
+import route from '@/routes'
 import { useAuthStore } from '@/store'
+import { CalendarIcon } from 'lucide-react'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import HistoryItem from './history-item'
 
 export default function PracticeHistory() {
   const { questionId } = useParams<{ questionId: string }>()
   const { isAuthenticated } = useAuthStore()
-  const { data, isLoading } = useAttemptListQuery({ enabled: !!questionId && isAuthenticated, params: { forecastQuestionId: questionId } })
+  const { data, isLoading } = useAttemptListQuery({
+    enabled: !!questionId && isAuthenticated,
+    params: { forecastQuestionId: questionId },
+  })
   const histories = data?.data || []
+
+  if (!isAuthenticated) {
+    return (
+      <div className='flex h-full flex-col items-center justify-center gap-2 px-4 text-center'>
+        <p className='text-muted-foreground text-xs leading-relaxed'>
+          Vui lòng{' '}
+          <Link href={route.login} className='font-bold'>
+            đăng nhập
+          </Link>{' '}
+          để xem <br /> lịch sử luyện tập của bạn.
+        </p>
+      </div>
+    )
+  }
+
   return (
-    <div className="h-full overflow-y-auto p-3 space-y-2">
+    <div className='h-full space-y-2 overflow-y-auto p-3'>
       {isLoading &&
         Array.from({ length: 3 }).map((_, i) => (
-          <Skeleton key={i} className="h-14 rounded-lg" />
+          <Skeleton key={i} className='h-14 rounded-lg' />
         ))}
 
       {!isLoading && histories.length === 0 && (
-        <div className="flex flex-col items-center justify-center h-full gap-2 text-center px-4">
-          <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-            <CalendarIcon className="w-4 h-4 text-muted-foreground" />
+        <div className='flex h-full flex-col items-center justify-center gap-2 px-4 text-center'>
+          <div className='bg-muted flex h-8 w-8 items-center justify-center rounded-full'>
+            <CalendarIcon className='text-muted-foreground h-4 w-4' />
           </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">
+          <p className='text-muted-foreground text-xs leading-relaxed'>
             Chưa có lịch sử luyện tập.
             <br />
             Hãy ghi âm câu đầu tiên!

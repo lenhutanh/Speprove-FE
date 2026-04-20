@@ -1,11 +1,14 @@
 'use client'
 
 import { AudioPlayer } from '@/components/ui/audio-player'
+import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
+import { useToggleShareMutation } from '@/queries'
 import { AttemptResponseDto } from '@/types'
+import { useQueryClient } from '@tanstack/react-query'
 import { formatDistanceToNow } from 'date-fns'
 import { vi } from 'date-fns/locale'
-import { ChevronDown, ChevronRight } from 'lucide-react'
+import { ChevronDown, ChevronRight, Globe, Lock } from 'lucide-react'
 import { useState } from 'react'
 import { CriteriaTabs } from './criteria-tabs'
 
@@ -15,6 +18,8 @@ interface HistoryItemProps {
 
 export default function HistoryItem({ history }: HistoryItemProps) {
   const [open, setOpen] = useState(false)
+  const toggleShareMutation = useToggleShareMutation()
+  const queryClient = useQueryClient()
 
   const { audioUrl, evaluation, speechMetrics, createdAt } = history
   const timeAgo = formatDistanceToNow(new Date(createdAt), {
@@ -29,6 +34,24 @@ export default function HistoryItem({ history }: HistoryItemProps) {
       : overall != null && overall >= 6
         ? { dot: 'bg-amber-500', pill: 'bg-amber-50 text-amber-700' }
         : { dot: 'bg-muted-foreground', pill: 'bg-muted text-muted-foreground' }
+
+  const onToggleShare = () => {
+    toggleShareMutation.mutate(
+      { id: history.id, isPublic: !history.isPublic },
+      {
+        onSuccess: (res) => {
+          if (res.success) {
+            queryClient.invalidateQueries({
+              queryKey: [
+                'attempt-list',
+                { forecastQuestionId: history.forecastQuestionId },
+              ],
+            })
+          }
+        },
+      },
+    )
+  }
 
   return (
     <div
@@ -62,11 +85,28 @@ export default function HistoryItem({ history }: HistoryItemProps) {
             </span>
           )}
         </div>
-        {open ? (
-          <ChevronDown className='text-muted-foreground h-3.5 w-3.5' />
-        ) : (
-          <ChevronRight className='text-muted-foreground h-3.5 w-3.5' />
-        )}
+        <div className='flex items-center gap-4'>
+          <Badge
+            variant={history.isPublic ? 'default' : 'secondary'}
+            className='cursor-pointer gap-1 rounded-full'
+            onClick={(e) => {
+              e.stopPropagation()
+              onToggleShare()
+            }}
+          >
+            {history.isPublic ? (
+              <Globe className='h-3 w-3' />
+            ) : (
+              <Lock className='h-3 w-3' />
+            )}
+            {history.isPublic ? 'Public' : 'Private'}
+          </Badge>
+          {open ? (
+            <ChevronDown className='text-muted-foreground h-3.5 w-3.5' />
+          ) : (
+            <ChevronRight className='text-muted-foreground h-3.5 w-3.5' />
+          )}
+        </div>
       </button>
 
       {/* Body */}
@@ -76,27 +116,6 @@ export default function HistoryItem({ history }: HistoryItemProps) {
           <div className='border-border bg-muted/20 border-b px-3 py-2'>
             <AudioPlayer url={audioUrl!} variant='full' />
           </div>
-
-          {/* Speech metrics */}
-          {/* {speechMetrics && (
-            <div className="flex gap-2 px-3 py-2 border-b border-border bg-muted/20 flex-wrap">
-              <span className="text-[11px] text-muted-foreground">
-                <span className="font-medium text-foreground">{speechMetrics.wordCount}</span> words
-              </span>
-              <span className="text-muted-foreground/40 text-[11px]">·</span>
-              <span className="text-[11px] text-muted-foreground">
-                <span className="font-medium text-foreground">{Math.round(speechMetrics.speechRate)}</span> wpm
-              </span>
-              <span className="text-muted-foreground/40 text-[11px]">·</span>
-              <span className="text-[11px] text-muted-foreground">
-                <span className="font-medium text-foreground">{speechMetrics.pauseCount}</span> pauses
-              </span>
-              <span className="text-muted-foreground/40 text-[11px]">·</span>
-              <span className="text-[11px] text-muted-foreground">
-                Pron <span className="font-medium text-foreground">{speechMetrics.avgPronunciationScore}</span>
-              </span>
-            </div>
-          )} */}
 
           {/* Criteria tabs */}
           {evaluation && speechMetrics && (
