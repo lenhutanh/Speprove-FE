@@ -2,6 +2,14 @@
 
 import { AudioPlayer } from '@/components/ui/audio-player'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { AUDIO_PURPOSE, SPEAKING_SESSION_MODE } from '@/constants'
 import { cn } from '@/lib/utils'
 import { useAttemptQuery, useCreateAttemptMutation } from '@/queries'
@@ -18,11 +26,15 @@ import {
   Send,
   Square,
   Trash2,
+  WalletMinimal,
 } from 'lucide-react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import RecordRTC from 'recordrtc'
 import { toast } from 'sonner'
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 type Phase = 'idle' | 'recording' | 'recorded' | 'processing'
 
@@ -33,6 +45,8 @@ interface PracticeBottomBarProps {
   prev?: { id: string; content: string }
   next?: { id: string; content: string }
 }
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60)
@@ -54,6 +68,50 @@ const STATUS_MAP: Record<
   },
 }
 
+// ─── InsufficientBalanceDialog ────────────────────────────────────────────────
+
+function InsufficientBalanceDialog({
+  open,
+  callbackUrl,
+  onClose,
+}: {
+  open: boolean
+  callbackUrl: string
+  onClose: () => void
+}) {
+  return (
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+      <DialogContent className='sm:max-w-sm'>
+        <DialogHeader>
+          <div className='mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100'>
+            <WalletMinimal className='h-6 w-6 text-amber-600' />
+          </div>
+          <DialogTitle className='text-center'>Không đủ số dư</DialogTitle>
+          <DialogDescription className='text-center'>
+            Số dư của bạn không đủ số dư để thực hiện chấm điểm. Vui lòng nạp
+            thêm để tiếp tục luyện tập.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter className='flex-col gap-2 sm:flex-col'>
+          <Button asChild>
+            <Link
+              href={`${route.payment}?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+              onClick={onClose}
+            >
+              Nạp điểm ngay
+            </Link>
+          </Button>
+          <Button variant='ghost' onClick={onClose}>
+            Để sau
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+// ─── AudioVisualizer ──────────────────────────────────────────────────────────
+
 function AudioVisualizer({ analyser }: { analyser: AnalyserNode | null }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const rafRef = useRef<number>(0)
@@ -68,7 +126,6 @@ function AudioVisualizer({ analyser }: { analyser: AnalyserNode | null }) {
     const draw = () => {
       rafRef.current = requestAnimationFrame(draw)
       analyser.getByteFrequencyData(dataArray)
-
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       const cx = canvas.width / 2
@@ -80,13 +137,11 @@ function AudioVisualizer({ analyser }: { analyser: AnalyserNode | null }) {
         const dataIndex = Math.floor((i / bars) * bufferLength * 0.6)
         const value = dataArray[dataIndex] / 255
         const barHeight = 6 + value * 18
-
         const angle = (i / bars) * Math.PI * 2 - Math.PI / 2
         const x1 = cx + Math.cos(angle) * baseRadius
         const y1 = cy + Math.sin(angle) * baseRadius
         const x2 = cx + Math.cos(angle) * (baseRadius + barHeight)
         const y2 = cy + Math.sin(angle) * (baseRadius + barHeight)
-
         const alpha = 0.4 + value * 0.6
         ctx.strokeStyle = `rgba(239,68,68,${alpha})`
         ctx.lineWidth = 2.5
@@ -112,7 +167,62 @@ function AudioVisualizer({ analyser }: { analyser: AnalyserNode | null }) {
   )
 }
 
-// ----- Processing status display -----
+// ─── RecordButton ─────────────────────────────────────────────────────────────
+
+interface RecordButtonProps {
+  phase: Extract<Phase, 'idle' | 'recording'>
+  analyser: AnalyserNode | null
+  recordingSeconds: number
+  onStart: () => void
+  onStop: () => void
+}
+
+function RecordButton({
+  phase,
+  analyser,
+  recordingSeconds,
+  onStart,
+  onStop,
+}: RecordButtonProps) {
+  if (phase === 'idle') {
+    return (
+      <>
+        <Button
+          variant='destructive'
+          onClick={onStart}
+          className='h-12 w-12 cursor-pointer rounded-full transition-all active:scale-120'
+        >
+          <Mic className='text-white' />
+        </Button>
+        <span className='text-muted-foreground text-[10px] font-medium tracking-wider uppercase'>
+          Ghi âm
+        </span>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <div className='relative flex h-[120px] w-[120px] items-center justify-center'>
+        <AudioVisualizer analyser={analyser} />
+        <Button
+          variant='destructive'
+          onClick={onStop}
+          size='icon-lg'
+          className='z-10 animate-pulse cursor-pointer rounded-full active:scale-120'
+        >
+          <Square className='h-3.5 w-3.5 fill-white text-white' />
+        </Button>
+      </div>
+      <span className='text-muted-foreground -mt-2 text-[11px] font-medium tabular-nums'>
+        {formatTime(recordingSeconds)}
+      </span>
+    </>
+  )
+}
+
+// ─── ProcessingStatus ─────────────────────────────────────────────────────────
+
 function ProcessingStatus({
   attemptId,
   onDone,
@@ -143,7 +253,6 @@ function ProcessingStatus({
     <div className='flex min-w-55 flex-col items-center gap-2'>
       {!isDone && !isFailed && (
         <div className='flex items-center gap-2'>
-          {/* Animated dots */}
           <div className='flex items-center gap-1'>
             {[0, 1, 2].map((i) => (
               <span
@@ -156,7 +265,6 @@ function ProcessingStatus({
               />
             ))}
           </div>
-          {/* Spinner */}
           <div className='h-4 w-4 animate-spin rounded-full border-2 border-indigo-200 border-t-indigo-500' />
         </div>
       )}
@@ -182,6 +290,9 @@ function ProcessingStatus({
     </div>
   )
 }
+
+// ─── PracticeBottomBar ────────────────────────────────────────────────────────
+
 export default function PracticeBottomBar({
   forecastSlug,
   topicSlug,
@@ -194,6 +305,7 @@ export default function PracticeBottomBar({
   const [recordingSeconds, setRecordingSeconds] = useState(0)
   const [attemptId, setAttemptId] = useState<string | null>(null)
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null)
+  const [showBalanceDialog, setShowBalanceDialog] = useState(false)
 
   const recorderRef = useRef<RecordRTC | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -201,19 +313,19 @@ export default function PracticeBottomBar({
   const blobRef = useRef<Blob | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const audioCtxRef = useRef<AudioContext | null>(null)
+  const audioFileIdRef = useRef<string | null>(null)
   const [blobUrl, setBlobUrl] = useState<string | null>(null)
 
   const uploadAudioMutation = useUploadAudioMutation()
   const createAttemptMutation = useCreateAttemptMutation()
 
   const { isAuthenticated } = useAuthStore()
+  const pathname = usePathname()
 
   useEffect(() => {
     return () => {
       stopTimer()
-      streamRef.current
-        ?.getTracks()
-        .forEach((t: { stop: () => any }) => t.stop())
+      streamRef.current?.getTracks().forEach((t) => t.stop())
       audioCtxRef.current?.close()
       if (audioRef.current) {
         audioRef.current.pause()
@@ -234,7 +346,10 @@ export default function PracticeBottomBar({
       toast.error(
         <p>
           Vui lòng&nbsp;
-          <Link href={route.login} className='text-primary'>
+          <Link
+            href={`${route.login}?callbackUrl=${encodeURIComponent(pathname)}`}
+            className='text-primary'
+          >
             đăng nhập
           </Link>
           &nbsp;để luyện tập
@@ -266,12 +381,11 @@ export default function PracticeBottomBar({
 
       recorder.startRecording()
       recorderRef.current = recorder
-
       setRecordingSeconds(0)
       setPhase('recording')
 
       timerRef.current = setInterval(() => {
-        setRecordingSeconds((prev: number) => prev + 1)
+        setRecordingSeconds((prev) => prev + 1)
       }, 1000)
     } catch (err) {
       console.error(err)
@@ -293,14 +407,11 @@ export default function PracticeBottomBar({
 
         const audio = new Audio(url)
         audioRef.current = audio
-
         audio.onended = () => {
           audio.currentTime = 0
         }
 
-        streamRef.current
-          ?.getTracks()
-          .forEach((t: { stop: () => any }) => t.stop())
+        streamRef.current?.getTracks().forEach((t) => t.stop())
         streamRef.current = null
         setPhase('recorded')
       })
@@ -317,6 +428,7 @@ export default function PracticeBottomBar({
       audioRef.current = null
     }
     blobRef.current = null
+    audioFileIdRef.current = null // reset để lần ghi mới sẽ upload lại
     setRecordingSeconds(0)
     setPhase('idle')
     if (recorderRef.current) {
@@ -334,28 +446,44 @@ export default function PracticeBottomBar({
       return
     }
 
-    const file = new File([blob], `recording.webm`, { type: 'audio/webm' })
-    const payload: UploadAudioBodyType = {
-      audio: file,
-      purpose: AUDIO_PURPOSE.PRACTICE,
-    }
-
-    const validation = uploadAudioSchema.safeParse(payload)
-    if (!validation.success) {
-      toast.error(validation.error.issues[0].message)
-      return
-    }
-
     setSubmitting(true)
 
+    // 1. Upload audio — bỏ qua nếu đã upload thành công trước đó
+    if (!audioFileIdRef.current) {
+      const file = new File([blob], 'recording.webm', { type: 'audio/webm' })
+      const payload: UploadAudioBodyType = {
+        audio: file,
+        purpose: AUDIO_PURPOSE.PRACTICE,
+      }
+
+      const validation = uploadAudioSchema.safeParse(payload)
+      if (!validation.success) {
+        toast.error(validation.error.issues[0].message)
+        setSubmitting(false)
+        return
+      }
+
+      try {
+        const uploadRes = await uploadAudioMutation.mutateAsync(payload)
+        audioFileIdRef.current = uploadRes.data.id
+      } catch {
+        toast.error('Tải file lên thất bại, vui lòng thử lại.')
+        setSubmitting(false)
+        return
+      }
+    }
+
     try {
-      const uploadRes = await uploadAudioMutation.mutateAsync(payload)
-      const audioFileId = uploadRes.data.id
       const attemptRes = await createAttemptMutation.mutateAsync({
         mode: SPEAKING_SESSION_MODE.PRACTICE,
         forecastQuestionId: questionId,
-        audioFileId,
+        audioFileId: audioFileIdRef.current!,
       })
+
+      if (attemptRes.errorCode === 'BUS_003') {
+        setShowBalanceDialog(true)
+        return
+      }
 
       setAttemptId(attemptRes.data.id)
       setPhase('processing')
@@ -366,8 +494,7 @@ export default function PracticeBottomBar({
       }
       blobRef.current = null
     } catch {
-      toast.error('Lỗi khi gửi bài, vui lòng thử lại.')
-      setSubmitting(false)
+      toast.error('Gửi bài thất bại, vui lòng thử lại.')
     } finally {
       setSubmitting(false)
     }
@@ -387,109 +514,89 @@ export default function PracticeBottomBar({
   }
 
   return (
-    <div className='bg-background flex h-26 shrink-0 items-center justify-between px-6'>
-      {/* Prev */}
-      {prev ? (
-        <Button variant='outline' asChild>
-          <Link href={`/forecast/${forecastSlug}/${topicSlug}/${prev.id}`}>
-            <ChevronLeft className='h-3.5 w-3.5' />
-            Câu trước
-          </Link>
-        </Button>
-      ) : (
-        <div className='w-24' />
-      )}
+    <>
+      <InsufficientBalanceDialog
+        open={showBalanceDialog}
+        callbackUrl={pathname}
+        onClose={() => setShowBalanceDialog(false)}
+      />
 
-      {/* Center controls */}
-      <div className='flex flex-col items-center gap-1.5'>
-        {/* IDLE */}
-        {phase === 'idle' && (
-          <>
-            <Button
-              variant='destructive'
-              onClick={startRecording}
-              className='h-12 w-12 cursor-pointer rounded-full transition-all active:scale-120'
-            >
-              <Mic className='text-white' />
-            </Button>
-            <span className='text-muted-foreground text-[10px] font-medium tracking-wider uppercase'>
-              Ghi âm
-            </span>
-          </>
+      <div className='bg-background flex h-26 shrink-0 items-center justify-between px-6'>
+        {/* Prev */}
+        {prev ? (
+          <Button variant='outline' asChild>
+            <Link href={`/forecast/${forecastSlug}/${topicSlug}/${prev.id}`}>
+              <ChevronLeft className='h-3.5 w-3.5' />
+              Câu trước
+            </Link>
+          </Button>
+        ) : (
+          <div className='w-24' />
         )}
 
-        {/* RECORDING — mic button + canvas visualizer */}
-        {phase === 'recording' && (
-          <>
-            <div className='relative flex h-[120px] w-[120px] items-center justify-center'>
-              <AudioVisualizer analyser={analyser} />
+        {/* Center controls */}
+        <div className='flex flex-col items-center gap-1.5'>
+          {(phase === 'idle' || phase === 'recording') && (
+            <RecordButton
+              phase={phase}
+              analyser={analyser}
+              recordingSeconds={recordingSeconds}
+              onStart={startRecording}
+              onStop={stopRecording}
+            />
+          )}
+
+          {phase === 'recorded' && (
+            <div className='flex items-center gap-2'>
               <Button
-                variant='destructive'
-                onClick={stopRecording}
-                size='icon-lg'
-                className='z-10 animate-pulse cursor-pointer rounded-full active:scale-120'
+                variant='outline'
+                onClick={deleteRecording}
+                disabled={submitting}
+                size='icon'
+                className='shrink-0 rounded-full'
               >
-                <Square className='h-3.5 w-3.5 fill-white text-white' />
+                <Trash2 className='text-destructive h-3.5 w-3.5' />
+              </Button>
+
+              <AudioPlayer url={blobUrl!} variant='full' className='w-lg' />
+
+              <Button
+                variant='outline'
+                onClick={handleSubmit}
+                disabled={submitting}
+                size='icon'
+                className='shrink-0 rounded-full'
+              >
+                {submitting ? (
+                  <span className='border-muted-foreground/40 border-t-muted-foreground h-3.5 w-3.5 animate-spin rounded-full border-2' />
+                ) : (
+                  <Send className='h-3.5 w-3.5' />
+                )}
               </Button>
             </div>
-            <span className='text-muted-foreground -mt-2 text-[11px] font-medium tabular-nums'>
-              {formatTime(recordingSeconds)}
-            </span>
-          </>
-        )}
+          )}
 
-        {/* RECORDED — playback + submit */}
-        {phase === 'recorded' && (
-          <div className='flex items-center gap-2'>
-            <Button
-              variant='outline'
-              onClick={deleteRecording}
-              disabled={submitting}
-              size='icon'
-              className='shrink-0 rounded-full'
-            >
-              <Trash2 className='text-destructive h-3.5 w-3.5' />
-            </Button>
+          {phase === 'processing' && attemptId && (
+            <ProcessingStatus
+              attemptId={attemptId}
+              onDone={handleProcessingDone}
+              onFailed={handleProcessingFailed}
+            />
+          )}
+        </div>
 
-            <AudioPlayer url={blobUrl!} variant='full' className='w-lg' />
-
-            <Button
-              variant='outline'
-              onClick={handleSubmit}
-              disabled={submitting}
-              size='icon'
-              className='shrink-0 rounded-full'
-            >
-              {submitting ? (
-                <span className='border-muted-foreground/40 border-t-muted-foreground h-3.5 w-3.5 animate-spin rounded-full border-2' />
-              ) : (
-                <Send className='h-3.5 w-3.5' />
-              )}
-            </Button>
-          </div>
-        )}
-
-        {/* PROCESSING — polling status */}
-        {phase === 'processing' && attemptId && (
-          <ProcessingStatus
-            attemptId={attemptId}
-            onDone={handleProcessingDone}
-            onFailed={handleProcessingFailed}
-          />
+        {/* Next */}
+        {next ? (
+          <Button variant='outline' asChild>
+            <Link href={`/forecast/${forecastSlug}/${topicSlug}/${next.id}`}>
+              Câu sau
+              <ChevronRight className='h-3.5 w-3.5' />
+            </Link>
+          </Button>
+        ) : (
+          <div className='w-24' />
         )}
       </div>
-
-      {/* Next */}
-      {next ? (
-        <Button variant='outline' asChild>
-          <Link href={`/forecast/${forecastSlug}/${topicSlug}/${next.id}`}>
-            Câu sau
-            <ChevronRight className='h-3.5 w-3.5' />
-          </Link>
-        </Button>
-      ) : (
-        <div className='w-24' />
-      )}
-    </div>
+    </>
   )
 }

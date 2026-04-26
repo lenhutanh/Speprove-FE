@@ -12,6 +12,7 @@ import { LoginBodyType } from '@/types'
 import { loginSchema } from '@/validations'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 
 export default function LoginPage() {
@@ -19,6 +20,7 @@ export default function LoginPage() {
   const profileQuery = useProfileQuery(false)
   const { setUser, setAuthenticated } = useAuthStore()
   const navigate = useNavigate()
+  const searchParams = useSearchParams()
   const defaultValues: LoginBodyType = {
     email: '',
     password: '',
@@ -31,7 +33,8 @@ export default function LoginPage() {
       if (profileRes?.data) {
         setUser(profileRes.data)
         setAuthenticated(true)
-        navigate(route.home)
+        const callbackUrl = searchParams.get('callbackUrl')
+        navigate(callbackUrl || route.home)
       }
     } else {
       if (!res.errors || Object.keys(res.errors).length === 0) {

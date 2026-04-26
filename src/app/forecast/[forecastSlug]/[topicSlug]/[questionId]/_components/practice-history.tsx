@@ -6,7 +6,7 @@ import route from '@/routes'
 import { useAuthStore } from '@/store'
 import { CalendarIcon } from 'lucide-react'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, usePathname } from 'next/navigation'
 import HistoryItem from './history-item'
 
 export default function PracticeHistory() {
@@ -18,12 +18,17 @@ export default function PracticeHistory() {
   })
   const histories = data?.data || []
 
+  const pathname = usePathname()
+
   if (!isAuthenticated) {
     return (
       <div className='flex h-full flex-col items-center justify-center gap-2 px-4 text-center'>
         <p className='text-muted-foreground text-xs leading-relaxed'>
           Vui lòng{' '}
-          <Link href={route.login} className='font-bold'>
+          <Link
+            href={`${route.login}?callbackUrl=${encodeURIComponent(pathname)}`}
+            className='font-bold'
+          >
             đăng nhập
           </Link>{' '}
           để xem <br /> lịch sử luyện tập của bạn.
