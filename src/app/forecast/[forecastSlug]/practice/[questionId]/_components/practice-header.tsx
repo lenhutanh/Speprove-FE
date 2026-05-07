@@ -29,11 +29,9 @@ const PART_CONFIG = {
 
 export default function PracticeHeader({
   question,
-  forecastSlug,
-  topicSlug,
   current,
   total,
-}: PracticeHeaderProps) {
+}: Omit<PracticeHeaderProps, 'forecastSlug' | 'topicSlug'>) {
   const cfg = PART_CONFIG[question.part]
 
   return (

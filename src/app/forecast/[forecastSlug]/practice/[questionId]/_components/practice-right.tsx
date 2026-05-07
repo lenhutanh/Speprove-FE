@@ -27,7 +27,7 @@ export default function PracticeRight({ question }: PracticeRightProps) {
   const [active, setActive] = useState<RightTab>('ai')
   const [loading, setLoading] = useState(false)
 
-  async function handleOption(key: string, label: string) {
+  async function handleOption(_key: string, _label: string) {
     setLoading(true)
   }
 

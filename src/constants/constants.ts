@@ -99,3 +99,42 @@ export const PAYMENT_STATUS = {
 
 export type PaymentStatusType =
   (typeof PAYMENT_STATUS)[keyof typeof PAYMENT_STATUS]
+
+export const PART_GROUP = {
+  PART1: '1',
+  PART23: '2,3',
+} as const
+
+export const PART2_CATEGORY_OPTIONS = {
+  OBJECT: { label: 'Object', value: 'object' },
+  PERSON: { label: 'Person', value: 'person' },
+  EVENT: { label: 'Event', value: 'event' },
+  ACTIVITY: { label: 'Activity', value: 'activity' },
+  PLACE: { label: 'Place', value: 'place' },
+  FAVOURITE: { label: 'Favourite', value: 'favourite' },
+} as const
+
+export const PART2_CATEGORY = {
+  OBJECT: 'object',
+  PERSON: 'person',
+  EVENT: 'event',
+  ACTIVITY: 'activity',
+  PLACE: 'place',
+  FAVOURITE: 'favourite',
+} as const
+
+export const QUARTER_OPTIONS = [
+  { label: 'Quý 1', value: '1' },
+  { label: 'Quý 2', value: '2' },
+  { label: 'Quý 3', value: '3' },
+]
+
+export const SPEAKING_SESSION_TYPE = {
+  MOCK_PART_1: 'mock_p1',
+  MOCK_PART_2: 'mock_p2',
+  MOCK_PART_3: 'mock_p3',
+  FULL_TEST: 'full_test',
+} as const
+
+export type SpeakingSessionType =
+  (typeof SPEAKING_SESSION_TYPE)[keyof typeof SPEAKING_SESSION_TYPE]

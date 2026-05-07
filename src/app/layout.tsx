@@ -4,6 +4,7 @@ import {
   ThemeProvider,
 } from '@/components/providers'
 import { Toaster } from '@/components/ui/sonner'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Suspense } from 'react'
@@ -43,8 +44,10 @@ export default function RootLayout({
           >
             <AppProvider>
               {/* <NextTopLoader color='#64b496' showSpinner={false} /> */}
-              <Suspense>{children}</Suspense>
-              <Toaster position='bottom-right' richColors closeButton />
+              <TooltipProvider>
+                <Suspense>{children}</Suspense>
+                <Toaster position='bottom-right' richColors closeButton />
+              </TooltipProvider>
             </AppProvider>
           </ThemeProvider>
         </QueryProvider>

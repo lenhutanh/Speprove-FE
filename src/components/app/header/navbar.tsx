@@ -9,8 +9,8 @@ export default function NavBar() {
   const pathName = usePathname()
   const navItems = [
     { name: 'Trang chủ', href: route.home },
-    { name: 'Forecast', href: '/forecast' }, // Giả sử có route riêng
-    { name: 'Thi thử', href: '/test' },
+    { name: 'Forecast', href: route.forecast },
+    { name: 'Thi thử', href: route.mockTest },
     { name: 'Flashcards', href: '/flashcards' },
   ]
 

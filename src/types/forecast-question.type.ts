@@ -4,25 +4,30 @@ import z from 'zod'
 export type ForecastQuestionQueryType = z.infer<
   typeof forecastQuestionQuerySchema
 > & {
-  forecastTopicId: string
+  forecastId: string
+  forecastTopicId?: string
+  part?: string
+  category?: string
 }
 
 type BaseForecastQuestion = {
   id: string
-  forecastTopicId: string
+  forecastTopicId?: string
   questionId: string
   order: number
   content: string
   practicedAt?: string | null
   band?: number | string | null
-  audioUrl: string
-  prev?: { id: string; content: string }
-  next?: { id: string; content: string }
+  audioUrl?: string
+  prev?: { id: string; content: string } | null
+  next?: { id: string; content: string } | null
 }
 
 export type ForecastQuestionType = BaseForecastQuestion &
   (
-    | { part: 1 }
+    | {
+        part: 1
+      }
     | {
         part: 2
         category: string
@@ -31,6 +36,7 @@ export type ForecastQuestionType = BaseForecastQuestion &
       }
     | {
         part: 3
+        parentId?: string
         parent?: ForecastQuestionType
       }
   )

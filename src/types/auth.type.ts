@@ -14,7 +14,7 @@ export type ForgotPasswordType = z.infer<typeof forgotPasswordSchema>
 
 export type AuthStoreType = {
   isAuthenticated: boolean
-  user: UserResType | null
+  user: UserResType
   isLoading: boolean
   setAuthenticated: (isAuthenticated: boolean) => void
   setUser: (user: UserResType | null) => void

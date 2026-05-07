@@ -11,8 +11,6 @@ import { useAuthStore } from '@/store'
 import { getInitials } from '@/utils'
 import Link from 'next/link'
 
-const defaultAvatar = 'https://github.com/shadcn.png'
-
 export default function AccountDropdown() {
   const { mutate } = useLogoutMutation()
   const { user } = useAuthStore()

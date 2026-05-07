@@ -14,4 +14,5 @@ export type UserResType = {
   createdAt: string
   updatedAt: string
   selectedVoiceId: string
+  balance: number
 }
