@@ -1,59 +1,68 @@
 'use client'
 
-import { Skeleton } from '@/components/ui/skeleton'
-import TopicCard from './topic-card'
-import { useForecastTopicListQuery } from '@/queries'
 import { AppPagination } from '@/components/pagination'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useValidatedParams } from '@/hooks'
+import { useForecastTopicListQuery } from '@/queries'
+import { forecastDetailQuerySchema } from '@/validations'
+import { keepPreviousData } from '@tanstack/react-query'
+import TopicCard from './topic-card'
 
 interface TopicListSectionProps {
   forecastId: string
   forecastSlug: string
 }
 
-export default function TopicListSection({ forecastId, forecastSlug }: TopicListSectionProps) {
-  const topicQuery = useForecastTopicListQuery({
+export default function TopicListSection({
+  forecastId,
+  forecastSlug,
+}: TopicListSectionProps) {
+  const { page, limit, search } = useValidatedParams(forecastDetailQuerySchema)
+  const { data, isLoading } = useForecastTopicListQuery({
     params: {
       forecastId,
+      page,
+      limit,
+      search,
     },
     enabled: !!forecastId,
+    placeholderData: keepPreviousData,
   })
 
-  const topics = topicQuery.data?.data ?? []
+  const topics = data?.data ?? []
 
-  if (topicQuery.isLoading) {
+  if (isLoading) {
     return <TopicListSkeleton />
   }
 
   if (!topics.length) {
     return (
-      <div className="py-20 text-center border-2 border-dashed rounded-2xl">
-        <p className="text-sm text-muted-foreground">Chưa có chủ đề nào trong bộ Forecast này.</p>
+      <div className='rounded-2xl border-2 border-dashed py-20 text-center'>
+        <p className='text-muted-foreground text-sm'>
+          Chưa có chủ đề nào trong bộ Forecast này.
+        </p>
       </div>
     )
   }
 
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className='space-y-8'>
+      <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
         {topics.map((topic) => (
-          <TopicCard
-            key={topic.id}
-            topic={topic}
-            forecastSlug={forecastSlug}
-          />
+          <TopicCard key={topic.id} topic={topic} forecastSlug={forecastSlug} />
         ))}
       </div>
 
-      <AppPagination meta={topicQuery.data?.meta} />
+      <AppPagination meta={data?.meta} />
     </div>
   )
 }
 
 function TopicListSkeleton() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
       {Array.from({ length: 6 }).map((_, i) => (
-        <Skeleton key={i} className="h-28 rounded-2xl" />
+        <Skeleton key={i} className='h-28 rounded-2xl' />
       ))}
     </div>
   )

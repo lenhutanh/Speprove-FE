@@ -1,7 +1,7 @@
 'use client'
 
+import { AIResultType, ForecastQuestionType } from '@/types'
 import { useState } from 'react'
-import { ForecastQuestionType, AIResultType } from '@/types'
 import AIAssistant from './ai-assistant'
 
 interface PracticeAIProps {
@@ -34,7 +34,7 @@ export default function PracticeAI({ question }: PracticeAIProps) {
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden bg-background">
+    <div className='bg-background flex flex-1 flex-col overflow-hidden'>
       <AIAssistant
         results={results}
         options={AI_OPTIONS}

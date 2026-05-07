@@ -10,6 +10,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { AUDIO_PURPOSE, SPEAKING_SESSION_MODE } from '@/constants'
 import { cn } from '@/lib/utils'
 import { useAttemptQuery, useCreateAttemptMutation } from '@/queries'
@@ -29,7 +34,7 @@ import {
   WalletMinimal,
 } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import RecordRTC from 'recordrtc'
 import { toast } from 'sonner'
@@ -322,6 +327,19 @@ export default function PracticeBottomBar({
   const { isAuthenticated } = useAuthStore()
   const pathname = usePathname()
 
+  const searchParams = useSearchParams()
+
+  const queryString = searchParams.toString()
+    ? `?${searchParams.toString()}`
+    : ''
+
+  const stopTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
+    }
+  }
+
   useEffect(() => {
     return () => {
       stopTimer()
@@ -333,13 +351,6 @@ export default function PracticeBottomBar({
       }
     }
   }, [])
-
-  const stopTimer = () => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current)
-      timerRef.current = null
-    }
-  }
 
   const startRecording = async () => {
     if (!isAuthenticated) {
@@ -428,7 +439,7 @@ export default function PracticeBottomBar({
       audioRef.current = null
     }
     blobRef.current = null
-    audioFileIdRef.current = null // reset để lần ghi mới sẽ upload lại
+    audioFileIdRef.current = null
     setRecordingSeconds(0)
     setPhase('idle')
     if (recorderRef.current) {
@@ -524,12 +535,19 @@ export default function PracticeBottomBar({
       <div className='bg-background flex h-26 shrink-0 items-center justify-between px-6'>
         {/* Prev */}
         {prev ? (
-          <Button variant='outline' asChild>
-            <Link href={`/forecast/${forecastSlug}/${topicSlug}/${prev.id}`}>
-              <ChevronLeft className='h-3.5 w-3.5' />
-              Câu trước
-            </Link>
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant='outline' asChild>
+                <Link
+                  href={`/forecast/${forecastSlug}/practice/${prev.id}${queryString}`}
+                >
+                  <ChevronLeft className='h-3.5 w-3.5' />
+                  Câu trước
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{prev.content}</TooltipContent>
+          </Tooltip>
         ) : (
           <div className='w-24' />
         )}
@@ -587,12 +605,19 @@ export default function PracticeBottomBar({
 
         {/* Next */}
         {next ? (
-          <Button variant='outline' asChild>
-            <Link href={`/forecast/${forecastSlug}/${topicSlug}/${next.id}`}>
-              Câu sau
-              <ChevronRight className='h-3.5 w-3.5' />
-            </Link>
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant='outline' asChild>
+                <Link
+                  href={`/forecast/${forecastSlug}/practice/${next.id}${queryString}`}
+                >
+                  Câu trước
+                  <ChevronRight className='h-3.5 w-3.5' />
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{next.content}</TooltipContent>
+          </Tooltip>
         ) : (
           <div className='w-24' />
         )}

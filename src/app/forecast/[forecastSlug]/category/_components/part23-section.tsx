@@ -1,20 +1,27 @@
 import { Skeleton } from '@/components/ui/skeleton'
-import CueCard from './cue-card'
 import { ForecastQuestionType } from '@/types'
+import CueCard from './cue-card'
 
 interface Part23SectionProps {
   questions?: ForecastQuestionType[]
   isLoading: boolean
   forecastSlug: string
-  topicSlug: string    
+  topicSlug?: string
+  categorySlug?: string
 }
 
-export default function Part23Section({ questions, isLoading, forecastSlug, topicSlug }: Part23SectionProps) {
+export default function Part23Section({
+  questions,
+  isLoading,
+  forecastSlug,
+  topicSlug,
+  categorySlug,
+}: Part23SectionProps) {
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <div className='space-y-6'>
         {Array.from({ length: 2 }).map((_, i) => (
-          <Skeleton key={i} className="h-64 rounded-xl" />
+          <Skeleton key={i} className='h-64 rounded-xl' />
         ))}
       </div>
     )
@@ -22,7 +29,7 @@ export default function Part23Section({ questions, isLoading, forecastSlug, topi
 
   if (!questions?.length) {
     return (
-      <div className="py-16 text-center text-sm text-muted-foreground">
+      <div className='text-muted-foreground py-16 text-center text-sm'>
         Không có câu hỏi nào.
       </div>
     )
@@ -31,7 +38,7 @@ export default function Part23Section({ questions, isLoading, forecastSlug, topi
   const cueCards = questions.filter((q) => q.part === 2)
 
   return (
-    <div className="space-y-4">
+    <div className='space-y-4'>
       {cueCards.map((cueCard, index) => (
         <CueCard
           key={cueCard.id}
@@ -40,6 +47,7 @@ export default function Part23Section({ questions, isLoading, forecastSlug, topi
           discussions={cueCard.childPart3 || []}
           forecastSlug={forecastSlug}
           topicSlug={topicSlug}
+          categorySlug={categorySlug}
         />
       ))}
     </div>

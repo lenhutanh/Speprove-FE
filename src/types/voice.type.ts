@@ -4,6 +4,6 @@ export type VoiceType = {
   voiceCode: string
   gender: number
   locale: string
-  sampleAudioUrl: string
+  sampleAudioUrl?: string
   isDefault: boolean
 }

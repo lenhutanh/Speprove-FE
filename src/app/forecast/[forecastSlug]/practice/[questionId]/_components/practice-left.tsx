@@ -9,7 +9,6 @@ import PracticeHistory from './practice-history'
 
 interface PracticeLeftProps {
   question: ForecastQuestionType
-  topicSlug: string
 }
 
 type LeftTab = 'question' | 'history'
@@ -19,10 +18,7 @@ const TABS: { key: LeftTab; label: string }[] = [
   { key: 'history', label: 'Lịch sử luyện tập' },
 ]
 
-export default function PracticeLeft({
-  question,
-  topicSlug,
-}: PracticeLeftProps) {
+export default function PracticeLeft({ question }: PracticeLeftProps) {
   const [active, setActive] = useState<LeftTab>('question')
 
   return (
@@ -45,22 +41,14 @@ export default function PracticeLeft({
       </div>
 
       <div className='flex-1 overflow-hidden'>
-        {active === 'question' && (
-          <QuestionTab question={question} topicSlug={topicSlug} />
-        )}
+        {active === 'question' && <QuestionTab question={question} />}
         {active === 'history' && <PracticeHistory />}
       </div>
     </div>
   )
 }
 
-function QuestionTab({
-  question,
-  topicSlug,
-}: {
-  question: ForecastQuestionType
-  topicSlug: string
-}) {
+function QuestionTab({ question }: { question: ForecastQuestionType }) {
   return (
     <div className='h-full overflow-y-auto p-5'>
       <div className='mb-4 flex items-center gap-2'>
@@ -68,7 +56,7 @@ function QuestionTab({
           Part {question.part}
         </Badge>
         <span className='text-muted-foreground text-[11px] font-medium tracking-wide uppercase'>
-          {topicSlug.split('.')[0]}
+          {/* {topicSlug.split('.')[0]} */}
         </span>
       </div>
 
