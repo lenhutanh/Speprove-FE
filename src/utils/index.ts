@@ -1,3 +1,4 @@
+export * from './date.util'
 export * from './error-form.util'
 export * from './file.util'
 export * from './get-initials.util'

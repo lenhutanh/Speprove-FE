@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 type AudioIconVariant = 'play' | 'volume'
 
 interface AudioPlayerProps {
-  url: string
+  url?: string
   variant?: 'minimal' | 'full'
   autoPlay?: boolean
   delay?: number
@@ -51,6 +51,14 @@ export const AudioPlayer = ({
   const [isLoading, setIsLoading] = useState(false)
   const [duration, setDuration] = useState('0:00')
 
+  // Adjust state when URL changes to avoid cascading renders in useEffect
+  const [prevUrl, setPrevUrl] = useState(url)
+  if (url !== prevUrl) {
+    setPrevUrl(url)
+    setIsPlaying(false)
+    setDuration('0:00')
+  }
+
   // Progress + currentTime driven by rAF — stored in refs to avoid re-render on every frame
   const progressRef = useRef(0) // 0–100, live value
   const fillRef = useRef<HTMLDivElement>(null) // progress bar fill
@@ -77,6 +85,11 @@ export const AudioPlayer = ({
     progressRef.current = pct
     if (fillRef.current) fillRef.current.style.width = `${pct}%`
     if (thumbRef.current) thumbRef.current.style.left = `calc(${pct}% - 6px)`
+    if (seekBarRef.current)
+      seekBarRef.current.setAttribute(
+        'aria-valuenow',
+        Math.round(pct).toString(),
+      )
   }, [])
 
   const applyCurrentTime = useCallback((secs: number) => {
@@ -230,8 +243,6 @@ export const AudioPlayer = ({
       timerRef.current = null
     }
 
-    setIsPlaying(false)
-    setDuration('0:00')
     applyProgress(0)
     applyCurrentTime(0)
 
@@ -281,7 +292,7 @@ export const AudioPlayer = ({
   }
 
   return (
-    <div className={cn('flex w-full items-center gap-2 py-2.5', className)}>
+    <div className={cn('flex w-full items-center gap-2', className)}>
       {PlayBtn}
 
       {/* Current time — updated via ref, no re-render */}
@@ -298,7 +309,7 @@ export const AudioPlayer = ({
         role='slider'
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-valuenow={Math.round(progressRef.current)}
+        aria-valuenow={0}
         aria-label='Audio seek bar'
         tabIndex={0}
         className='relative h-1.5 flex-1 cursor-pointer rounded-full bg-indigo-100'
