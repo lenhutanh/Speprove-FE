@@ -9,6 +9,7 @@ const route = defineRoute({
   changePassword: '/change-password',
   forecast: '/forecast',
   payment: '/payment',
+  mockTest: '/mock-test',
 })
 
 export default route
