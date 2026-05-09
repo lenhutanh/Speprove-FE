@@ -92,6 +92,11 @@ const apiConfig = defineApiConfig({
       method: 'POST',
       headers: baseHeader,
     },
+    getCurrentQuestion: {
+      baseUrl: `${AppConstants.apiUrl}v1/speaking-session/:id/current-question`,
+      method: 'GET',
+      headers: baseHeader,
+    },
   },
   file: {
     uploadAudio: {

@@ -3,19 +3,11 @@
 import { AudioPlayer } from '@/components/ui/audio-player'
 import { Button } from '@/components/ui/button'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { AUDIO_PURPOSE, SPEAKING_SESSION_MODE } from '@/constants'
+import { AUDIO_PURPOSE, SPEAKING_SESSION_MODE, formatCountdown } from '@/constants'
 import { cn } from '@/lib/utils'
 import { useAttemptQuery, useCreateAttemptMutation } from '@/queries'
 import { useUploadAudioMutation } from '@/queries/file.query'
@@ -27,17 +19,15 @@ import {
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
-  Mic,
   Send,
-  Square,
   Trash2,
-  WalletMinimal,
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
-import RecordRTC from 'recordrtc'
-import { toast } from 'sonner'
+import { RecordButton } from '@/components/ui/recorder'
+import { InsufficientBalanceDialog } from '@/components/ui/insufficient-balance-dialog'
+import { useRecorder, useRecordingCountdown } from '@/hooks';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -45,19 +35,17 @@ type Phase = 'idle' | 'recording' | 'recorded' | 'processing'
 
 interface PracticeBottomBarProps {
   forecastSlug: string
-  topicSlug: string
+  topicSlug?: string
   questionId: string
+  part?: number
   prev?: { id: string; content: string }
   next?: { id: string; content: string }
+  source?: string | null
+  topicId?: string | null
+  categoryName?: string | null
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function formatTime(seconds: number): string {
-  const m = Math.floor(seconds / 60)
-  const s = Math.floor(seconds % 60)
-  return `${m}:${s.toString().padStart(2, '0')}`
-}
 
 const STATUS_MAP: Record<
   number,
@@ -73,158 +61,7 @@ const STATUS_MAP: Record<
   },
 }
 
-// ─── InsufficientBalanceDialog ────────────────────────────────────────────────
 
-function InsufficientBalanceDialog({
-  open,
-  callbackUrl,
-  onClose,
-}: {
-  open: boolean
-  callbackUrl: string
-  onClose: () => void
-}) {
-  return (
-    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className='sm:max-w-sm'>
-        <DialogHeader>
-          <div className='mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100'>
-            <WalletMinimal className='h-6 w-6 text-amber-600' />
-          </div>
-          <DialogTitle className='text-center'>Không đủ số dư</DialogTitle>
-          <DialogDescription className='text-center'>
-            Số dư của bạn không đủ số dư để thực hiện chấm điểm. Vui lòng nạp
-            thêm để tiếp tục luyện tập.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter className='flex-col gap-2 sm:flex-col'>
-          <Button asChild>
-            <Link
-              href={`${route.payment}?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-              onClick={onClose}
-            >
-              Nạp điểm ngay
-            </Link>
-          </Button>
-          <Button variant='ghost' onClick={onClose}>
-            Để sau
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  )
-}
-
-// ─── AudioVisualizer ──────────────────────────────────────────────────────────
-
-function AudioVisualizer({ analyser }: { analyser: AnalyserNode | null }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const rafRef = useRef<number>(0)
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas || !analyser) return
-    const ctx = canvas.getContext('2d')!
-    const bufferLength = analyser.frequencyBinCount
-    const dataArray = new Uint8Array(bufferLength)
-
-    const draw = () => {
-      rafRef.current = requestAnimationFrame(draw)
-      analyser.getByteFrequencyData(dataArray)
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      const cx = canvas.width / 2
-      const cy = canvas.height / 2
-      const baseRadius = 26
-      const bars = 48
-
-      for (let i = 0; i < bars; i++) {
-        const dataIndex = Math.floor((i / bars) * bufferLength * 0.6)
-        const value = dataArray[dataIndex] / 255
-        const barHeight = 6 + value * 18
-        const angle = (i / bars) * Math.PI * 2 - Math.PI / 2
-        const x1 = cx + Math.cos(angle) * baseRadius
-        const y1 = cy + Math.sin(angle) * baseRadius
-        const x2 = cx + Math.cos(angle) * (baseRadius + barHeight)
-        const y2 = cy + Math.sin(angle) * (baseRadius + barHeight)
-        const alpha = 0.4 + value * 0.6
-        ctx.strokeStyle = `rgba(239,68,68,${alpha})`
-        ctx.lineWidth = 2.5
-        ctx.lineCap = 'round'
-        ctx.beginPath()
-        ctx.moveTo(x1, y1)
-        ctx.lineTo(x2, y2)
-        ctx.stroke()
-      }
-    }
-
-    draw()
-    return () => cancelAnimationFrame(rafRef.current)
-  }, [analyser])
-
-  return (
-    <canvas
-      ref={canvasRef}
-      width={120}
-      height={120}
-      className='pointer-events-none absolute inset-0'
-    />
-  )
-}
-
-// ─── RecordButton ─────────────────────────────────────────────────────────────
-
-interface RecordButtonProps {
-  phase: Extract<Phase, 'idle' | 'recording'>
-  analyser: AnalyserNode | null
-  recordingSeconds: number
-  onStart: () => void
-  onStop: () => void
-}
-
-function RecordButton({
-  phase,
-  analyser,
-  recordingSeconds,
-  onStart,
-  onStop,
-}: RecordButtonProps) {
-  if (phase === 'idle') {
-    return (
-      <>
-        <Button
-          variant='destructive'
-          onClick={onStart}
-          className='h-12 w-12 cursor-pointer rounded-full transition-all active:scale-120'
-        >
-          <Mic className='text-white' />
-        </Button>
-        <span className='text-muted-foreground text-[10px] font-medium tracking-wider uppercase'>
-          Ghi âm
-        </span>
-      </>
-    )
-  }
-
-  return (
-    <>
-      <div className='relative flex h-[120px] w-[120px] items-center justify-center'>
-        <AudioVisualizer analyser={analyser} />
-        <Button
-          variant='destructive'
-          onClick={onStop}
-          size='icon-lg'
-          className='z-10 animate-pulse cursor-pointer rounded-full active:scale-120'
-        >
-          <Square className='h-3.5 w-3.5 fill-white text-white' />
-        </Button>
-      </div>
-      <span className='text-muted-foreground -mt-2 text-[11px] font-medium tabular-nums'>
-        {formatTime(recordingSeconds)}
-      </span>
-    </>
-  )
-}
 
 // ─── ProcessingStatus ─────────────────────────────────────────────────────────
 
@@ -302,22 +139,17 @@ export default function PracticeBottomBar({
   forecastSlug,
   topicSlug,
   questionId,
+  part = 1,
   prev,
   next,
 }: PracticeBottomBarProps) {
   const [phase, setPhase] = useState<Phase>('idle')
   const [submitting, setSubmitting] = useState(false)
-  const [recordingSeconds, setRecordingSeconds] = useState(0)
   const [attemptId, setAttemptId] = useState<string | null>(null)
-  const [analyser, setAnalyser] = useState<AnalyserNode | null>(null)
   const [showBalanceDialog, setShowBalanceDialog] = useState(false)
 
-  const recorderRef = useRef<RecordRTC | null>(null)
-  const streamRef = useRef<MediaStream | null>(null)
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const blobRef = useRef<Blob | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
-  const audioCtxRef = useRef<AudioContext | null>(null)
   const audioFileIdRef = useRef<string | null>(null)
   const [blobUrl, setBlobUrl] = useState<string | null>(null)
 
@@ -326,25 +158,45 @@ export default function PracticeBottomBar({
 
   const { isAuthenticated } = useAuthStore()
   const pathname = usePathname()
-
   const searchParams = useSearchParams()
+
+  const {
+    analyser,
+    recordingSeconds,
+    isRecording,
+    startRecording,
+    stopRecording,
+    destroyRecorder,
+  } = useRecorder()
+
+  const doStopAndSave = async () => {
+    try {
+      const blob = await stopRecording()
+      const url = URL.createObjectURL(blob)
+      setBlobUrl(url)
+      blobRef.current = blob
+      const audio = new Audio(url)
+      audioRef.current = audio
+      audio.onended = () => { audio.currentTime = 0 }
+      setPhase('recorded')
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const { countdown, canStop, startCountdown, stopCountdown } =
+    useRecordingCountdown({
+      part,
+      isRecording,
+      onAutoStop: doStopAndSave,
+    })
 
   const queryString = searchParams.toString()
     ? `?${searchParams.toString()}`
     : ''
 
-  const stopTimer = () => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current)
-      timerRef.current = null
-    }
-  }
-
   useEffect(() => {
     return () => {
-      stopTimer()
-      streamRef.current?.getTracks().forEach((t) => t.stop())
-      audioCtxRef.current?.close()
       if (audioRef.current) {
         audioRef.current.pause()
         audioRef.current = null
@@ -352,7 +204,7 @@ export default function PracticeBottomBar({
     }
   }, [])
 
-  const startRecording = async () => {
+  const handleStartRecording = async () => {
     if (!isAuthenticated) {
       toast.error(
         <p>
@@ -369,64 +221,15 @@ export default function PracticeBottomBar({
       return
     }
 
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      streamRef.current = stream
-
-      const audioCtx = new AudioContext()
-      audioCtxRef.current = audioCtx
-      const source = audioCtx.createMediaStreamSource(stream)
-      const analyserNode = audioCtx.createAnalyser()
-      analyserNode.fftSize = 256
-      analyserNode.smoothingTimeConstant = 0.8
-      source.connect(analyserNode)
-      setAnalyser(analyserNode)
-
-      const recorder = new RecordRTC(stream, {
-        type: 'audio',
-        recorderType: RecordRTC.StereoAudioRecorder,
-        mimeType: 'audio/wav',
-        numberOfAudioChannels: 1,
-        desiredSampRate: 16000,
-      })
-
-      recorder.startRecording()
-      recorderRef.current = recorder
-      setRecordingSeconds(0)
-      setPhase('recording')
-
-      timerRef.current = setInterval(() => {
-        setRecordingSeconds((prev) => prev + 1)
-      }, 1000)
-    } catch (err) {
-      console.error(err)
-      toast.error('Không thể bắt đầu ghi âm. Vui lòng kiểm tra Micro.')
-    }
+    await startRecording()
+    setPhase('recording')
+    startCountdown()
   }
 
-  const stopRecording = () => {
-    stopTimer()
-    setAnalyser(null)
-    audioCtxRef.current?.close()
-
-    if (recorderRef.current) {
-      recorderRef.current.stopRecording(() => {
-        const blob = recorderRef.current!.getBlob()
-        const url = URL.createObjectURL(blob)
-        setBlobUrl(url)
-        blobRef.current = blob
-
-        const audio = new Audio(url)
-        audioRef.current = audio
-        audio.onended = () => {
-          audio.currentTime = 0
-        }
-
-        streamRef.current?.getTracks().forEach((t) => t.stop())
-        streamRef.current = null
-        setPhase('recorded')
-      })
-    }
+  const handleStopRecording = async () => {
+    if (!canStop) return
+    stopCountdown()
+    await doStopAndSave()
   }
 
   const deleteRecording = () => {
@@ -440,12 +243,8 @@ export default function PracticeBottomBar({
     }
     blobRef.current = null
     audioFileIdRef.current = null
-    setRecordingSeconds(0)
     setPhase('idle')
-    if (recorderRef.current) {
-      recorderRef.current.destroy()
-      recorderRef.current = null
-    }
+    destroyRecorder()
   }
 
   const handleSubmit = async () => {
@@ -553,15 +352,33 @@ export default function PracticeBottomBar({
         )}
 
         {/* Center controls */}
-        <div className='flex flex-col items-center gap-1.5'>
-          {(phase === 'idle' || phase === 'recording') && (
+        <div className='flex flex-col items-center gap-1'>
+          {phase === 'idle' && (
             <RecordButton
               phase={phase}
               analyser={analyser}
               recordingSeconds={recordingSeconds}
-              onStart={startRecording}
-              onStop={stopRecording}
+              onStart={handleStartRecording}
+              onStop={handleStopRecording}
             />
+          )}
+
+          {phase === 'recording' && (
+            <div className='flex items-center gap-3'>
+              <span className='text-sm font-medium tabular-nums text-zinc-500'>
+                {formatCountdown(countdown)}
+              </span>
+              <RecordButton
+                phase={phase}
+                analyser={analyser}
+                recordingSeconds={recordingSeconds}
+                onStart={handleStartRecording}
+                onStop={handleStopRecording}
+                disabled={!canStop}
+                disabledTooltip='Nói ít nhất 10 giây'
+                statusText=''
+              />
+            </div>
           )}
 
           {phase === 'recorded' && (
@@ -611,7 +428,7 @@ export default function PracticeBottomBar({
                 <Link
                   href={`/forecast/${forecastSlug}/practice/${next.id}${queryString}`}
                 >
-                  Câu trước
+                  Câu sau
                   <ChevronRight className='h-3.5 w-3.5' />
                 </Link>
               </Button>

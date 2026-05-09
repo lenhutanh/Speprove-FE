@@ -64,6 +64,7 @@ export const LIMIT_VIDEO_SIZE = 200 * 1024 * 1024
 export const AUDIO_PURPOSE = {
   QUESTION_AUDIO: 'question/audio',
   PRACTICE: 'practice/recordings',
+  MOCK_TEST: 'mock/recordings',
 } as const
 
 export const FILE_KIND = {
@@ -138,3 +139,18 @@ export const SPEAKING_SESSION_TYPE = {
 
 export type SpeakingSessionType =
   (typeof SPEAKING_SESSION_TYPE)[keyof typeof SPEAKING_SESSION_TYPE]
+
+export const SPEAKING_TIME: Record<number, number> = {
+  1: 30,
+  2: 120,
+  3: 45,
+}
+
+export const MIN_RECORDING_SECONDS = 10
+export const REPLAY_WINDOW_SECONDS = 5
+
+export function formatCountdown(s: number): string {
+  const m = Math.floor(s / 60)
+  const sec = s % 60
+  return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`
+}
