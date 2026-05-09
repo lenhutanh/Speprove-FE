@@ -6,7 +6,7 @@ import { HEADER_HEIGHT } from '@/constants'
 import { useForecastQuestionQuery } from '@/queries'
 import route from '@/routes'
 import { useAppPreference } from '@/store'
-import { useParams, useSearchParams } from 'next/navigation' // Thêm useSearchParams
+import { useParams, useSearchParams } from 'next/navigation'
 import PracticeBottomBar from './practice-bottom-bar'
 import PracticeLeft from './practice-left'
 import PracticeRight from './practice-right'
@@ -67,6 +67,7 @@ export default function QuestionPractice() {
         key={questionId}
         forecastSlug={forecastSlug}
         questionId={questionId}
+        part={question.part}
         prev={question.prev!}
         next={question.next!}
         source={source}

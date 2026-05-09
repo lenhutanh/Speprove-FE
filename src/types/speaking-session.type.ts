@@ -39,3 +39,29 @@ export type MockSessionResponse = BaseSpeakingSession & {
 export type SpeakingSessionResponseDto =
   | PracticeSessionResponse
   | MockSessionResponse
+
+export type SessionState =
+  | 'fetching'
+  | 'examiner_speaking'
+  | 'prep'
+  | 'user_speaking'
+  | 'transition'
+  | 'examiner_closing'
+  | 'submitting'
+  | 'scoring'
+  | 'done'
+
+export type CurrentQuestionResponse = {
+  isFinished: boolean
+  instruction: string | null
+  mode: string
+  questionIndex: number
+  totalQuestions: number
+  question: {
+    id: string
+    part: number
+    content: string
+    audioUrl: string
+    bulletPoints?: string[]
+  } | null
+}

@@ -15,6 +15,7 @@ interface AudioPlayerProps {
   iconVariant?: AudioIconVariant
   startTime?: number
   endTime?: number
+  onEnded?: () => void
 }
 
 const iconMap: Record<
@@ -46,6 +47,7 @@ export const AudioPlayer = ({
   iconVariant,
   startTime,
   endTime,
+  onEnded,
 }: AudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -129,6 +131,7 @@ export const AudioPlayer = ({
         if (endTime !== undefined && audio.currentTime >= endTime) {
           audio.pause()
           audio.currentTime = startTime ?? 0
+          if (onEnded) onEnded()
           return
         }
         applyProgress((audio.currentTime / audio.duration) * 100)
@@ -137,7 +140,7 @@ export const AudioPlayer = ({
       rafRef.current = requestAnimationFrame(tick)
     }
     rafRef.current = requestAnimationFrame(tick)
-  }, [applyProgress, applyCurrentTime, startTime, endTime])
+  }, [applyProgress, applyCurrentTime, startTime, endTime, onEnded])
 
   const stopRaf = useCallback(() => {
     if (rafRef.current !== null) {
@@ -166,13 +169,14 @@ export const AudioPlayer = ({
       stopRaf()
       applyProgress(0)
       applyCurrentTime(0)
+      if (onEnded) onEnded()
     }
     audio.onloadstart = () => setIsLoading(true)
     audio.oncanplaythrough = () => setIsLoading(false)
     audio.onloadedmetadata = () => setDuration(formatTime(audio.duration))
 
     return audio
-  }, [url, startRaf, stopRaf, applyProgress, applyCurrentTime])
+  }, [url, startRaf, stopRaf, applyProgress, applyCurrentTime, onEnded])
 
   // ─── Seek bar pointer events ──────────────────────────────────────────────────
 
