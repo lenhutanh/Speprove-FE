@@ -5,6 +5,7 @@ import {
   ForgotPasswordType,
   LoginBodyType,
   RegisterBodyType,
+  ResetPasswordType,
   VerifyOtpBodyType,
 } from '@/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -23,10 +24,19 @@ export const useLoginMutation = () => {
   })
 }
 
-export const useVerifyOtpMutation = () => {
+export const useVerifyRegisterMutation = () => {
   return useMutation({
-    mutationKey: ['verify-otp'],
-    mutationFn: (body: VerifyOtpBodyType) => authApiRequest.verifyOtp(body),
+    mutationKey: ['verify-register'],
+    mutationFn: (body: VerifyOtpBodyType) =>
+      authApiRequest.verifyRegister(body),
+  })
+}
+
+export const useVerifyForgotPasswordMutation = () => {
+  return useMutation({
+    mutationKey: ['verify-forgot-password'],
+    mutationFn: (body: VerifyOtpBodyType) =>
+      authApiRequest.verifyForgotPassword(body),
   })
 }
 
@@ -47,5 +57,12 @@ export const useForgotPasswordMutation = () => {
     mutationKey: ['forgot-password'],
     mutationFn: (body: ForgotPasswordType) =>
       authApiRequest.forgotPassword(body),
+  })
+}
+
+export const useResetPasswordMutation = () => {
+  return useMutation({
+    mutationKey: ['reset-password'],
+    mutationFn: (body: ResetPasswordType) => authApiRequest.resetPassword(body),
   })
 }

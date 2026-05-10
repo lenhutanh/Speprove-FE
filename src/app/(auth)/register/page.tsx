@@ -4,34 +4,40 @@ import { Col, InputField, Row } from '@/components/form'
 import { BaseForm } from '@/components/form/base-form'
 import Button from '@/components/form/button'
 import { Separator } from '@/components/ui/separator'
-import { storageKeys } from '@/constants'
+import { VERIFY_TARGET } from '@/constants'
 import { useNavigate } from '@/hooks'
 import { useRegisterMutation } from '@/queries'
 import route from '@/routes'
-import { registerSchema } from '@/validations'
 import { RegisterBodyType } from '@/types'
-import { setData } from '@/utils'
+import { registerSchema } from '@/validations'
 import Image from 'next/image'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 export default function RegisterPage() {
   const registerMutation = useRegisterMutation()
   const navigate = useNavigate()
+
   const defaultValues: RegisterBodyType = {
     email: '',
     password: '',
     confirmedPassword: '',
   }
+
   const onSubmit = async (values: RegisterBodyType) => {
     await registerMutation.mutateAsync(values, {
       onSuccess: (res) => {
         if (res.success) {
-          setData(storageKeys.EMAIL, values.email)
-          navigate(route.verifyOtp)
+          navigate(
+            `${route.verifyOtp}?email=${values.email}&target=${VERIFY_TARGET.REGISTER}`,
+          )
+        } else {
+          toast.error(res.message)
         }
       },
     })
   }
+
   return (
     <div className='m-auto flex max-w-md flex-col gap-5 rounded-md border border-solid p-7.5 shadow-md'>
       <div className='text-center'>

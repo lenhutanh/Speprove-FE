@@ -1,15 +1,14 @@
 'use client'
 
-import { Col, InputField, Row } from "@/components/form";
-import { BaseForm } from "@/components/form/base-form";
-import Button from "@/components/form/button";
-import { storageKeys } from "@/constants";
-import { useNavigate } from "@/hooks";
-import { useForgotPasswordMutation } from "@/queries";
-import route from "@/routes";
-import { forgotPasswordSchema } from "@/validations";
-import { ForgotPasswordType } from "@/types";
-import { setData } from "@/utils";
+import { Col, InputField, Row } from '@/components/form'
+import { BaseForm } from '@/components/form/base-form'
+import Button from '@/components/form/button'
+import { VERIFY_TARGET } from '@/constants'
+import { useNavigate } from '@/hooks'
+import { useForgotPasswordMutation } from '@/queries'
+import route from '@/routes'
+import { ForgotPasswordType } from '@/types'
+import { forgotPasswordSchema } from '@/validations'
 
 export default function ForgotPasswordPage() {
   const forgotPasswordMutation = useForgotPasswordMutation()
@@ -22,10 +21,11 @@ export default function ForgotPasswordPage() {
     await forgotPasswordMutation.mutateAsync(values, {
       onSuccess: async (res) => {
         if (res.success) {
-          setData(storageKeys.EMAIL, values.email)
-          navigate(route.verifyOtp)
+          navigate(
+            `${route.verifyOtp}?email=${values.email}&target=${VERIFY_TARGET.FORGOT_PASSWORD}`,
+          )
         }
-      }
+      },
     })
   }
 

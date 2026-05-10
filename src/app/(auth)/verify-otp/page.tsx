@@ -3,31 +3,67 @@ import { Col, Row } from '@/components/form'
 import { BaseForm } from '@/components/form/base-form'
 import Button from '@/components/form/button'
 import OtpField from '@/components/form/otp-input'
-import { storageKeys } from '@/constants'
+import { VERIFY_TARGET } from '@/constants'
 import { useNavigate } from '@/hooks'
-import { useVerifyOtpMutation } from '@/queries'
+import {
+  useVerifyForgotPasswordMutation,
+  useVerifyRegisterMutation,
+} from '@/queries'
 import route from '@/routes'
-import { verifyOtpSchema } from '@/validations'
 import { VerifyOtpBodyType } from '@/types'
-import { getData, removeData } from '@/utils'
+import { verifyOtpSchema } from '@/validations'
+import { useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
+import { toast } from 'sonner'
 
 export default function VerifyOtpPage() {
-  const verifyOtpMutation = useVerifyOtpMutation()
+  const verifyRegisterMutation = useVerifyRegisterMutation()
+  const verifyForgotPasswordMutation = useVerifyForgotPasswordMutation()
+  const searchParams = useSearchParams()
+  const email = searchParams.get('email')
+  const target = searchParams.get('target')
+
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!email || !target) {
+      navigate(route.forgotPassword)
+    }
+  }, [email, target])
+
   const defaultValues: VerifyOtpBodyType = {
-    email: getData(storageKeys.EMAIL) ?? '',
+    email: email ?? '',
     otp: '',
   }
 
   const onSubmit = async (values: VerifyOtpBodyType) => {
-    await verifyOtpMutation.mutateAsync(values, {
-      onSuccess: (res) => {
-        if (res.success) {
-          removeData(storageKeys.EMAIL)
-          navigate(route.login)
-        }
-      },
-    })
+    switch (target) {
+      case VERIFY_TARGET.REGISTER:
+        await verifyRegisterMutation.mutateAsync(values, {
+          onSuccess: (res) => {
+            if (res.success) {
+              navigate(route.login)
+            } else {
+              toast.error(res.message)
+            }
+          },
+        })
+        break
+      case VERIFY_TARGET.FORGOT_PASSWORD:
+        await verifyForgotPasswordMutation.mutateAsync(values, {
+          onSuccess: (res) => {
+            if (res.success && res.data.resetToken) {
+              navigate(`${route.resetPassword}?token=${res.data.resetToken}`)
+            } else {
+              toast.error(res.message)
+            }
+          },
+        })
+        break
+      default:
+        toast.error('Invalid verify target')
+        return
+    }
   }
 
   return (

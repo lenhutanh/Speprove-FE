@@ -1,5 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+'use client'
+
 import { MIN_RECORDING_SECONDS, SPEAKING_TIME } from '@/constants'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface UseRecordingCountdownOptions {
   part: number

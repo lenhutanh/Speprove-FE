@@ -1,3 +1,5 @@
+'use client'
+
 import { useCallback, useEffect, useRef, useState } from 'react'
 import RecordRTC from 'recordrtc'
 import { toast } from 'sonner'
@@ -76,7 +78,7 @@ export function useRecorder() {
       stopTimer()
       setAnalyser(null)
       setIsRecording(false)
-      
+
       if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
         audioCtxRef.current.close().catch(() => {})
       }

@@ -6,7 +6,7 @@ const route = defineRoute({
   register: '/register',
   forgotPassword: '/forgot-password',
   verifyOtp: '/verify-otp',
-  changePassword: '/change-password',
+  resetPassword: '/reset-password',
   forecast: '/forecast',
   payment: '/payment',
   mockTest: '/mock-test',

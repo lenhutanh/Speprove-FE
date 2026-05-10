@@ -1,6 +1,6 @@
 import route from '@/routes'
 import { NextRequest, NextResponse } from 'next/server'
-import storageKeys from './constants/storage-key'
+import { storageKeys } from './constants'
 
 const publicPaths = ['/login', '/register', '/verify-otp']
 const privatePaths = ['/user', '/change-password', '/payment']

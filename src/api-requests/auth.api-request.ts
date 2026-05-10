@@ -4,6 +4,7 @@ import {
   ForgotPasswordType,
   LoginBodyType,
   RegisterBodyType,
+  ResetPasswordType,
   VerifyOtpBodyType,
 } from '@/types'
 import { http } from '@/utils'
@@ -17,13 +18,24 @@ const authApiRequest = {
     http.post<ApiResponse<any>>(apiConfig.auth.login, {
       body,
     }),
-  verifyOtp: (body: VerifyOtpBodyType) =>
-    http.post<ApiResponse<any>>(apiConfig.auth.verifyOtp, {
+  verifyRegister: (body: VerifyOtpBodyType) =>
+    http.post<ApiResponse<any>>(apiConfig.auth.verifyRegister, {
       body,
     }),
   logout: () => http.post<ApiResponse<any>>(apiConfig.auth.logout),
   forgotPassword: (body: ForgotPasswordType) =>
     http.post<ApiResponse<any>>(apiConfig.auth.forgotPassword, {
+      body,
+    }),
+  verifyForgotPassword: (body: VerifyOtpBodyType) =>
+    http.post<ApiResponse<{ resetToken: string }>>(
+      apiConfig.auth.verifyForgotPassword,
+      {
+        body,
+      },
+    ),
+  resetPassword: (body: ResetPasswordType) =>
+    http.post<ApiResponse<any>>(apiConfig.auth.resetPassword, {
       body,
     }),
 }

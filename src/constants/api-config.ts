@@ -12,8 +12,8 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'POST',
     },
-    verifyOtp: {
-      baseUrl: `${AppConstants.apiUrl}v1/auth/verify-otp`,
+    verifyRegister: {
+      baseUrl: `${AppConstants.apiUrl}v1/auth/verify-register`,
       headers: baseHeader,
       method: 'POST',
     },
@@ -22,8 +22,13 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'POST',
     },
-    changePassword: {
-      baseUrl: `${AppConstants.apiUrl}v1/auth/change-password`,
+    verifyForgotPassword: {
+      baseUrl: `${AppConstants.apiUrl}v1/auth/verify-forgot-password`,
+      headers: baseHeader,
+      method: 'POST',
+    },
+    resetPassword: {
+      baseUrl: `${AppConstants.apiUrl}v1/auth/reset-password`,
       headers: baseHeader,
       method: 'POST',
     },
