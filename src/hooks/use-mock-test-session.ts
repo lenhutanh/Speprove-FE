@@ -77,7 +77,6 @@ export function useMockTestSession(sessionId: string) {
     }
 
     if (state === 'transition') {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPrepSeconds(3)
       timerRef.current = window.setInterval(() => {
         setPrepSeconds((prev) => {
@@ -92,7 +91,6 @@ export function useMockTestSession(sessionId: string) {
     }
 
     if (state === 'prep') {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPrepSeconds(60)
       timerRef.current = window.setInterval(() => {
         setPrepSeconds((prev) => {
