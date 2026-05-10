@@ -1,24 +1,35 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { useParams, usePathname } from 'next/navigation'
-import { SessionTopBar } from './session-top-bar'
-import { CueCardPanel, NotePanel } from './cue-card'
-import { WaveBars } from './wave-bars'
-import { useMockTestSession } from '@/hooks/use-mock-test-session'
-import { SpeakingSessionType, REPLAY_WINDOW_SECONDS, formatCountdown } from '@/constants'
-import { RecordButton } from '@/components/ui/recorder'
-import { InsufficientBalanceDialog } from '@/components/ui/insufficient-balance-dialog'
-import { useNavigate, useRecorder, useRecordingCountdown } from '@/hooks'
 import { Button } from '@/components/ui/button'
-import { Headphones, Loader2 } from 'lucide-react'
+import { InsufficientBalanceDialog } from '@/components/ui/insufficient-balance-dialog'
+import { RecordButton } from '@/components/ui/recorder'
+import {
+  REPLAY_WINDOW_SECONDS,
+  SpeakingSessionType,
+  formatCountdown,
+} from '@/constants'
+import { useNavigate, useRecorder, useRecordingCountdown } from '@/hooks'
+import { useMockTestSession } from '@/hooks/use-mock-test-session'
 import route from '@/routes'
+import { Headphones, Loader2 } from 'lucide-react'
+import { useParams, usePathname } from 'next/navigation'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { CueCardPanel, NotePanel } from './cue-card'
+import { SessionTopBar } from './session-top-bar'
+import { WaveBars } from './wave-bars'
 
 export default function MockTestRoom() {
   const { speakingSessionId } = useParams<{ speakingSessionId: string }>()
 
-  const { state, questionData, prepSeconds, submitAttempt, replayQuestion, hasReplayed, isLoading } =
-    useMockTestSession(speakingSessionId)
+  const {
+    state,
+    questionData,
+    prepSeconds,
+    submitAttempt,
+    replayQuestion,
+    hasReplayed,
+    isLoading,
+  } = useMockTestSession(speakingSessionId)
 
   const [note, setNote] = useState('')
   const [showBalanceDialog, setShowBalanceDialog] = useState(false)
@@ -47,7 +58,6 @@ export default function MockTestRoom() {
     } catch (e) {
       console.error(e)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stopRecording, submitAttempt])
 
   const { countdown, maxTime, canStop, startCountdown, stopCountdown } =
@@ -78,7 +88,7 @@ export default function MockTestRoom() {
     )
 
     return () => clearTimeout(replayTimer)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state])
 
   const handleStopRecording = async () => {
@@ -104,13 +114,14 @@ export default function MockTestRoom() {
 
   const isPartTwo = questionData.question?.part === 2
   const isPrep = state === 'prep'
-  const isTransitionOrSpeaking = state === 'transition' || state === 'user_speaking'
+  const isTransitionOrSpeaking =
+    state === 'transition' || state === 'user_speaking'
 
   const renderExaminerSpeaking = () => (
     <div className='flex flex-col items-center justify-center gap-4'>
       <WaveBars color='blue' />
       <p className='text-base font-medium'>Giám khảo đang nói...</p>
-      <p className='text-sm text-muted-foreground'>Hãy lắng nghe cẩn thận</p>
+      <p className='text-muted-foreground text-sm'>Hãy lắng nghe cẩn thận</p>
     </div>
   )
 
@@ -135,9 +146,7 @@ export default function MockTestRoom() {
         </div>
       </div>
 
-      <div className='flex justify-center pb-2'>
-        {renderRecordArea()}
-      </div>
+      <div className='flex justify-center pb-2'>{renderRecordArea()}</div>
     </div>
   )
 
@@ -161,14 +170,15 @@ export default function MockTestRoom() {
 
     const showTimer = isTransitionOrSpeaking || isPrep
 
-    const timerDisplay = isTransition || isPrep
-      ? formatCountdown(maxTime)
-      : formatCountdown(countdown)
+    const timerDisplay =
+      isTransition || isPrep
+        ? formatCountdown(maxTime)
+        : formatCountdown(countdown)
 
     return (
       <div className='flex flex-col items-center gap-3'>
         {showTimer && (
-          <p className='text-3xl font-bold tabular-nums tracking-tight text-zinc-800'>
+          <p className='text-3xl font-bold tracking-tight text-zinc-800 tabular-nums'>
             {timerDisplay}
           </p>
         )}
@@ -212,17 +222,11 @@ export default function MockTestRoom() {
           />
         </div>
         <div className='flex flex-1 flex-col overflow-hidden'>
-          <NotePanel
-            mode='speaking'
-            value={note}
-            prepSeconds={prepSeconds}
-          />
+          <NotePanel mode='speaking' value={note} prepSeconds={prepSeconds} />
         </div>
       </div>
 
-      <div className='flex justify-center pb-2'>
-        {renderRecordArea()}
-      </div>
+      <div className='flex justify-center pb-2'>{renderRecordArea()}</div>
     </div>
   )
 
@@ -242,7 +246,9 @@ export default function MockTestRoom() {
   const renderDone = () => (
     <div className='flex flex-col items-center justify-center gap-4'>
       <p className='text-lg font-semibold'>Bài thi hoàn tất</p>
-      <p className='text-sm text-muted-foreground'>Chúc mừng bạn đã hoàn thành!</p>
+      <p className='text-muted-foreground text-sm'>
+        Chúc mừng bạn đã hoàn thành!
+      </p>
     </div>
   )
 
@@ -264,7 +270,9 @@ export default function MockTestRoom() {
 
       case 'transition':
       case 'user_speaking':
-        return isPartTwo ? renderPartTwoSpeaking() : renderPartOneThreeSpeaking()
+        return isPartTwo
+          ? renderPartTwoSpeaking()
+          : renderPartOneThreeSpeaking()
 
       case 'submitting':
         return renderSubmitting()
@@ -285,7 +293,7 @@ export default function MockTestRoom() {
         onClose={() => setShowBalanceDialog(false)}
       />
 
-      <div className='mx-auto max-w-6xl flex flex-col px-6 py-4'>
+      <div className='mx-auto flex max-w-6xl flex-col px-6 py-4'>
         <SessionTopBar
           state={state}
           mode={mode}

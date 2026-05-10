@@ -62,9 +62,9 @@ export const LIMIT_AUDIO_SIZE = 50 * 1024 * 1024
 export const LIMIT_VIDEO_SIZE = 200 * 1024 * 1024
 
 export const AUDIO_PURPOSE = {
-  QUESTION_AUDIO: 'question/audio',
-  PRACTICE: 'practice/recordings',
-  MOCK_TEST: 'mock/recordings',
+  QUESTION_AUDIO: 'question-audio',
+  PRACTICE: 'practice',
+  MOCK_TEST: 'mock',
 } as const
 
 export const FILE_KIND = {

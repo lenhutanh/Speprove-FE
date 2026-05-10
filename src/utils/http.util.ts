@@ -3,7 +3,6 @@ import envConfig from '@/envConfig'
 import { useAuthStore } from '@/store'
 import { ApiConfig, Payload } from '@/types/api.type'
 
-// Chỉ quản lý trạng thái đang refresh hay không (true/false) thay vì giữ string token
 let refreshTokenPromise: Promise<boolean> | null = null
 
 const isClient = () => typeof window !== 'undefined'
@@ -36,8 +35,6 @@ const sendRequest = async <T>(
   const fetchOptions: RequestInit = {
     method,
     headers: baseHeader,
-    // credentials: 'include' cực kỳ quan trọng:
-    // Trình duyệt sẽ tự đính kèm accessToken từ Cookie vào mọi request
     credentials: 'include',
     ...options,
   }
@@ -54,7 +51,7 @@ const sendRequest = async <T>(
   if (!response.ok) {
     const errorRes = await response.json().catch(() => ({}))
 
-    // 1. Xử lý 401: Token không tồn tại hoặc hoàn toàn không hợp lệ
+    // 1. Token không tồn tại hoặc hoàn toàn không hợp lệ
     if (
       response.status === 401 &&
       (errorRes.errorCode === ErrorCodes.SESSION_EXPIRED ||
@@ -65,7 +62,7 @@ const sendRequest = async <T>(
       throw errorRes
     }
 
-    // 2. Xử lý 410: Access Token hết hạn nhưng có thể refresh
+    // 2. Access Token hết hạn nhưng có thể refresh
     if (
       response.status === 401 &&
       !isRetry &&
@@ -76,7 +73,7 @@ const sendRequest = async <T>(
         refreshTokenPromise = (async () => {
           try {
             const res = await fetch(
-              `${envConfig.NEXT_PUBLIC_API_ENDPOINT_URL}/auth/refresh`,
+              `${envConfig.NEXT_PUBLIC_API_ENDPOINT_URL}/api/v1/auth/refresh`,
               {
                 method: 'POST',
                 credentials: 'include',
@@ -101,52 +98,8 @@ const sendRequest = async <T>(
       }
     }
 
-    return errorRes
+    throw errorRes
   }
-
-  return response.json() as Promise<T>
-  // const response = await fetch(fullUrl, fetchOptions)
-  // console.log('🚀 ~ sendRequest ~ response:', response)
-
-  // // 1. Xử lý 401: Token không tồn tại hoặc hoàn toàn không hợp lệ
-  // if (response.status === 401) {
-  //   if (isClient()) useAuthStore.getState().logout()
-  //   throw new Error('Unauthorized')
-  // }
-
-  // // 2. Xử lý 410: Access Token hết hạn nhưng có thể refresh
-  // if (response.status === 410 && !isRetry && !ignoreAuth) {
-  //   if (!refreshTokenPromise) {
-  //     refreshTokenPromise = (async () => {
-  //       try {
-  //         const res = await fetch(
-  //           `${envConfig.NEXT_PUBLIC_API_ENDPOINT_URL}/auth/refresh`,
-  //           {
-  //             method: 'POST',
-  //             credentials: 'include',
-  //           },
-  //         )
-  //         if (!res.ok) throw new Error('Refresh failed')
-  //         return true
-  //       } catch (error) {
-  //         if (isClient()) useAuthStore.getState().logout()
-  //         return false
-  //       } finally {
-  //         refreshTokenPromise = null
-  //       }
-  //     })()
-  //   }
-
-  //   const success = await refreshTokenPromise
-  //   if (success) {
-  //     return sendRequest<T>(apiConfig, payload, true)
-  //   }
-  // }
-
-  // if (!response.ok) {
-  //   const errorRes = await response.json().catch(() => ({}))
-  //   throw { status: response.status, ...errorRes }
-  // }
 
   return response.json() as Promise<T>
 }
