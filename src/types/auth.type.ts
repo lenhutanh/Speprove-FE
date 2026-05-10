@@ -2,6 +2,7 @@ import {
   forgotPasswordSchema,
   loginSchema,
   registerSchema,
+  resetPasswordSchema,
   verifyOtpSchema,
 } from '@/validations/auth.schema'
 import z from 'zod'
@@ -11,6 +12,7 @@ export type LoginBodyType = z.infer<typeof loginSchema>
 export type RegisterBodyType = z.infer<typeof registerSchema>
 export type VerifyOtpBodyType = z.infer<typeof verifyOtpSchema>
 export type ForgotPasswordType = z.infer<typeof forgotPasswordSchema>
+export type ResetPasswordType = z.infer<typeof resetPasswordSchema>
 
 export type AuthStoreType = {
   isAuthenticated: boolean

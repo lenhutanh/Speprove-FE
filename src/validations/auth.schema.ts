@@ -46,3 +46,15 @@ export const forgotPasswordSchema = z.object({
     .min(1, REQUIRED_MESSAGE)
     .regex(EMAIL_RULE, EMAIL_RULE_MESSAGE),
 })
+
+export const resetPasswordSchema = z.object({
+  newPassword: z
+    .string()
+    .min(8, PASSWORD_RULE_MESSAGE)
+    .regex(PASSWORD_RULE, PASSWORD_RULE_MESSAGE),
+  confirmPassword: z
+    .string()
+    .min(8, PASSWORD_RULE_MESSAGE)
+    .regex(PASSWORD_RULE, PASSWORD_RULE_MESSAGE),
+  resetToken: z.string(),
+})

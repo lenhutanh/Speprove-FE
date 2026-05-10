@@ -1,3 +1,5 @@
+'use client'
+
 import { AUDIO_PURPOSE, SPEAKING_SESSION_MODE } from '@/constants'
 import { useCreateAttemptMutation } from '@/queries/attempt.query'
 import { useUploadAudioMutation } from '@/queries/file.query'
