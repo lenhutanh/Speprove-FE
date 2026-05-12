@@ -1,5 +1,4 @@
 import { fullLogo } from '@/assets'
-import { Container } from '@/components/layout'
 import { HEADER_HEIGHT } from '@/constants'
 import route from '@/routes'
 import Image from 'next/image'
@@ -14,7 +13,7 @@ export default function Header() {
       className='sticky top-0 z-50 bg-white shadow-md'
       style={{ height: `${HEADER_HEIGHT}px` }}
     >
-      <Container className='mx-auto max-w-330'>
+      <div className='mx-auto max-w-330'>
         <div className='flex justify-between py-5'>
           <div className='flex items-center gap-12'>
             <Link href={route.home}>
@@ -43,7 +42,7 @@ export default function Header() {
             </div>
           </div>
         </div>
-      </Container>
+      </div>
     </header>
   )
 }
