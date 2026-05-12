@@ -1,0 +1,61 @@
+{
+  "common": {
+    "confirm": "Xác nhận",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "delete": "Xóa",
+    "edit": "Chỉnh sửa",
+    "create": "Tạo mới",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "confirm_password": "Xác nhận mật khẩu",
+    "email_placeholder": "example@gmail.com",
+    "password_placeholder": "••••••••",
+    "login": "Đăng nhập",
+    "or_continue_with": "Hoặc tiếp tục với",
+    "sign_up": "Đăng ký",
+    "send": "Gửi",
+    "verify": "Xác minh",
+    "resend": "Gửi lại",
+    "logout": "Đăng xuất",
+    "recharge": "Nạp điểm"
+  },
+  "auth": {
+    "login": {
+      "title": "Đăng nhập vào tài khoản",
+      "description": "Nhập email của bạn bên dưới để đăng nhập vào tài khoản",
+      "forgot_password": "Quên mật khẩu?",
+      "login_with": "Đăng nhập với {name}",
+      "dont_have_account": "Chưa có tài khoản?"
+    },
+    "register": {
+      "title": "Tạo tài khoản",
+      "description": "Nhập email của bạn bên dưới để tạo tài khoản mới",
+      "already_have_account": "Đã có tài khoản?",
+      "sign_up_with": "Đăng ký với {name}"
+    },
+    "forgot_password": {
+      "title": "Quên mật khẩu?",
+      "description": "Nhập email của bạn và chúng tôi sẽ gửi mã OTP cho bạn."
+    },
+    "reset_password": {
+      "title": "Đặt lại mật khẩu",
+      "description": "Điền vào biểu mẫu bên dưới để đặt lại mật khẩu của bạn",
+      "new_password": "Mật khẩu mới"
+    },
+    "verify_otp": {
+      "title": "Nhập mã xác minh",
+      "description": "Chúng tôi đã gửi mã gồm 6 chữ số đến email của bạn.",
+      "didnt_receive_code": "Không nhận được mã?",
+      "invalid_target": "Mục tiêu xác minh không hợp lệ"
+    }
+  },
+  "header": {
+    "nav": {
+      "home": "Trang chủ",
+      "forecast": "Forecast",
+      "mock_test": "Thi thử",
+      "flashcards": "Flashcards"
+    }
+  }
+}

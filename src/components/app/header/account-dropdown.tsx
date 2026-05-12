@@ -9,9 +9,11 @@ import { useLogoutMutation } from '@/queries'
 import route from '@/routes'
 import { useAuthStore } from '@/store'
 import { getInitials } from '@/utils'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 
 export default function AccountDropdown() {
+  const common = useTranslations('common')
   const { mutate } = useLogoutMutation()
   const { user } = useAuthStore()
   return (
@@ -40,7 +42,7 @@ export default function AccountDropdown() {
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Link href={route.payment} className='font-medium'>
-            Nạp điểm
+            {common('recharge')}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
@@ -50,7 +52,7 @@ export default function AccountDropdown() {
           }}
           className='cursor-pointer font-medium text-red-500'
         >
-          Đăng xuất
+          {common('logout')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

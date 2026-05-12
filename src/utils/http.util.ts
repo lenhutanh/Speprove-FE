@@ -98,7 +98,7 @@ const sendRequest = async <T>(
       }
     }
 
-    throw errorRes
+    return errorRes
   }
 
   return response.json() as Promise<T>
