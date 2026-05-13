@@ -5,12 +5,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Link } from '@/i18n/navigation'
 import { useLogoutMutation } from '@/queries'
 import route from '@/routes'
 import { useAuthStore } from '@/store'
 import { getInitials } from '@/utils'
 import { useTranslations } from 'next-intl'
-import Link from 'next/link'
 
 export default function AccountDropdown() {
   const common = useTranslations('common')

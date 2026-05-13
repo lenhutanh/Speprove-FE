@@ -6,6 +6,7 @@ import Button from '@/components/form/button'
 import { Separator } from '@/components/ui/separator'
 import { ErrorCodes } from '@/constants'
 import { useNavigate } from '@/hooks'
+import { Link } from '@/i18n/navigation'
 import { useLoginMutation, useProfileQuery } from '@/queries'
 import route from '@/routes'
 import { useAuthStore } from '@/store/use-auth-store'
@@ -13,7 +14,6 @@ import { LoginBodyType } from '@/types'
 import { loginSchema } from '@/validations'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 
@@ -95,7 +95,7 @@ export default function LoginPage() {
                   href={route.forgotPassword}
                   className='ml-auto text-sm underline-offset-4 hover:underline'
                 >
-                  {t('forgot_password')}
+                  {common('forgot_password')}
                 </Link>
               </Col>
             </Row>
@@ -115,7 +115,7 @@ export default function LoginPage() {
         {t('login_with', { name: 'Google' })}
       </Button>
       <div className='text-center'>
-        <span>{t('dont_have_account')} </span>
+        <span>{common('dont_have_account')} </span>
         <Link href={route.register} className='underline'>
           {common('sign_up')}
         </Link>

@@ -1,25 +1,28 @@
 import { PAYMENT_METHOD } from '@/constants'
 import { cn } from '@/lib/utils'
 import { Banknote } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 interface PaymentMethodSelectorProps {
   selected: string
   onSelect: (provider: string) => void
 }
 
-const METHODS = [
-  {
-    id: PAYMENT_METHOD.BANK_TRANSFER,
-    label: 'Chuyển khoản ngân hàng',
-    description: '',
-    icon: <Banknote size={20} />,
-  },
-]
-
 export function PaymentMethodSelector({
   selected,
   onSelect,
 }: PaymentMethodSelectorProps) {
+  const t = useTranslations('payment.methods')
+
+  const METHODS = [
+    {
+      id: PAYMENT_METHOD.BANK_TRANSFER,
+      label: t('bank_transfer'),
+      description: '',
+      icon: <Banknote size={20} />,
+    },
+  ]
+
   return (
     <div className='space-y-2'>
       {METHODS.map((method) => (

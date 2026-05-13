@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { cn } from '@/lib'
+import { useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
 
 interface MicCheckerProps {
@@ -17,6 +18,8 @@ interface MicCheckerProps {
 }
 
 export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
+  const t = useTranslations('mock_test.components.mic_checker')
+  const tCommon = useTranslations('common')
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
   const [deviceId, setDeviceId] = useState<string>('')
   const [recording, setRecording] = useState(false)
@@ -96,13 +99,13 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
     <div className={cn('flex flex-col gap-4', className)}>
       <Select value={deviceId} onValueChange={handleDeviceChange}>
         <SelectTrigger className='w-full'>
-          <SelectValue placeholder='Chọn microphone' />
+          <SelectValue placeholder={t('placeholder')} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             {devices.map((d, i) => (
               <SelectItem key={d.deviceId} value={d.deviceId}>
-                {d.label || `Microphone ${i + 1}`}
+                {d.label || `${tCommon('microphone')} ${i + 1}`}
               </SelectItem>
             ))}
           </SelectGroup>
@@ -116,7 +119,7 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
           onClick={recording ? stopRecording : startRecording}
           className='w-18'
         >
-          {recording ? 'Dừng' : 'Ghi âm'}
+          {recording ? tCommon('stop') : t('record')}
         </Button>
         <div className='bg-muted h-1.5 flex-1 overflow-hidden rounded-full'>
           <div

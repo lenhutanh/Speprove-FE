@@ -15,6 +15,7 @@ import {
   formatCountdown,
 } from '@/constants'
 import { useRecorder, useRecordingCountdown } from '@/hooks'
+import { Link, usePathname } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import { useAttemptQuery, useCreateAttemptMutation } from '@/queries'
 import { useUploadAudioMutation } from '@/queries/file.query'
@@ -29,8 +30,7 @@ import {
   Send,
   Trash2,
 } from 'lucide-react'
-import Link from 'next/link'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
 // ─── Types ────────────────────────────────────────────────────────────────────

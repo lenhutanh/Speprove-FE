@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { CreditPackage } from '@/types'
+import { useTranslations } from 'next-intl'
 
 interface PackageCardProps {
   pkg: CreditPackage
@@ -9,6 +10,8 @@ interface PackageCardProps {
 }
 
 export function PackageCard({ pkg, selected, onSelect }: PackageCardProps) {
+  const tCommon = useTranslations('common')
+
   return (
     <button
       onClick={() => onSelect(pkg)}
@@ -42,7 +45,7 @@ export function PackageCard({ pkg, selected, onSelect }: PackageCardProps) {
           selected ? 'text-primary/70' : 'text-muted-foreground',
         )}
       >
-        {pkg.points} điểm
+        {pkg.points} {tCommon('points')}
       </span>
     </button>
   )

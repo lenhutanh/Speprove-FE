@@ -9,12 +9,15 @@ import { useQueryParams, useValidatedParams } from '@/hooks'
 import { useForecastQuery } from '@/queries'
 import route from '@/routes'
 import { forecastDetailQuerySchema } from '@/validations'
-import { useParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import { notFound, useParams } from 'next/navigation'
 import CategoryListSection from './category-list'
 import ForecastInfo from './forecast-info'
 import TopicListSection from './topic-list'
 
 export default function ForecastDetail() {
+  const t = useTranslations('forecast')
+  const tNav = useTranslations('header.nav')
   const { forecastSlug } = useParams<{ forecastSlug: string }>()
   const id = forecastSlug.split('.')[1]
 
@@ -28,7 +31,9 @@ export default function ForecastDetail() {
     return <ForecastDetailSkeleton />
   }
 
-  if (!forecast) return null
+  if (forecastQuery.isError || (forecastQuery.isSuccess && !forecast)) {
+    notFound()
+  }
 
   const handleTabChange = (value: string) => {
     setQueryParams({ part: value })
@@ -38,7 +43,7 @@ export default function ForecastDetail() {
     <div className='mx-auto px-6'>
       <Breadcrumb
         items={[
-          { label: 'Forecast', href: route.forecast },
+          { label: tNav('forecast'), href: route.forecast },
           { label: forecast.name },
         ]}
       />
@@ -56,7 +61,7 @@ export default function ForecastDetail() {
 
           {part === PART_GROUP.PART1 && (
             <SearchInput
-              placeholder='Tìm kiếm chủ đề...'
+              placeholder={t('search_topic')}
               className='w-full sm:w-xs'
             />
           )}

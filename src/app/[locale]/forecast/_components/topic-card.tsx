@@ -1,10 +1,10 @@
 'use client'
 
+import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import route from '@/routes'
 import { ForecastTopicType } from '@/types'
 import { ChevronRight } from 'lucide-react'
-import Link from 'next/link'
 
 interface TopicCardProps {
   topic: ForecastTopicType

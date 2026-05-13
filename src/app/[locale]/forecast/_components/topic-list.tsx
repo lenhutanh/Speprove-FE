@@ -6,6 +6,7 @@ import { useValidatedParams } from '@/hooks'
 import { useForecastTopicListQuery } from '@/queries'
 import { forecastDetailQuerySchema } from '@/validations'
 import { keepPreviousData } from '@tanstack/react-query'
+import { useTranslations } from 'next-intl'
 import TopicCard from './topic-card'
 
 interface TopicListSectionProps {
@@ -17,6 +18,7 @@ export default function TopicListSection({
   forecastId,
   forecastSlug,
 }: TopicListSectionProps) {
+  const t = useTranslations('forecast')
   const { page, limit, search } = useValidatedParams(forecastDetailQuerySchema)
   const { data, isLoading } = useForecastTopicListQuery({
     params: {
@@ -38,9 +40,7 @@ export default function TopicListSection({
   if (!topics.length) {
     return (
       <div className='rounded-2xl border-2 border-dashed py-20 text-center'>
-        <p className='text-muted-foreground text-sm'>
-          Chưa có chủ đề nào trong bộ Forecast này.
-        </p>
+        <p className='text-muted-foreground text-sm'>{t('no_topics_yet')}</p>
       </div>
     )
   }

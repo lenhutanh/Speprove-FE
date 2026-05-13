@@ -6,6 +6,7 @@ import { PAYMENT_METHOD } from '@/constants'
 import { useCreditPackageListQuery } from '@/queries'
 import { useCreatePaymentMutation } from '@/queries/payment.query'
 import { CreditPackage, PaymentResponse } from '@/types'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { PackageCard } from './_components/package-card'
@@ -14,6 +15,8 @@ import { QRModal } from './_components/qr-modal'
 import { SuccessDialog } from './_components/success-dialog'
 
 export default function PaymentPage() {
+  const t = useTranslations('payment')
+  const tCommon = useTranslations('common')
   const { data, isLoading } = useCreditPackageListQuery()
   const createPaymentMutation = useCreatePaymentMutation()
   const packages = data?.data || []
@@ -33,7 +36,7 @@ export default function PaymentPage() {
 
   const handleCreateQR = async () => {
     if (!selectedPackage) {
-      toast.error('Vui lòng chọn gói nạp')
+      toast.error(t('select_package_error'))
       return
     }
 
@@ -53,7 +56,7 @@ export default function PaymentPage() {
     try {
       setQrOpen(true)
     } catch (err: any) {
-      toast.error(err.message ?? 'Có lỗi xảy ra, vui lòng thử lại')
+      toast.error(err.message ?? tCommon('generic_error'))
     } finally {
       setIsCreating(false)
     }
@@ -67,7 +70,7 @@ export default function PaymentPage() {
   }
 
   const handleFailed = () => {
-    toast.error('Thanh toán thất bại. Vui lòng thử lại.')
+    toast.error(t('payment_failed'))
   }
 
   const handleCloseQR = () => {
@@ -80,17 +83,15 @@ export default function PaymentPage() {
       <div className='mx-auto max-w-lg px-4 py-6'>
         {/* Header */}
         <div className='mb-8'>
-          <h1 className='text-foreground text-2xl font-bold'>Nạp điểm</h1>
-          <p className='text-muted-foreground mt-1 text-sm'>
-            Chọn gói phù hợp để bắt đầu luyện tập
-          </p>
+          <h1 className='text-foreground text-2xl font-bold'>{t('title')}</h1>
+          <p className='text-muted-foreground mt-1 text-sm'>{t('subtitle')}</p>
         </div>
 
         <div className='bg-card space-y-5 rounded-2xl border p-5'>
           {/* Packages */}
           <div>
             <p className='text-foreground mb-3 text-sm font-medium'>
-              Chọn gói nạp
+              {t('select_package')}
             </p>
             <div className='grid grid-cols-3 gap-2'>
               {packages.map((pkg) => (
@@ -109,7 +110,7 @@ export default function PaymentPage() {
           {/* Method */}
           <div>
             <p className='text-foreground mb-3 text-sm font-medium'>
-              Phương thức thanh toán
+              {t('payment_method')}
             </p>
             <PaymentMethodSelector
               selected={selectedMethod}
@@ -121,7 +122,7 @@ export default function PaymentPage() {
 
           {/* Summary + CTA */}
           <div className='text-muted-foreground flex items-center justify-between text-sm'>
-            <span>Tổng thanh toán</span>
+            <span>{t('total_payment')}</span>
             <span className='text-foreground text-base font-semibold'>
               {selectedPackage?.amount.toLocaleString('vi-VN') || 0}đ
             </span>
@@ -132,7 +133,7 @@ export default function PaymentPage() {
             disabled={!selectedPackage || isCreating}
             onClick={handleCreateQR}
           >
-            {isCreating ? 'Đang tạo mã...' : 'Tạo mã'}
+            {isCreating ? t('creating_qr') : t('create_qr')}
           </Button>
         </div>
       </div>

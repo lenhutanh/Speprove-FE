@@ -1,10 +1,9 @@
 'use client'
 import Button from '@/components/form/button'
+import { Link, usePathname } from '@/i18n/navigation'
 import route from '@/routes'
 import { useAuthStore } from '@/store/use-auth-store'
 import { useTranslations } from 'next-intl'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import AccountDropdown from './account-dropdown'
 
 export default function Actions() {

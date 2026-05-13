@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { VoiceType } from '@/types'
+import { useTranslations } from 'next-intl'
 
 interface ExaminerSelectorProps {
   voices: VoiceType[]
@@ -20,6 +21,7 @@ export default function VoiceSelector({
   value,
   onChange,
 }: ExaminerSelectorProps) {
+  const t = useTranslations('mock_test.components.voice_selector')
   const selected = voices.find((voice) => voice.id === value)
 
   return (
@@ -37,7 +39,7 @@ export default function VoiceSelector({
 
         <SelectContent>
           <SelectGroup>
-            <SelectItem value=' '>Giọng ngẫu nhiên</SelectItem>
+            <SelectItem value=' '>{t('random')}</SelectItem>
 
             {voices.map((voice) => (
               <SelectItem key={voice.id} value={voice.id}>

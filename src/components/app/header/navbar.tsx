@@ -1,13 +1,20 @@
 'use client'
+import { Link, usePathname } from '@/i18n/navigation'
 import { cn } from '@/lib'
+import route from '@/routes'
 import { motion } from 'framer-motion' // Import motion
 import { useTranslations } from 'next-intl'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 
 export default function NavBar() {
   const t = useTranslations('header.nav')
   const pathName = usePathname()
+
+  const navItems = [
+    { name: t('home'), href: route.home },
+    { name: t('forecast'), href: route.forecast },
+    { name: t('mock_test'), href: route.mockTest },
+    { name: t('flashcards'), href: '/flashcards' },
+  ]
 
   return (
     <div className='flex items-center gap-x-8'>

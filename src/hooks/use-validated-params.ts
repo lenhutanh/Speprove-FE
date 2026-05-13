@@ -1,7 +1,8 @@
 'use client'
 
+import { usePathname, useRouter } from '@/i18n/navigation'
 import { validateParams } from '@/utils'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useEffect, useMemo } from 'react'
 import { z } from 'zod'
 
