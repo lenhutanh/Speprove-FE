@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button'
+import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import { ForecastQuestionType } from '@/types'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 
 interface Part1QuestionCardProps {
   question: ForecastQuestionType
@@ -16,6 +17,7 @@ export default function Part1QuestionCard({
   forecastSlug,
   topicSlug,
 }: Part1QuestionCardProps) {
+  const tCommon = useTranslations('common')
   const { content, practicedAt, id } = question
   const isPracticed = !!practicedAt
 
@@ -53,7 +55,9 @@ export default function Part1QuestionCard({
           'transition-opacity duration-200 focus-within:opacity-100 sm:opacity-0 sm:group-hover:opacity-100',
         )}
       >
-        <Link href={href}>{isPracticed ? 'Luyện lại' : 'Luyện ngay'}</Link>
+        <Link href={href}>
+          {isPracticed ? tCommon('practice_again') : tCommon('practice_now')}
+        </Link>
       </Button>
     </div>
   )

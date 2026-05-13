@@ -61,7 +61,12 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|trpc|_next|_vercel|.*\\..*).*)'],
+  matcher: [
+    '/((?!api|trpc|_next|_vercel|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff2?|ttf|otf|webmanifest)).*)',
+    '/user/:path*',
+    '/',
+    '/user',
+  ],
 }
 
 export default proxy

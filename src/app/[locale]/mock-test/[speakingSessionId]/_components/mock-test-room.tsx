@@ -10,15 +10,18 @@ import {
 } from '@/constants'
 import { useNavigate, useRecorder, useRecordingCountdown } from '@/hooks'
 import { useMockTestSession } from '@/hooks/use-mock-test-session'
+import { usePathname } from '@/i18n/navigation'
 import route from '@/routes'
 import { Headphones, Loader2 } from 'lucide-react'
-import { useParams, usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import { useParams } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { CueCardPanel, NotePanel } from './cue-card'
 import { SessionTopBar } from './session-top-bar'
 import { WaveBars } from './wave-bars'
 
 export default function MockTestRoom() {
+  const t = useTranslations('mock_test.room')
   const { speakingSessionId } = useParams<{ speakingSessionId: string }>()
 
   const {
@@ -102,7 +105,7 @@ export default function MockTestRoom() {
       <div className='flex h-full items-center justify-center'>
         <div className='flex flex-col items-center gap-4'>
           <div className='h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent' />
-          <p className='text-sm text-zinc-400'>Đang tải phòng thi...</p>
+          <p className='text-sm text-zinc-400'>{t('loading_room')}</p>
         </div>
       </div>
     )
@@ -120,8 +123,8 @@ export default function MockTestRoom() {
   const renderExaminerSpeaking = () => (
     <div className='flex flex-col items-center justify-center gap-4'>
       <WaveBars color='blue' />
-      <p className='text-base font-medium'>Giám khảo đang nói...</p>
-      <p className='text-muted-foreground text-sm'>Hãy lắng nghe cẩn thận</p>
+      <p className='text-base font-medium'>{t('examiner_speaking')}</p>
+      <p className='text-muted-foreground text-sm'>{t('listen_carefully')}</p>
     </div>
   )
 
@@ -158,13 +161,13 @@ export default function MockTestRoom() {
 
     let statusText: string | undefined
     if (isPrep) {
-      statusText = `Chuẩn bị ${prepSeconds}s...`
+      statusText = t('prep_time', { seconds: prepSeconds })
     } else if (isTransition) {
-      statusText = `Bắt đầu ghi âm sau ${prepSeconds}s...`
+      statusText = t('start_recording_in', { seconds: prepSeconds })
     }
 
     const disabledTooltip =
-      isUserSpeaking && !canStop ? 'Nói ít nhất 10 giây' : undefined
+      isUserSpeaking && !canStop ? t('min_speaking_time') : undefined
 
     const replayDisabled = isTransition || isPrep || !canReplay || hasReplayed
 
@@ -203,7 +206,7 @@ export default function MockTestRoom() {
             className='mt-2 gap-2'
           >
             <Headphones className='h-3.5 w-3.5' />
-            Nghe lại câu hỏi
+            {t('replay_question')}
           </Button>
         )}
       </div>
@@ -239,16 +242,14 @@ export default function MockTestRoom() {
   const renderSubmitting = () => (
     <div className='flex flex-col items-center justify-center gap-4'>
       <Loader2 className='h-8 w-8 animate-spin text-blue-500' />
-      <p className='text-base font-medium'>Đang nộp câu trả lời...</p>
+      <p className='text-base font-medium'>{t('submitting')}</p>
     </div>
   )
 
   const renderDone = () => (
     <div className='flex flex-col items-center justify-center gap-4'>
-      <p className='text-lg font-semibold'>Bài thi hoàn tất</p>
-      <p className='text-muted-foreground text-sm'>
-        Chúc mừng bạn đã hoàn thành!
-      </p>
+      <p className='text-lg font-semibold'>{t('done_title')}</p>
+      <p className='text-muted-foreground text-sm'>{t('done_desc')}</p>
     </div>
   )
 
@@ -258,7 +259,7 @@ export default function MockTestRoom() {
         return (
           <div className='flex flex-col items-center justify-center gap-4'>
             <Loader2 className='h-6 w-6 animate-spin text-zinc-400' />
-            <p className='text-sm text-zinc-400'>Đang tải câu hỏi...</p>
+            <p className='text-sm text-zinc-400'>{t('loading_question')}</p>
           </div>
         )
 

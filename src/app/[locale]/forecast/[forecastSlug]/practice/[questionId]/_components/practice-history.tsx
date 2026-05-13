@@ -1,12 +1,12 @@
 'use client'
 
 import { Skeleton } from '@/components/ui/skeleton'
+import { Link, usePathname } from '@/i18n/navigation'
 import { useAttemptListQuery } from '@/queries'
 import route from '@/routes'
 import { useAuthStore } from '@/store'
 import { CalendarIcon } from 'lucide-react'
-import Link from 'next/link'
-import { useParams, usePathname } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import HistoryItem from './history-item'
 
 export default function PracticeHistory() {

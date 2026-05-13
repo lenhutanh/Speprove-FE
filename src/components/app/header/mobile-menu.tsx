@@ -3,13 +3,13 @@
 import Button from '@/components/form/button'
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer'
 import { useNavigate } from '@/hooks'
+import { usePathname } from '@/i18n/navigation'
 import { cn } from '@/lib'
 import { useLogoutMutation } from '@/queries'
 import route from '@/routes'
 import { useAuthStore } from '@/store/use-auth-store'
 import { Menu } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
 export default function MobileMenu() {

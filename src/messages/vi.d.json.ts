@@ -11,6 +11,7 @@ declare const messages: {
     create: 'Tạo mới'
     email: 'Email'
     password: 'Mật khẩu'
+    confirm_password: 'Xác nhận mật khẩu'
     email_placeholder: 'example@gmail.com'
     password_placeholder: '••••••••'
     login: 'Đăng nhập'
@@ -21,6 +22,30 @@ declare const messages: {
     resend: 'Gửi lại'
     logout: 'Đăng xuất'
     recharge: 'Nạp điểm'
+    start: 'Bắt đầu'
+    stop: 'Dừng'
+    exit: 'Thoát'
+    loading: 'Đang tải...'
+    error_occurred: 'Có lỗi xảy ra'
+    please_try_again: 'Vui lòng thử lại'
+    generic_error: 'Có lỗi xảy ra, vui lòng thử lại'
+    minutes: 'phút'
+    points: 'điểm'
+    questions: 'câu hỏi'
+    microphone: 'Microphone'
+    voice: 'Giọng đọc'
+    topics: 'chủ đề'
+    progress: 'Tiến độ'
+    practiced: 'đã luyện'
+    completed: 'hoàn thành'
+    practice_now: 'Luyện ngay'
+    practice_again: 'Luyện lại'
+    no_questions: 'Không có câu hỏi nào.'
+    previous: 'Trước'
+    next: 'Sau'
+    forgot_password: 'Quên mật khẩu?'
+    already_have_account: 'Đã có tài khoản?'
+    dont_have_account: 'Chưa có tài khoản?'
   }
   auth: {
     login: {
@@ -33,7 +58,6 @@ declare const messages: {
     register: {
       title: 'Tạo tài khoản'
       description: 'Nhập email của bạn bên dưới để tạo tài khoản mới'
-      confirm_password: 'Xác nhận mật khẩu'
       already_have_account: 'Đã có tài khoản?'
       sign_up_with: 'Đăng ký với {name}'
     }
@@ -60,6 +84,133 @@ declare const messages: {
       mock_test: 'Thi thử'
       flashcards: 'Flashcards'
     }
+  }
+  mock_test: {
+    setup: {
+      title: 'Thi thử IELTS Speaking'
+      info_labels: {
+        questions: 'Số câu hỏi'
+        duration: 'Thời gian'
+        topic: 'Chủ đề'
+        cost: 'Chi phí'
+      }
+      modes: {
+        mock_p1: {
+          label: 'Part 1'
+          topic: 'Ngẫu nhiên'
+          topic_sub: 'chủ đề ngẫu nhiên'
+          description: '<strong>Part 1 — Giới thiệu & Hỏi đáp ngắn.</strong> Giám khảo sẽ hỏi các câu hỏi về bản thân và các chủ đề quen thuộc. Câu hỏi sẽ <em>không hiển thị</em> — bạn chỉ nghe và trả lời như thi thật.'
+        }
+        mock_p2: {
+          label: 'Part 2'
+          topic: 'Cue Card'
+          topic_sub: 'có phần ghi chú'
+          description: '<strong>Part 2 — Trình bày dài (Long Turn).</strong> Bạn sẽ nhận một cue card và có 1 phút chuẩn bị, sau đó nói 1–2 phút. Cue card và phần ghi chú sẽ hiển thị đầy đủ.'
+        }
+        mock_p3: {
+          label: 'Part 3'
+          topic: 'Thảo luận'
+          topic_sub: 'liên quan Part 2'
+          description: '<strong>Part 3 — Thảo luận chuyên sâu.</strong> Các câu hỏi mang tính trừu tượng hơn, liên quan đến chủ đề Part 2. Câu hỏi sẽ <em>không hiển thị</em> — nghe và trả lời tự nhiên.'
+        }
+        full_test: {
+          label: 'Full Test'
+          topic: 'Full Test'
+          topic_sub: 'Part 1 + 2 + 3'
+          description: '<strong>Full Test — Mô phỏng thi thật.</strong> Hoàn thành toàn bộ 3 parts liên tiếp đúng như format thi IELTS thật. Part 1, Part 2 (có cue card + ghi chú), và Part 3.'
+        }
+      }
+      start_button: 'Bắt đầu thi thử'
+      modal: {
+        title: 'Chuẩn bị thi {part}'
+        start_now: 'Vào thi ngay'
+      }
+    }
+    room: {
+      loading_room: 'Đang tải phòng thi...'
+      loading_question: 'Đang tải câu hỏi...'
+      examiner_speaking: 'Giám khảo đang nói...'
+      listen_carefully: 'Hãy lắng nghe cẩn thận'
+      submitting: 'Đang nộp câu trả lời...'
+      done_title: 'Bài thi hoàn tất'
+      done_desc: 'Chúc mừng bạn đã hoàn thành!'
+      replay_question: 'Nghe lại câu hỏi'
+      min_speaking_time: 'Nói ít nhất 10 giây'
+      prep_time: 'Chuẩn bị {seconds}s...'
+      start_recording_in: 'Bắt đầu ghi âm sau {seconds}s...'
+    }
+    components: {
+      cue_card: {
+        title: 'Cue Card'
+        you_should_say: 'You should say:'
+      }
+      notes: {
+        title: 'Ghi chú của bạn'
+        placeholder: 'Ghi chú nhanh...'
+        no_notes: 'Không có ghi chú'
+        prep_status: 'Chuẩn bị · {seconds}s'
+        speaking_status: 'Đang nói'
+      }
+      mic_checker: {
+        placeholder: 'Chọn microphone'
+        record: 'Ghi âm'
+      }
+      voice_selector: {
+        random: 'Giọng ngẫu nhiên'
+      }
+    }
+    messages: {
+      login_required: 'Vui lòng đăng nhập để thi thử'
+      insufficient_balance: 'Số dư không đủ! Vui lòng nạp thêm'
+      create_session_error: 'Có lỗi xảy ra khi tạo phòng thi. Vui lòng thử lại!'
+    }
+  }
+  balance: {
+    insufficient_title: 'Không đủ số dư'
+    insufficient_desc: 'Số dư của bạn không đủ số dư để thực hiện chấm điểm. Vui lòng nạp thêm để tiếp tục.'
+    recharge_now: 'Nạp điểm ngay'
+    later: 'Để sau'
+  }
+  payment: {
+    title: 'Nạp điểm'
+    subtitle: 'Chọn gói phù hợp để bắt đầu luyện tập'
+    select_package: 'Chọn gói nạp'
+    payment_method: 'Phương thức thanh toán'
+    total_payment: 'Tổng thanh toán'
+    creating_qr: 'Đang tạo mã...'
+    create_qr: 'Tạo mã'
+    select_package_error: 'Vui lòng chọn gói nạp'
+    payment_failed: 'Thanh toán thất bại. Vui lòng thử lại.'
+    qr_expired_error: 'Mã QR đã hết hạn. Vui lòng tạo mã mới.'
+    copied: 'Đã sao chép {label}'
+    dialog_title: 'Thanh toán'
+    expired: 'Đã hết hạn'
+    expires_in: 'Hết hạn sau {display}'
+    transfer_info: 'Thông tin chuyển khoản'
+    bank: 'Ngân hàng'
+    account_holder: 'Chủ tài khoản'
+    account_number: 'Số tài khoản'
+    amount: 'Số tiền'
+    transfer_content: 'Nội dung CK'
+    waiting_confirmation: 'Đang chờ xác nhận thanh toán...'
+    success_title: 'Nạp điểm thành công'
+    success_message: '+{points} điểm đã được cộng vào tài khoản'
+    start_practice: 'Bắt đầu luyện tập'
+    auto_redirect: 'Tự động chuyển hướng sau {remaining} giây...'
+    methods: {
+      bank_transfer: 'Chuyển khoản ngân hàng'
+    }
+  }
+  forecast: {
+    active: 'Đang hiệu lực'
+    expired: 'Hết hạn'
+    search_topic: 'Tìm kiếm chủ đề...'
+    no_topics_yet: 'Chưa có chủ đề nào trong bộ Forecast này.'
+  }
+  not_found: {
+    title: 'Không tìm thấy trang'
+    description: 'Đường dẫn bạn truy cập không tồn tại hoặc đã bị xóa.'
+    back_home: 'Quay lại trang chủ'
   }
 }
 export default messages

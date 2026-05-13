@@ -11,7 +11,6 @@ import { getMessages, setRequestLocale } from 'next-intl/server'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
-import '../globals.css'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

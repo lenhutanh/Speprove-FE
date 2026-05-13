@@ -1,5 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import { ForecastQuestionType } from '@/types'
+import { useTranslations } from 'next-intl'
 import Part1QuestionCard from './part1-question-card'
 
 interface Part1QuestionListProps {
@@ -15,6 +16,8 @@ export default function Part1QuestionList({
   forecastSlug,
   topicSlug,
 }: Part1QuestionListProps) {
+  const tCommon = useTranslations('common')
+
   if (isLoading) {
     return (
       <div className='space-y-3'>
@@ -28,7 +31,7 @@ export default function Part1QuestionList({
   if (!questions?.length) {
     return (
       <div className='text-muted-foreground py-16 text-center text-sm'>
-        Không có câu hỏi nào.
+        {tCommon('no_questions')}
       </div>
     )
   }

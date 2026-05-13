@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { useQueryParams } from '@/hooks'
 import { cn } from '@/lib/utils'
 import { Search, X } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
 
 interface SearchInputProps {
@@ -17,11 +18,12 @@ interface SearchInputProps {
 
 export default function SearchInput({
   paramKey = 'search',
-  placeholder = 'Tìm kiếm...',
+  placeholder,
   className,
   debounce = 500,
   onChange,
 }: SearchInputProps) {
+  const t = useTranslations('common')
   const { paramsObj, setQueryParams } = useQueryParams()
 
   const [value, setValue] = useState<string>(
@@ -29,6 +31,8 @@ export default function SearchInput({
   )
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const finalPlaceholder = placeholder || t('search')
 
   useEffect(() => {
     const urlValue = (paramsObj[paramKey] as string) ?? ''
@@ -75,9 +79,9 @@ export default function SearchInput({
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
-        placeholder={placeholder}
+        placeholder={finalPlaceholder}
         className='pr-9 pl-9'
-        aria-label={placeholder}
+        aria-label={finalPlaceholder}
       />
       {value && (
         <Button
@@ -86,7 +90,7 @@ export default function SearchInput({
           size='icon'
           className='text-muted-foreground hover:text-foreground absolute right-1 size-7'
           onClick={handleClear}
-          aria-label='Xoá tìm kiếm'
+          aria-label={t('clear_search')}
         >
           <X className='size-3.5' />
         </Button>

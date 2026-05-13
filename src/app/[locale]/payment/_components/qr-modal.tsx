@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 import { usePaymentQuery } from '@/queries'
 import { PaymentResponse } from '@/types'
 import { Clock, Copy } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { QRCodeSVG } from 'qrcode.react'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
@@ -32,6 +33,7 @@ export function QRModal({
   onSuccess,
   onFailed,
 }: QRModalProps) {
+  const t = useTranslations('payment')
   const { display, isExpired } = useCountDown(open ? PAYMENT_EXPIRE_SECONDS : 0)
 
   const paymentQuery = usePaymentQuery(payment?.id, {
@@ -62,25 +64,25 @@ export function QRModal({
     if (isExpired) {
       onFailed()
       onClose()
-      toast.error('Mã QR đã hết hạn. Vui lòng tạo mã mới.')
+      toast.error(t('qr_expired_error'))
     }
-  }, [isExpired, payment, onFailed, onClose])
+  }, [isExpired, payment, onFailed, onClose, t])
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text)
-    toast.success(`Đã sao chép ${label}`)
+    toast.success(t('copied', { label }))
   }
 
   if (!payment) return null
 
-  const bankName = BANK_BIN_MAP[payment.bin] ?? 'Ngân hàng'
+  const bankName = BANK_BIN_MAP[payment.bin] ?? t('bank')
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className='w-full gap-0 overflow-hidden p-0 sm:max-w-md'>
         <DialogHeader className='border-b px-5 pt-5 pb-4'>
           <DialogTitle className='text-base font-semibold'>
-            Thanh toán
+            {t('dialog_title')}
           </DialogTitle>
           <p className='text-muted-foreground mt-1 text-sm'>
             {payment.amount.toLocaleString('vi-VN')}đ
@@ -106,7 +108,7 @@ export function QRModal({
               )}
             >
               <Clock className='h-3.5 w-3.5' />
-              {isExpired ? 'Đã hết hạn' : `Hết hạn sau ${display}`}
+              {isExpired ? t('expired') : t('expires_in', { display })}
             </div>
           </div>
 
@@ -115,33 +117,39 @@ export function QRModal({
           {/* Bank info */}
           <div className='space-y-1'>
             <p className='text-muted-foreground mb-2 text-xs font-medium'>
-              Thông tin chuyển khoản
+              {t('transfer_info')}
             </p>
-            <InfoRow label='Ngân hàng' value={bankName} />
-            <InfoRow label='Chủ tài khoản' value={payment.accountName} />
+            <InfoRow label={t('bank')} value={bankName} />
+            <InfoRow label={t('account_holder')} value={payment.accountName} />
             <InfoRow
-              label='Số tài khoản'
+              label={t('account_number')}
               value={payment.accountNumber}
               onCopy={() =>
-                copyToClipboard(payment.accountNumber, 'số tài khoản')
+                copyToClipboard(
+                  payment.accountNumber,
+                  t('account_number').toLowerCase(),
+                )
               }
             />
             <InfoRow
-              label='Số tiền'
+              label={t('amount')}
               value={`${payment.amount.toLocaleString('vi-VN')}đ`}
               valueClassName='text-primary font-semibold'
             />
             <InfoRow
-              label='Nội dung CK'
+              label={t('transfer_content')}
               value={payment.description}
               onCopy={() =>
-                copyToClipboard(payment.description, 'nội dung chuyển khoản')
+                copyToClipboard(
+                  payment.description,
+                  t('transfer_content').toLowerCase(),
+                )
               }
             />
           </div>
 
           <p className='text-muted-foreground pb-1 text-center text-xs'>
-            Đang chờ xác nhận thanh toán...
+            {t('waiting_confirmation')}
           </p>
         </div>
       </DialogContent>

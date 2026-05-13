@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { ForecastResType } from '@/types'
 import { BookOpen, CalendarDays, Layers, TrendingUp } from 'lucide-react'
+import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
 
 interface ForecastInfoProps {
@@ -12,6 +13,9 @@ interface ForecastInfoProps {
 }
 
 export default function ForecastInfo({ forecast }: ForecastInfoProps) {
+  const locale = useLocale()
+  const t = useTranslations('forecast')
+  const tCommon = useTranslations('common')
   const {
     name,
     description,
@@ -29,7 +33,7 @@ export default function ForecastInfo({ forecast }: ForecastInfoProps) {
 
   const formatDate = (dateStr?: string) =>
     dateStr
-      ? new Date(dateStr).toLocaleDateString('vi-VN', {
+      ? new Date(dateStr).toLocaleDateString(locale, {
           day: '2-digit',
           month: 'short',
           year: 'numeric',
@@ -64,7 +68,7 @@ export default function ForecastInfo({ forecast }: ForecastInfoProps) {
                 isActive ? 'bg-emerald-500' : 'bg-muted-foreground',
               )}
             />
-            {isActive ? 'Đang hiệu lực' : 'Hết hạn'}
+            {isActive ? t('active') : t('expired')}
           </Badge>
 
           <h1 className='text-foreground text-2xl leading-snug font-semibold'>
@@ -95,22 +99,22 @@ export default function ForecastInfo({ forecast }: ForecastInfoProps) {
           <StatCard
             icon={<BookOpen className='h-4 w-4' />}
             value={stats.totalQuestions}
-            label='Câu hỏi'
-            sub={`${stats.practicedQuestions} đã luyện`}
+            label={tCommon('questions')}
+            sub={`${stats.practicedQuestions} ${tCommon('practiced')}`}
             subClassName='text-emerald-600'
           />
           <StatCard
             icon={<Layers className='h-4 w-4' />}
             value={stats.totalTopics}
-            label='Topics'
-            sub={`${stats.completedTopics} hoàn thành`}
+            label={tCommon('topics')}
+            sub={`${stats.completedTopics} ${tCommon('completed')}`}
             subClassName='text-emerald-600'
           />
           <StatCard
             icon={<TrendingUp className='h-4 w-4' />}
             value={`${progressPct}%`}
-            label='Tiến độ'
-            sub={`${stats.practicedQuestions} / ${stats.totalQuestions} câu`}
+            label={tCommon('progress')}
+            sub={`${stats.practicedQuestions} / ${stats.totalQuestions} ${tCommon('questions')}`}
             subClassName='text-primary'
             progress={progressPct}
           />

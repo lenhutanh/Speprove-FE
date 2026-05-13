@@ -1,13 +1,13 @@
-import Link from 'next/link'
-import { Fragment } from 'react'
 import {
-  Breadcrumb as OriginBreadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
+  Breadcrumb as OriginBreadcrumb,
 } from '@/components/ui/breadcrumb'
+import { Link } from '@/i18n/navigation'
+import { Fragment } from 'react'
 
 type BreadcrumbItemType = {
   label: string
@@ -28,7 +28,9 @@ export function Breadcrumb({ items }: { items: BreadcrumbItemType[] }) {
                     <Link href={item.href}>{item.label}</Link>
                   </BreadcrumbLink>
                 ) : (
-                  <BreadcrumbPage className="truncate">{item.label}</BreadcrumbPage>
+                  <BreadcrumbPage className='truncate'>
+                    {item.label}
+                  </BreadcrumbPage>
                 )}
               </BreadcrumbItem>
               {!isLast && <BreadcrumbSeparator />}

@@ -8,7 +8,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { useQueryParams } from '@/hooks'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
 
 type PaginationProps = {
   meta?: {
@@ -31,15 +31,34 @@ export function AppPagination({ meta }: PaginationProps) {
   if (totalPages <= 1) return null
 
   const getVisiblePages = () => {
-    if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1)
+    if (totalPages <= 7)
+      return Array.from({ length: totalPages }, (_, i) => i + 1)
     if (currentPage <= 4) return [1, 2, 3, 4, 5, '...', totalPages]
     if (currentPage >= totalPages - 3)
-      return [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
-    return [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages]
+      return [
+        1,
+        '...',
+        totalPages - 4,
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ]
+    return [
+      1,
+      '...',
+      currentPage - 1,
+      currentPage,
+      currentPage + 1,
+      '...',
+      totalPages,
+    ]
   }
 
   function goTo(page: number) {
-    router.push(createQueryString({ page }, { keepPage: true }), { scroll: false })
+    router.push(createQueryString({ page }, { keepPage: true }), {
+      scroll: false,
+    })
   }
 
   const pages = getVisiblePages()
@@ -52,7 +71,11 @@ export function AppPagination({ meta }: PaginationProps) {
             <PaginationPrevious
               onClick={() => hasPrev && goTo(currentPage - 1)}
               aria-disabled={!hasPrev}
-              className={!hasPrev ? 'pointer-events-none cursor-not-allowed opacity-50' : 'cursor-pointer'}
+              className={
+                !hasPrev
+                  ? 'pointer-events-none cursor-not-allowed opacity-50'
+                  : 'cursor-pointer'
+              }
               tabIndex={!hasPrev ? -1 : 0}
             />
           </PaginationItem>
@@ -65,7 +88,9 @@ export function AppPagination({ meta }: PaginationProps) {
                 <PaginationLink
                   onClick={() => p !== currentPage && goTo(p as number)}
                   isActive={p === currentPage}
-                  className={p === currentPage ? 'pointer-events-none' : 'cursor-pointer'}
+                  className={
+                    p === currentPage ? 'pointer-events-none' : 'cursor-pointer'
+                  }
                   tabIndex={p === currentPage ? -1 : 0}
                   aria-disabled={p === currentPage}
                 >
@@ -79,7 +104,9 @@ export function AppPagination({ meta }: PaginationProps) {
             <PaginationNext
               onClick={() => hasNext && goTo(currentPage + 1)}
               aria-disabled={!hasNext}
-              className={!hasNext ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+              className={
+                !hasNext ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+              }
               tabIndex={!hasNext ? -1 : 0}
             />
           </PaginationItem>

@@ -1,9 +1,9 @@
 'use client'
 
+import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import route from '@/routes'
 import { ChevronRight } from 'lucide-react'
-import Link from 'next/link'
 
 interface CategoryCardProps {
   categoryLabel: string

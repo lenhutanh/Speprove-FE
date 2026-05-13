@@ -6,13 +6,13 @@ import Button from '@/components/form/button'
 import { Separator } from '@/components/ui/separator'
 import { VERIFY_TARGET } from '@/constants'
 import { useNavigate } from '@/hooks'
+import { Link } from '@/i18n/navigation'
 import { useRegisterMutation } from '@/queries'
 import route from '@/routes'
 import { RegisterBodyType } from '@/types'
 import { registerSchema } from '@/validations'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
-import Link from 'next/link'
 import { toast } from 'sonner'
 
 export default function RegisterPage() {
@@ -107,7 +107,7 @@ export default function RegisterPage() {
         {t('sign_up_with', { name: 'Google' })}
       </Button>
       <div className='text-center'>
-        <span>{t('already_have_account')} </span>
+        <span>{common('already_have_account')} </span>
         <Link href={route.login} className='underline'>
           {common('login')}
         </Link>

@@ -14,12 +14,12 @@ import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { SpeakingSessionType } from '@/constants'
 import { useNavigate } from '@/hooks'
+import { Link, usePathname } from '@/i18n/navigation'
 import { useCreateSpeakingSessionMutation, useVoiceListQuery } from '@/queries'
 import route from '@/routes'
 import { useAuthStore } from '@/store'
 import { VoiceType } from '@/types'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { MicChecker } from './mic-checker'
@@ -41,74 +41,30 @@ export const SPEAKING_PRICING: Record<SpeakingSessionType, number> = {
 
 interface ModeConfig {
   id: SpeakingSessionType
-  label: string
   questions: string
   duration: string
-  topic: string
-  topicSub: string
-  description: React.ReactNode
 }
 
 const MODES: ModeConfig[] = [
   {
     id: 'mock_p1',
-    label: 'Part 1',
     questions: '4–6',
     duration: '4–5',
-    topic: 'Random',
-    topicSub: 'chủ đề ngẫu nhiên',
-    description: (
-      <>
-        <strong>Part 1 — Giới thiệu &amp; Hỏi đáp ngắn.</strong> Giám khảo sẽ
-        hỏi các câu hỏi về bản thân và các chủ đề quen thuộc. Câu hỏi sẽ{' '}
-        <em>không hiển thị</em> — bạn chỉ nghe và trả lời như thi thật.
-      </>
-    ),
   },
   {
     id: 'mock_p2',
-    label: 'Part 2',
     questions: '1',
     duration: '3–4',
-    topic: 'Cue Card',
-    topicSub: 'có phần ghi chú',
-    description: (
-      <>
-        <strong>Part 2 — Trình bày dài (Long Turn).</strong> Bạn sẽ nhận một cue
-        card và có 1 phút chuẩn bị, sau đó nói 1–2 phút. Cue card và phần ghi
-        chú sẽ hiển thị đầy đủ.
-      </>
-    ),
   },
   {
     id: 'mock_p3',
-    label: 'Part 3',
     questions: '4–5',
     duration: '4–5',
-    topic: 'Thảo luận',
-    topicSub: 'liên quan Part 2',
-    description: (
-      <>
-        <strong>Part 3 — Thảo luận chuyên sâu.</strong> Các câu hỏi mang tính
-        trừu tượng hơn, liên quan đến chủ đề Part 2. Câu hỏi sẽ{' '}
-        <em>không hiển thị</em> — nghe và trả lời tự nhiên.
-      </>
-    ),
   },
   {
     id: 'full_test',
-    label: 'Full Test',
     questions: '10–14',
     duration: '11–14',
-    topic: 'Full Test',
-    topicSub: 'Part 1 + 2 + 3',
-    description: (
-      <>
-        <strong>Full Test — Mô phỏng thi thật.</strong> Hoàn thành toàn bộ 3
-        parts liên tiếp đúng như format thi IELTS thật. Part 1, Part 2 (có cue
-        card + ghi chú), và Part 3.
-      </>
-    ),
   },
 ]
 
@@ -135,6 +91,9 @@ function InfoCard({
 }
 
 export default function MockTest() {
+  const t = useTranslations('mock_test.setup')
+  const tCommon = useTranslations('common')
+  const tMsg = useTranslations('mock_test.messages')
   const [mode, setMode] = useState<SpeakingSessionType>('mock_p1')
   const { data: voiceListRes, isLoading } = useVoiceListQuery()
   const voices = voiceListRes?.data || []
@@ -152,14 +111,16 @@ export default function MockTest() {
     if (!isAuthenticated || !user) {
       toast.error(
         <p>
-          Vui lòng&nbsp;
-          <Link
-            href={`${route.login}?callbackUrl=${encodeURIComponent(pathname)}`}
-            className='text-primary'
-          >
-            đăng nhập
-          </Link>
-          &nbsp;để thi thử
+          {tMsg.rich('login_required', {
+            link: (chunks) => (
+              <Link
+                href={`${route.login}?callbackUrl=${encodeURIComponent(pathname)}`}
+                className='text-primary'
+              >
+                {chunks}
+              </Link>
+            ),
+          })}
         </p>,
       )
       return
@@ -168,13 +129,16 @@ export default function MockTest() {
     if (user.balance < SPEAKING_PRICING[mode]) {
       toast.error(
         <p>
-          Số dư không đủ! Vui lòng&nbsp;
-          <Link
-            href={`${route.payment}?callbackUrl=${encodeURIComponent(pathname)}`}
-            className='text-primary'
-          >
-            nạp thêm
-          </Link>
+          {tMsg.rich('insufficient_balance', {
+            link: (chunks) => (
+              <Link
+                href={`${route.payment}?callbackUrl=${encodeURIComponent(pathname)}`}
+                className='text-primary'
+              >
+                {chunks}
+              </Link>
+            ),
+          })}
         </p>,
       )
       return
@@ -195,7 +159,7 @@ export default function MockTest() {
           }
         },
         onError: () => {
-          toast.error('Có lỗi xảy ra khi tạo phòng thi. Vui lòng thử lại!')
+          toast.error(tMsg('create_session_error'))
         },
       },
     )
@@ -212,7 +176,7 @@ export default function MockTest() {
             <TabsList>
               {MODES.map((m) => (
                 <TabsTrigger value={m.id} key={m.id} className='px-5'>
-                  {m.label}
+                  {t(`modes.${m.id}.label`)}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -222,44 +186,44 @@ export default function MockTest() {
 
         <div className='grid grid-cols-4 gap-3'>
           <InfoCard
-            label='Số câu hỏi'
+            label={t('info_labels.questions')}
             value={current.questions}
-            unit='câu hỏi'
-          />
-          <InfoCard label='Thời gian' value={current.duration} unit='phút' />
-          <InfoCard
-            label='Chủ đề'
-            value={current.topic}
-            unit={current.topicSub}
+            unit={tCommon('questions')}
           />
           <InfoCard
-            label='Chi phí'
+            label={t('info_labels.duration')}
+            value={current.duration}
+            unit={tCommon('minutes')}
+          />
+          <InfoCard
+            label={t('info_labels.topic')}
+            value={t(`modes.${mode}.topic`)}
+            unit={t(`modes.${mode}.topic_sub`)}
+          />
+          <InfoCard
+            label={t('info_labels.cost')}
             value={
               <span className='flex items-baseline gap-1.5'>
                 <span className='inline-block h-2.5 w-2.5 translate-y-[-1px] rounded-full bg-amber-400' />
                 <span>{cost}</span>
                 <span className='text-base font-normal text-zinc-400'>
-                  điểm
+                  {tCommon('points')}
                 </span>
               </span>
             }
-            // unit={
-            //   canAfford ? (
-            //     <span className='text-emerald-500'>Số dư: {balance} điểm</span>
-            //   ) : (
-            //     <span className='text-red-400'>Không đủ điểm (còn {balance})</span>
-            //   )
-            // }
           />
         </div>
 
         <div className='bg-muted/20 border-border/30 rounded-xl border px-5 py-4 text-sm leading-relaxed'>
-          {current.description}
+          {t.rich(`modes.${mode}.description`, {
+            strong: (chunks) => <strong>{chunks}</strong>,
+            em: (chunks) => <em>{chunks}</em>,
+          })}
         </div>
 
         <div className='flex justify-center'>
           <SetupModal
-            part={current.label}
+            part={t(`modes.${mode}.label`)}
             voices={voices}
             voiceId={voiceId}
             onVoiceChange={setVoiceId}
@@ -286,22 +250,25 @@ function SetupModal({
   onVoiceChange,
   onStartMock,
 }: SetupModalProps) {
+  const t = useTranslations('mock_test.setup.modal')
+  const tCommon = useTranslations('common')
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Bắt đầu thi thử</Button>
+        <Button>{useTranslations('mock_test.setup')('start_button')}</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Chuẩn bị thi {part}</DialogTitle>
+          <DialogTitle>{t('title', { part })}</DialogTitle>
         </DialogHeader>
         <FieldGroup>
           <Field>
-            <FieldLabel>Microphone</FieldLabel>
+            <FieldLabel>{tCommon('microphone')}</FieldLabel>
             <MicChecker />
           </Field>
           <Field>
-            <FieldLabel>Giọng đọc</FieldLabel>
+            <FieldLabel>{tCommon('voice')}</FieldLabel>
             <VoiceSelector
               voices={voices}
               value={voiceId}
@@ -311,9 +278,9 @@ function SetupModal({
         </FieldGroup>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant={'outline'}>Hủy</Button>
+            <Button variant={'outline'}>{tCommon('cancel')}</Button>
           </DialogClose>
-          <Button onClick={onStartMock}>Vào thi ngay</Button>
+          <Button onClick={onStartMock}>{t('start_now')}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

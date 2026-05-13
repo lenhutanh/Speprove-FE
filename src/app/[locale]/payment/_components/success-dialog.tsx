@@ -3,6 +3,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { useCountDown, useNavigate } from '@/hooks'
 import route from '@/routes'
 import { CheckCircle2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useEffect } from 'react'
 
 interface SuccessDialogProps {
@@ -14,6 +15,7 @@ interface SuccessDialogProps {
 const AUTO_REDIRECT_SECONDS = 5
 
 export function SuccessDialog({ open, points, onClose }: SuccessDialogProps) {
+  const t = useTranslations('payment')
   const navigate = useNavigate()
 
   const { remaining, isExpired } = useCountDown(
@@ -42,19 +44,19 @@ export function SuccessDialog({ open, points, onClose }: SuccessDialogProps) {
 
           <div>
             <h2 className='text-foreground text-lg font-semibold'>
-              Nạp điểm thành công
+              {t('success_title')}
             </h2>
             <p className='text-muted-foreground mt-1 text-sm'>
-              +{points} điểm đã được cộng vào tài khoản
+              {t('success_message', { points })}
             </p>
           </div>
 
           <div className='w-full space-y-2'>
             <Button className='w-full' onClick={handlePractice}>
-              Bắt đầu luyện tập
+              {t('start_practice')}
             </Button>
             <p className='text-muted-foreground text-xs'>
-              Tự động chuyển hướng sau {remaining} giây...
+              {t('auto_redirect', { remaining })}
             </p>
           </div>
         </div>
