@@ -5,12 +5,13 @@ import { useCreateAttemptMutation } from '@/queries/attempt.query'
 import { useUploadAudioMutation } from '@/queries/file.query'
 import { useGetCurrentQuestionQuery } from '@/queries/speaking-session.query'
 import { SessionState, UploadAudioBodyType } from '@/types'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 export function useMockTestSession(sessionId: string) {
   const [state, setState] = useState<SessionState>('fetching')
   const [prepSeconds, setPrepSeconds] = useState(60)
+  const [isReplayingQuestion, setIsReplayingQuestion] = useState(false)
 
   const {
     data: res,
@@ -25,15 +26,52 @@ export function useMockTestSession(sessionId: string) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const timerRef = useRef<number | null>(null)
 
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) {
+      window.clearInterval(timerRef.current)
+      timerRef.current = null
+    }
+  }, [])
+
+  const stopAudio = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current = null
+    }
+  }, [])
+
+  const playAudio = useCallback((url: string): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      const audio = new Audio(url)
+      audioRef.current = audio
+      audio.onended = () => resolve()
+      audio.onerror = () => reject()
+      audio.play().catch(reject)
+    })
+  }, [])
+
+  const startTransitionTimer = useCallback(() => {
+    clearTimer()
+    setPrepSeconds(3)
+    timerRef.current = window.setInterval(() => {
+      setPrepSeconds((prev) => {
+        if (prev <= 1) {
+          clearTimer()
+          setState('user_speaking')
+          return 0
+        }
+
+        return prev - 1
+      })
+    }, 1000)
+  }, [clearTimer])
+
   useEffect(() => {
     if (!questionData) return
 
     const cleanup = () => {
-      if (timerRef.current) window.clearInterval(timerRef.current)
-      if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current = null
-      }
+      clearTimer()
+      stopAudio()
     }
 
     if (state === 'fetching') {
@@ -59,7 +97,6 @@ export function useMockTestSession(sessionId: string) {
       const playSequence = async () => {
         try {
           if (questionData.instruction) {
-            // eslint-disable-next-line react-hooks/immutability
             await playAudio(questionData.instruction)
           }
           if (questionData.question?.audioUrl) {
@@ -70,8 +107,8 @@ export function useMockTestSession(sessionId: string) {
           } else {
             setState('transition')
           }
-        } catch (error) {
-          toast.error('Không thể phát âm thanh của giám khảo')
+        } catch {
+          toast.error('Khong the phat am thanh cua giam khao')
           setState('transition')
         }
       }
@@ -79,28 +116,20 @@ export function useMockTestSession(sessionId: string) {
     }
 
     if (state === 'transition') {
-      setPrepSeconds(3)
-      timerRef.current = window.setInterval(() => {
-        setPrepSeconds((prev) => {
-          if (prev <= 1) {
-            window.clearInterval(timerRef.current!)
-            setState('user_speaking')
-            return 0
-          }
-          return prev - 1
-        })
-      }, 1000)
+      startTransitionTimer()
     }
 
     if (state === 'prep') {
+      clearTimer()
       setPrepSeconds(60)
       timerRef.current = window.setInterval(() => {
         setPrepSeconds((prev) => {
           if (prev <= 1) {
-            window.clearInterval(timerRef.current!)
+            clearTimer()
             setState('transition')
             return 0
           }
+
           return prev - 1
         })
       }, 1000)
@@ -111,28 +140,25 @@ export function useMockTestSession(sessionId: string) {
         if (questionData.instruction) {
           try {
             await playAudio(questionData.instruction)
-          } catch (e) {
+          } catch {
             // ignore
           }
         }
-        toast.success('Chúc mừng bạn đã hoàn thành bài thi!')
-        // navigate(`${route.mockTest}/${sessionId}/result`)
+        toast.success('Chuc mung ban da hoan thanh bai thi!')
       }
       finish()
     }
 
     return cleanup
-  }, [state, questionData, sessionId])
-
-  const playAudio = (url: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      const audio = new Audio(url)
-      audioRef.current = audio
-      audio.onended = () => resolve()
-      audio.onerror = () => reject()
-      audio.play().catch(reject)
-    })
-  }
+  }, [
+    state,
+    questionData,
+    sessionId,
+    clearTimer,
+    stopAudio,
+    startTransitionTimer,
+    playAudio,
+  ])
 
   const submitAttempt = async (
     audioBlob: Blob,
@@ -141,7 +167,6 @@ export function useMockTestSession(sessionId: string) {
     try {
       if (!questionData?.question?.id) throw new Error('No question ID')
 
-      // 1. Upload audio
       const file = new File([audioBlob], 'recording.webm', {
         type: 'audio/webm',
       })
@@ -152,7 +177,6 @@ export function useMockTestSession(sessionId: string) {
       const uploadRes = await uploadAudioMutation.mutateAsync(uploadPayload)
       const audioFileId = uploadRes.data.id
 
-      // 2. Submit Attempt
       const attemptRes = await createAttemptMutation.mutateAsync({
         mode: SPEAKING_SESSION_MODE.MOCK,
         forecastQuestionId: questionData.question.id,
@@ -167,17 +191,30 @@ export function useMockTestSession(sessionId: string) {
       setState('fetching')
       await refetch()
       return { success: true }
-    } catch (error) {
-      toast.error('Nộp câu trả lời thất bại')
+    } catch {
+      toast.error('Nop cau tra loi that bai')
       setState('user_speaking')
       return { success: false }
     }
   }
 
-  const replayQuestion = () => {
-    const replayKey = `mock_${sessionId}_replayed_${questionData?.question?.id}`
-    sessionStorage.setItem(replayKey, 'true')
-    setState('examiner_speaking')
+  const replayQuestion = async () => {
+    const questionId = questionData?.question?.id
+    const audioUrl = questionData?.question?.audioUrl
+    if (!questionId || !audioUrl || state !== 'transition') return
+
+    clearTimer()
+    setIsReplayingQuestion(true)
+
+    try {
+      await playAudio(audioUrl)
+      sessionStorage.setItem(`mock_${sessionId}_replayed_${questionId}`, 'true')
+    } catch {
+      toast.error('Khong the phat lai cau hoi')
+    } finally {
+      setIsReplayingQuestion(false)
+      startTransitionTimer()
+    }
   }
 
   const hasReplayed = !!sessionStorage.getItem(
@@ -192,5 +229,6 @@ export function useMockTestSession(sessionId: string) {
     submitAttempt,
     replayQuestion,
     hasReplayed,
+    isReplayingQuestion,
   }
 }

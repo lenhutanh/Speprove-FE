@@ -14,10 +14,10 @@ import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { SpeakingSessionType } from '@/constants'
 import { useNavigate } from '@/hooks'
-import { Link, usePathname } from '@/i18n/navigation'
+import { usePathname } from '@/i18n/navigation'
 import { useCreateSpeakingSessionMutation, useVoiceListQuery } from '@/queries'
 import route from '@/routes'
-import { useAuthStore } from '@/store'
+import { useAppLoadingStore, useAuthStore } from '@/store'
 import { VoiceType } from '@/types'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
@@ -95,10 +95,11 @@ export default function MockTest() {
   const tCommon = useTranslations('common')
   const tMsg = useTranslations('mock_test.messages')
   const [mode, setMode] = useState<SpeakingSessionType>('mock_p1')
-  const { data: voiceListRes, isLoading } = useVoiceListQuery()
+  const { data: voiceListRes } = useVoiceListQuery()
   const voices = voiceListRes?.data || []
   const [voiceId, setVoiceId] = useState<string>(' ')
   const { isAuthenticated, user } = useAuthStore()
+  const { withLoading } = useAppLoadingStore()
   const pathname = usePathname()
   const navigate = useNavigate()
 
@@ -109,60 +110,34 @@ export default function MockTest() {
 
   const handleStartMock = async () => {
     if (!isAuthenticated || !user) {
-      toast.error(
-        <p>
-          {tMsg.rich('login_required', {
-            link: (chunks) => (
-              <Link
-                href={`${route.login}?callbackUrl=${encodeURIComponent(pathname)}`}
-                className='text-primary'
-              >
-                {chunks}
-              </Link>
-            ),
-          })}
-        </p>,
-      )
+      toast.error(tMsg('login_required'))
+      navigate(`${route.login}?callbackUrl=${encodeURIComponent(pathname)}`)
       return
     }
 
     if (user.balance < SPEAKING_PRICING[mode]) {
-      toast.error(
-        <p>
-          {tMsg.rich('insufficient_balance', {
-            link: (chunks) => (
-              <Link
-                href={`${route.payment}?callbackUrl=${encodeURIComponent(pathname)}`}
-                className='text-primary'
-              >
-                {chunks}
-              </Link>
-            ),
-          })}
-        </p>,
-      )
+      toast.error(tMsg('insufficient_balance'))
+      navigate(`${route.payment}?callbackUrl=${encodeURIComponent(pathname)}`)
       return
     }
 
-    await createSpeakingSessionMutation.mutateAsync(
-      {
-        type: mode,
-        voiceId: voiceId.trim() ? voiceId : undefined,
-      },
-      {
-        onSuccess: (res) => {
-          if (res.success && res.data?.id) {
-            navigate(`${route.mockTest}/${res.data.id}`)
-          }
-          if (!res.success) {
-            toast.error(res.message)
-          }
-        },
-        onError: () => {
-          toast.error(tMsg('create_session_error'))
-        },
-      },
-    )
+    try {
+      const res = await withLoading(
+        createSpeakingSessionMutation.mutateAsync({
+          type: mode,
+          voiceId: voiceId.trim() ? voiceId : undefined,
+        }),
+      )
+
+      if (res.success && res.data?.id) {
+        navigate(`${route.mockTest}/${res.data.id}`)
+        return
+      }
+
+      toast.error(res.message ?? tMsg('create_session_error'))
+    } catch {
+      toast.error(tMsg('create_session_error'))
+    }
   }
 
   return (
@@ -228,6 +203,7 @@ export default function MockTest() {
             voiceId={voiceId}
             onVoiceChange={setVoiceId}
             onStartMock={handleStartMock}
+            isStarting={createSpeakingSessionMutation.isPending}
           />
         </div>
       </main>
@@ -241,6 +217,7 @@ interface SetupModalProps {
   voiceId: string
   onVoiceChange: (value: string) => void
   onStartMock: () => void
+  isStarting?: boolean
 }
 
 function SetupModal({
@@ -249,6 +226,7 @@ function SetupModal({
   voiceId,
   onVoiceChange,
   onStartMock,
+  isStarting = false,
 }: SetupModalProps) {
   const t = useTranslations('mock_test.setup.modal')
   const tCommon = useTranslations('common')
@@ -280,7 +258,9 @@ function SetupModal({
           <DialogClose asChild>
             <Button variant={'outline'}>{tCommon('cancel')}</Button>
           </DialogClose>
-          <Button onClick={onStartMock}>{t('start_now')}</Button>
+          <Button disabled={isStarting} onClick={onStartMock}>
+            {t('start_now')}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

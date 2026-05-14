@@ -7,6 +7,7 @@ import { VERIFY_TARGET } from '@/constants'
 import { useNavigate } from '@/hooks'
 import { useForgotPasswordMutation } from '@/queries'
 import route from '@/routes'
+import { useAppLoadingStore } from '@/store'
 import { ForgotPasswordType } from '@/types'
 import { forgotPasswordSchema } from '@/validations'
 import { useTranslations } from 'next-intl'
@@ -16,6 +17,7 @@ export default function ForgotPasswordPage() {
   const t = useTranslations('auth.forgot_password')
   const common = useTranslations('common')
   const forgotPasswordMutation = useForgotPasswordMutation()
+  const { withLoading } = useAppLoadingStore()
   const navigate = useNavigate()
 
   const defaultValues: ForgotPasswordType = {
@@ -23,16 +25,18 @@ export default function ForgotPasswordPage() {
   }
 
   const onSubmit = async (values: ForgotPasswordType) => {
-    await forgotPasswordMutation.mutateAsync(values, {
-      onSuccess: async (res) => {
-        if (res.success) {
-          toast.success(res.message)
-          navigate(
-            `${route.verifyOtp}?email=${values.email}&target=${VERIFY_TARGET.FORGOT_PASSWORD}`,
-          )
-        }
-      },
-    })
+    await withLoading(
+      forgotPasswordMutation.mutateAsync(values, {
+        onSuccess: async (res) => {
+          if (res.success) {
+            toast.success(res.message)
+            navigate(
+              `${route.verifyOtp}?email=${values.email}&target=${VERIFY_TARGET.FORGOT_PASSWORD}`,
+            )
+          }
+        },
+      }),
+    )
   }
 
   return (

@@ -10,6 +10,7 @@ import {
   useVerifyRegisterMutation,
 } from '@/queries'
 import route from '@/routes'
+import { useAppLoadingStore } from '@/store'
 import { VerifyOtpBodyType } from '@/types'
 import { verifyOtpSchema } from '@/validations'
 import { useTranslations } from 'next-intl'
@@ -22,6 +23,7 @@ export default function VerifyOtpPage() {
   const common = useTranslations('common')
   const verifyRegisterMutation = useVerifyRegisterMutation()
   const verifyForgotPasswordMutation = useVerifyForgotPasswordMutation()
+  const { withLoading } = useAppLoadingStore()
   const searchParams = useSearchParams()
   const email = searchParams.get('email')
   const target = searchParams.get('target')
@@ -42,28 +44,32 @@ export default function VerifyOtpPage() {
   const onSubmit = async (values: VerifyOtpBodyType) => {
     switch (target) {
       case VERIFY_TARGET.REGISTER:
-        await verifyRegisterMutation.mutateAsync(values, {
-          onSuccess: (res) => {
-            if (res.success) {
-              navigate(route.login)
-              toast.success(res.message)
-            } else {
-              toast.error(res.message)
-            }
-          },
-        })
+        await withLoading(
+          verifyRegisterMutation.mutateAsync(values, {
+            onSuccess: (res) => {
+              if (res.success) {
+                navigate(route.login)
+                toast.success(res.message)
+              } else {
+                toast.error(res.message)
+              }
+            },
+          }),
+        )
         break
       case VERIFY_TARGET.FORGOT_PASSWORD:
-        await verifyForgotPasswordMutation.mutateAsync(values, {
-          onSuccess: (res) => {
-            if (res.success && res.data.resetToken) {
-              toast.success(res.message)
-              navigate(`${route.resetPassword}?token=${res.data.resetToken}`)
-            } else {
-              toast.error(res.message)
-            }
-          },
-        })
+        await withLoading(
+          verifyForgotPasswordMutation.mutateAsync(values, {
+            onSuccess: (res) => {
+              if (res.success && res.data.resetToken) {
+                toast.success(res.message)
+                navigate(`${route.resetPassword}?token=${res.data.resetToken}`)
+              } else {
+                toast.error(res.message)
+              }
+            },
+          }),
+        )
         break
       default:
         toast.error(t('invalid_target'))

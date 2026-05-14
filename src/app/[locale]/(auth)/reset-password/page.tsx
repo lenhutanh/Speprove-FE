@@ -6,6 +6,7 @@ import Button from '@/components/form/button'
 import { useNavigate } from '@/hooks'
 import { useResetPasswordMutation } from '@/queries'
 import route from '@/routes'
+import { useAppLoadingStore } from '@/store'
 import { ResetPasswordType } from '@/types'
 import { resetPasswordSchema } from '@/validations'
 import { useTranslations } from 'next-intl'
@@ -17,6 +18,7 @@ export default function ResetPasswordPage() {
   const t = useTranslations('auth.reset_password')
   const common = useTranslations('common')
   const resetPasswordMutation = useResetPasswordMutation()
+  const { withLoading } = useAppLoadingStore()
   const navigate = useNavigate()
   const searchParams = useSearchParams()
   const resetToken = searchParams.get('token')
@@ -34,16 +36,18 @@ export default function ResetPasswordPage() {
   }
 
   const onSubmit = async (values: ResetPasswordType) => {
-    await resetPasswordMutation.mutateAsync(values, {
-      onSuccess: (res) => {
-        if (res.success) {
-          toast.success(res.message)
-          navigate(route.login)
-        } else {
-          toast.error(res.message)
-        }
-      },
-    })
+    await withLoading(
+      resetPasswordMutation.mutateAsync(values, {
+        onSuccess: (res) => {
+          if (res.success) {
+            toast.success(res.message)
+            navigate(route.login)
+          } else {
+            toast.error(res.message)
+          }
+        },
+      }),
+    )
   }
 
   return (

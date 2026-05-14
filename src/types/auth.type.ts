@@ -16,8 +16,8 @@ export type ResetPasswordType = z.infer<typeof resetPasswordSchema>
 
 export type AuthStoreType = {
   isAuthenticated: boolean
-  user: UserResType
-  isLoading: boolean
+  user: UserResType | null
+  loading: boolean
   setAuthenticated: (isAuthenticated: boolean) => void
   setUser: (user: UserResType | null) => void
   setLoading: (loading: boolean) => void

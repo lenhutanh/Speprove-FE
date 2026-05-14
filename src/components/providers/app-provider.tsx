@@ -1,7 +1,8 @@
 'use client'
 
+import { FullPageLoading } from '@/components/loading'
 import { useDefaultVoiceQuery, useProfileQuery } from '@/queries'
-import { useAppPreference, useAuthStore } from '@/store'
+import { useAppLoadingStore, useAppPreference, useAuthStore } from '@/store'
 import { setData } from '@/utils'
 import { useEffect } from 'react'
 
@@ -10,10 +11,23 @@ export default function AppProvider({
 }: {
   children: React.ReactNode
 }) {
-  const { setUser, setLoading, setAuthenticated, logout, isAuthenticated, user } = useAuthStore()
+  const {
+    setUser,
+    setLoading,
+    setAuthenticated,
+    logout,
+    isAuthenticated,
+    user,
+    loading: authLoading,
+  } = useAuthStore()
+  const { loading: appLoading } = useAppLoadingStore()
   const { voiceId, setVoiceId } = useAppPreference()
 
-  const { data: profileData, isLoading: isProfileLoading, isError: isProfileError } = useProfileQuery(isAuthenticated)
+  const {
+    data: profileData,
+    isLoading: isProfileLoading,
+    isError: isProfileError,
+  } = useProfileQuery(isAuthenticated)
 
   const { data: defaultVoiceData } = useDefaultVoiceQuery()
 
@@ -30,7 +44,15 @@ export default function AppProvider({
     } else if (!isProfileLoading && isProfileError) {
       logout()
     }
-  }, [profileData, isProfileLoading, isProfileError, setUser, setAuthenticated, logout, setLoading])
+  }, [
+    profileData,
+    isProfileLoading,
+    isProfileError,
+    setUser,
+    setAuthenticated,
+    logout,
+    setLoading,
+  ])
 
   useEffect(() => {
     if (isAuthenticated && user?.selectedVoiceId) {
@@ -45,5 +67,10 @@ export default function AppProvider({
     }
   }, [isAuthenticated, user, voiceId, defaultVoiceData, setVoiceId])
 
-  return <>{children}</>
+  return (
+    <>
+      {children}
+      <FullPageLoading show={authLoading || appLoading} />
+    </>
+  )
 }

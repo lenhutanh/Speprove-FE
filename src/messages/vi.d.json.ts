@@ -46,6 +46,12 @@ declare const messages: {
     forgot_password: 'Quên mật khẩu?'
     already_have_account: 'Đã có tài khoản?'
     dont_have_account: 'Chưa có tài khoản?'
+    search: 'Tìm kiếm...'
+    clear_search: 'Xoá tìm kiếm'
+  }
+  home: {
+    title: 'Trang chủ'
+    description: 'Nền tảng luyện thi IELTS Speaking với AI'
   }
   auth: {
     login: {

@@ -47,7 +47,7 @@ export function SuccessDialog({ open, points, onClose }: SuccessDialogProps) {
               {t('success_title')}
             </h2>
             <p className='text-muted-foreground mt-1 text-sm'>
-              {t('success_message', { points })}
+              {t('success_message', { points: String(points) })}
             </p>
           </div>
 
@@ -56,7 +56,7 @@ export function SuccessDialog({ open, points, onClose }: SuccessDialogProps) {
               {t('start_practice')}
             </Button>
             <p className='text-muted-foreground text-xs'>
-              {t('auto_redirect', { remaining })}
+              {t('auto_redirect', { remaining: String(remaining) })}
             </p>
           </div>
         </div>

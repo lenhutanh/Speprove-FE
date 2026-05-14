@@ -9,6 +9,7 @@ import { useNavigate } from '@/hooks'
 import { Link } from '@/i18n/navigation'
 import { useLoginMutation, useProfileQuery } from '@/queries'
 import route from '@/routes'
+import { useAppLoadingStore } from '@/store'
 import { useAuthStore } from '@/store/use-auth-store'
 import { LoginBodyType } from '@/types'
 import { loginSchema } from '@/validations'
@@ -23,6 +24,7 @@ export default function LoginPage() {
   const loginMutation = useLoginMutation()
   const profileQuery = useProfileQuery(false)
   const { setUser, setAuthenticated } = useAuthStore()
+  const { withLoading } = useAppLoadingStore()
   const navigate = useNavigate()
   const searchParams = useSearchParams()
 
@@ -32,24 +34,28 @@ export default function LoginPage() {
   }
 
   const onSubmit = async (values: LoginBodyType) => {
-    const res = await loginMutation.mutateAsync(values)
+    return withLoading(
+      (async () => {
+        const res = await loginMutation.mutateAsync(values)
 
-    if (res.success) {
-      const { data: profileRes } = await profileQuery.refetch()
-      if (profileRes?.data) {
-        setUser(profileRes.data)
-        setAuthenticated(true)
-        const callbackUrl = searchParams.get('callbackUrl')
-        navigate(callbackUrl || route.home)
-      }
-    } else {
-      if (res.errorCode === ErrorCodes.INVALID_CREDENTIALS) {
-        toast.error(res.message)
-        return
-      }
-    }
+        if (res.success) {
+          const { data: profileRes } = await profileQuery.refetch()
+          if (profileRes?.data) {
+            setUser(profileRes.data)
+            setAuthenticated(true)
+            const callbackUrl = searchParams.get('callbackUrl')
+            navigate(callbackUrl || route.home)
+          }
+        } else {
+          if (res.errorCode === ErrorCodes.INVALID_CREDENTIALS) {
+            toast.error(res.message)
+            return
+          }
+        }
 
-    return res
+        return res
+      })(),
+    )
   }
 
   return (

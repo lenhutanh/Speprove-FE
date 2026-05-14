@@ -223,7 +223,9 @@ export default function PracticeBottomBar({
       return
     }
 
-    await startRecording()
+    const started = await startRecording()
+    if (!started) return
+
     setPhase('recording')
     startCountdown()
   }
