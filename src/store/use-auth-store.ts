@@ -8,16 +8,16 @@ export const useAuthStore = create<AuthStoreType>()(
     (set) => ({
       user: null,
       isAuthenticated: false,
-      isLoading: true,
+      loading: true,
 
       setAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
-      setLoading: (isLoading) => set({ isLoading }),
+      setLoading: (loading) => set({ loading }),
 
       logout: () =>
         set({
           user: null,
           isAuthenticated: false,
-          isLoading: false,
+          loading: false,
         }),
 
       setUser: (user: UserResType | null) => set({ user }),

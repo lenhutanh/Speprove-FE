@@ -13,7 +13,7 @@ export interface RecordButtonProps {
   phase: 'idle' | 'recording' | string
   analyser: AnalyserNode | null
   recordingSeconds: number
-  onStart: () => void
+  onStart: () => void | Promise<unknown>
   onStop: () => void
   disabled?: boolean
   disabledTooltip?: string
@@ -56,7 +56,7 @@ export function RecordButton({
             </Button>,
           )}
         </div>
-        <span className='text-xs font-medium tracking-wider text-muted-foreground'>
+        <span className='text-muted-foreground text-xs font-medium tracking-wider'>
           {statusText ?? 'Ghi âm'}
         </span>
       </div>
@@ -82,7 +82,7 @@ export function RecordButton({
         )}
       </div>
       {displayText && (
-        <span className='text-xs font-medium text-muted-foreground'>
+        <span className='text-muted-foreground text-xs font-medium'>
           {displayText}
         </span>
       )}

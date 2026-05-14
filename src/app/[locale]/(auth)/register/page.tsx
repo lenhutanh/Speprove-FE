@@ -9,6 +9,7 @@ import { useNavigate } from '@/hooks'
 import { Link } from '@/i18n/navigation'
 import { useRegisterMutation } from '@/queries'
 import route from '@/routes'
+import { useAppLoadingStore } from '@/store'
 import { RegisterBodyType } from '@/types'
 import { registerSchema } from '@/validations'
 import { useTranslations } from 'next-intl'
@@ -19,6 +20,7 @@ export default function RegisterPage() {
   const t = useTranslations('auth.register')
   const common = useTranslations('common')
   const registerMutation = useRegisterMutation()
+  const { withLoading } = useAppLoadingStore()
   const navigate = useNavigate()
 
   const defaultValues: RegisterBodyType = {
@@ -28,18 +30,20 @@ export default function RegisterPage() {
   }
 
   const onSubmit = async (values: RegisterBodyType) => {
-    await registerMutation.mutateAsync(values, {
-      onSuccess: (res) => {
-        if (res.success) {
-          toast.success(res.message)
-          navigate(
-            `${route.verifyOtp}?email=${values.email}&target=${VERIFY_TARGET.REGISTER}`,
-          )
-        } else {
-          toast.error(res.message)
-        }
-      },
-    })
+    await withLoading(
+      registerMutation.mutateAsync(values, {
+        onSuccess: (res) => {
+          if (res.success) {
+            toast.success(res.message)
+            navigate(
+              `${route.verifyOtp}?email=${values.email}&target=${VERIFY_TARGET.REGISTER}`,
+            )
+          } else {
+            toast.error(res.message)
+          }
+        },
+      }),
+    )
   }
 
   return (

@@ -11,6 +11,7 @@ import {
 import { cn } from '@/lib'
 import { useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 
 interface MicCheckerProps {
   onDeviceChange?: (deviceId: string) => void
@@ -25,10 +26,11 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
   const [recording, setRecording] = useState(false)
   const [audioUrl, setAudioUrl] = useState<string>()
 
-  const streamRef = useRef<MediaStream>()
-  const recorderRef = useRef<MediaRecorder>()
+  const streamRef = useRef<MediaStream | null>(null)
+  const recorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
-  const animRef = useRef<number>()
+  const animRef = useRef<number | null>(null)
+  const audioCtxRef = useRef<AudioContext | null>(null)
   const volBarRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -41,9 +43,23 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
     return () => stopStream()
   }, [])
 
+  useEffect(() => {
+    return () => {
+      if (audioUrl) URL.revokeObjectURL(audioUrl)
+    }
+  }, [audioUrl])
+
   function stopStream() {
-    if (animRef.current) cancelAnimationFrame(animRef.current)
+    if (animRef.current) {
+      cancelAnimationFrame(animRef.current)
+      animRef.current = null
+    }
     streamRef.current?.getTracks().forEach((t) => t.stop())
+    streamRef.current = null
+    if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
+      audioCtxRef.current.close().catch(() => {})
+      audioCtxRef.current = null
+    }
     if (volBarRef.current) volBarRef.current.style.width = '0%'
   }
 
@@ -55,6 +71,7 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
       streamRef.current = stream
 
       const ctx = new AudioContext()
+      audioCtxRef.current = ctx
       const analyser = ctx.createAnalyser()
       analyser.fftSize = 256
       const data = new Uint8Array(analyser.frequencyBinCount)
@@ -73,15 +90,21 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
       recorder.ondataavailable = (e) => chunksRef.current.push(e.data)
       recorder.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
-        setAudioUrl(URL.createObjectURL(blob))
+        setAudioUrl((prev) => {
+          if (prev) URL.revokeObjectURL(prev)
+          return URL.createObjectURL(blob)
+        })
         stopStream()
       }
       recorder.start()
       recorderRef.current = recorder
       setRecording(true)
-      setAudioUrl(undefined)
+      setAudioUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev)
+        return undefined
+      })
     } catch {
-      // permission denied
+      toast.error('Khong the truy cap microphone')
     }
   }
 

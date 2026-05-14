@@ -1,12 +1,12 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
-export type AppPreferenceType = {
+export type AppPreferenceStoreType = {
   voiceId: string | null
   setVoiceId: (id: string) => void
 }
 
-export const useAppPreference = create<AppPreferenceType>()(
+export const useAppPreference = create<AppPreferenceStoreType>()(
   persist(
     (set) => ({
       voiceId: null,

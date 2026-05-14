@@ -1,13 +1,19 @@
 'use client'
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { InsufficientBalanceDialog } from '@/components/ui/insufficient-balance-dialog'
 import { RecordButton } from '@/components/ui/recorder'
-import {
-  REPLAY_WINDOW_SECONDS,
-  SpeakingSessionType,
-  formatCountdown,
-} from '@/constants'
+import { SpeakingSessionType, formatCountdown } from '@/constants'
 import { useNavigate, useRecorder, useRecordingCountdown } from '@/hooks'
 import { useMockTestSession } from '@/hooks/use-mock-test-session'
 import { usePathname } from '@/i18n/navigation'
@@ -31,15 +37,17 @@ export default function MockTestRoom() {
     submitAttempt,
     replayQuestion,
     hasReplayed,
+    isReplayingQuestion,
     isLoading,
   } = useMockTestSession(speakingSessionId)
 
-  const [note, setNote] = useState('')
+  const [notes, setNotes] = useState<Record<string, string>>({})
   const [showBalanceDialog, setShowBalanceDialog] = useState(false)
-  const [canReplay, setCanReplay] = useState(false)
+  const [showExitDialog, setShowExitDialog] = useState(false)
   const pathname = usePathname()
   const navigate = useNavigate()
   const autoRecordTriggered = useRef(false)
+  const startRecordingLock = useRef(false)
 
   const {
     analyser,
@@ -63,41 +71,76 @@ export default function MockTestRoom() {
     }
   }, [stopRecording, submitAttempt])
 
-  const { countdown, maxTime, canStop, startCountdown, stopCountdown } =
+  const { countdown, canStop, startCountdown, stopCountdown } =
     useRecordingCountdown({
       part: partNum,
       isRecording,
       onAutoStop: doStop,
     })
 
+  const handleStartRecording = useCallback(async () => {
+    if (
+      state !== 'user_speaking' ||
+      isRecording ||
+      startRecordingLock.current
+    ) {
+      return false
+    }
+
+    startRecordingLock.current = true
+    try {
+      const started = await startRecording()
+      if (!started) return false
+
+      startCountdown()
+      return true
+    } finally {
+      startRecordingLock.current = false
+    }
+  }, [state, isRecording, startRecording, startCountdown])
+
   useEffect(() => {
     if (state !== 'user_speaking') {
       autoRecordTriggered.current = false
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setCanReplay(false)
       return
     }
 
     if (autoRecordTriggered.current) return
     autoRecordTriggered.current = true
 
-    startRecording()
-    startCountdown()
-    setCanReplay(true)
+    handleStartRecording()
+  }, [state, handleStartRecording])
 
-    const replayTimer = setTimeout(
-      () => setCanReplay(false),
-      REPLAY_WINDOW_SECONDS * 1000,
-    )
+  useEffect(() => {
+    if (state !== 'user_speaking' || isRecording) return
 
-    return () => clearTimeout(replayTimer)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state])
+    const retryStartRecording = () => {
+      if (document.visibilityState !== 'visible') return
+      handleStartRecording()
+    }
+
+    window.addEventListener('focus', retryStartRecording)
+    document.addEventListener('visibilitychange', retryStartRecording)
+
+    return () => {
+      window.removeEventListener('focus', retryStartRecording)
+      document.removeEventListener('visibilitychange', retryStartRecording)
+    }
+  }, [state, isRecording, handleStartRecording])
 
   const handleStopRecording = async () => {
     if (!canStop) return
     stopCountdown()
     await doStop()
+  }
+
+  const handleExit = () => {
+    if (state === 'done') {
+      navigate(route.mockTest)
+      return
+    }
+
+    setShowExitDialog(true)
   }
 
   if (isLoading || !questionData) {
@@ -114,6 +157,15 @@ export default function MockTestRoom() {
   const questionIndex = questionData.questionIndex ?? 0
   const totalQuestions = questionData.totalQuestions ?? 4
   const mode = (questionData.mode as SpeakingSessionType) ?? 'mock_p1'
+  const questionId = questionData.question?.id ?? ''
+  const note = notes[questionId] ?? ''
+  const setCurrentNote = (value: string) => {
+    if (!questionId) return
+    setNotes((prev) => ({
+      ...prev,
+      [questionId]: value,
+    }))
+  }
 
   const isPartTwo = questionData.question?.part === 2
   const isPrep = state === 'prep'
@@ -141,9 +193,10 @@ export default function MockTestRoom() {
         </div>
         <div className='flex flex-1 flex-col overflow-hidden'>
           <NotePanel
+            key={`prep-${questionId}`}
             mode='prep'
             value={note}
-            onChange={setNote}
+            onChange={setCurrentNote}
             prepSeconds={prepSeconds}
           />
         </div>
@@ -161,21 +214,23 @@ export default function MockTestRoom() {
 
     let statusText: string | undefined
     if (isPrep) {
-      statusText = t('prep_time', { seconds: prepSeconds })
+      statusText = t('prep_time', { seconds: String(prepSeconds) })
     } else if (isTransition) {
-      statusText = t('start_recording_in', { seconds: prepSeconds })
+      statusText = t('start_recording_in', {
+        seconds: String(prepSeconds),
+      })
     }
 
     const disabledTooltip =
       isUserSpeaking && !canStop ? t('min_speaking_time') : undefined
 
-    const replayDisabled = isTransition || isPrep || !canReplay || hasReplayed
+    const replayDisabled = !isTransition || hasReplayed || isReplayingQuestion
 
     const showTimer = isTransitionOrSpeaking || isPrep
 
     const timerDisplay =
       isTransition || isPrep
-        ? formatCountdown(maxTime)
+        ? formatCountdown(prepSeconds)
         : formatCountdown(countdown)
 
     return (
@@ -190,14 +245,14 @@ export default function MockTestRoom() {
           phase={isRecording ? 'recording' : 'idle'}
           analyser={analyser}
           recordingSeconds={recordingSeconds}
-          onStart={startRecording}
+          onStart={handleStartRecording}
           onStop={handleStopRecording}
           disabled={btnDisabled}
           disabledTooltip={disabledTooltip}
           statusText={statusText}
         />
 
-        {!isPartTwo && isTransitionOrSpeaking && (
+        {!isPartTwo && isTransition && (
           <Button
             variant='outline'
             size='sm'
@@ -294,6 +349,24 @@ export default function MockTestRoom() {
         onClose={() => setShowBalanceDialog(false)}
       />
 
+      <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Roi phong thi?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bai thi dang dien ra. Neu thoat bay gio, tien trinh hien tai co
+              the khong duoc luu.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>O lai</AlertDialogCancel>
+            <AlertDialogAction onClick={() => navigate(route.mockTest)}>
+              Thoat
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className='mx-auto flex max-w-6xl flex-col px-6 py-4'>
         <SessionTopBar
           state={state}
@@ -302,7 +375,7 @@ export default function MockTestRoom() {
           totalQuestions={totalQuestions}
           isPartTwo={isPartTwo}
           prepSeconds={prepSeconds}
-          onExit={() => navigate(route.mockTest)}
+          onExit={handleExit}
         />
 
         <main className='mx-auto flex w-full flex-1 items-center justify-center overflow-hidden py-6'>

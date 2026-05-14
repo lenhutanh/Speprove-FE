@@ -5,6 +5,7 @@ import { Separator } from '@/components/ui/separator'
 import { PAYMENT_METHOD } from '@/constants'
 import { useCreditPackageListQuery } from '@/queries'
 import { useCreatePaymentMutation } from '@/queries/payment.query'
+import { useAppLoadingStore } from '@/store'
 import { CreditPackage, PaymentResponse } from '@/types'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
@@ -17,20 +18,19 @@ import { SuccessDialog } from './_components/success-dialog'
 export default function PaymentPage() {
   const t = useTranslations('payment')
   const tCommon = useTranslations('common')
-  const { data, isLoading } = useCreditPackageListQuery()
+  const { data } = useCreditPackageListQuery()
   const createPaymentMutation = useCreatePaymentMutation()
+  const { withLoading } = useAppLoadingStore()
   const packages = data?.data || []
+
   const [selectedPackage, setSelectedPackage] = useState<CreditPackage | null>(
     null,
   )
   const [selectedMethod, setSelectedMethod] = useState<string>(
     PAYMENT_METHOD.BANK_TRANSFER,
   )
-  const [isCreating, setIsCreating] = useState(false)
-
   const [qrOpen, setQrOpen] = useState(false)
   const [payment, setPayment] = useState<PaymentResponse | null>(null)
-
   const [successOpen, setSuccessOpen] = useState(false)
   const [successData, setSuccessData] = useState({ points: 0 })
 
@@ -40,25 +40,25 @@ export default function PaymentPage() {
       return
     }
 
-    createPaymentMutation.mutateAsync(
-      {
-        packageId: selectedPackage._id,
-        method: selectedMethod,
-      },
-      {
-        onSuccess: (res) => {
-          if (res.success && res?.data) setPayment(res.data)
-        },
-      },
-    )
-
-    setIsCreating(true)
     try {
-      setQrOpen(true)
-    } catch (err: any) {
-      toast.error(err.message ?? tCommon('generic_error'))
-    } finally {
-      setIsCreating(false)
+      const res = await withLoading(
+        createPaymentMutation.mutateAsync({
+          packageId: selectedPackage._id,
+          method: selectedMethod,
+        }),
+      )
+
+      if (res.success && res.data) {
+        setPayment(res.data)
+        setQrOpen(true)
+      } else {
+        toast.error(res.message ?? tCommon('generic_error'))
+      }
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : tCommon('generic_error')
+
+      toast.error(message)
     }
   }
 
@@ -81,14 +81,12 @@ export default function PaymentPage() {
   return (
     <div className='bg-background min-h-screen'>
       <div className='mx-auto max-w-lg px-4 py-6'>
-        {/* Header */}
         <div className='mb-8'>
           <h1 className='text-foreground text-2xl font-bold'>{t('title')}</h1>
           <p className='text-muted-foreground mt-1 text-sm'>{t('subtitle')}</p>
         </div>
 
         <div className='bg-card space-y-5 rounded-2xl border p-5'>
-          {/* Packages */}
           <div>
             <p className='text-foreground mb-3 text-sm font-medium'>
               {t('select_package')}
@@ -107,7 +105,6 @@ export default function PaymentPage() {
 
           <Separator />
 
-          {/* Method */}
           <div>
             <p className='text-foreground mb-3 text-sm font-medium'>
               {t('payment_method')}
@@ -120,25 +117,26 @@ export default function PaymentPage() {
 
           <Separator />
 
-          {/* Summary + CTA */}
           <div className='text-muted-foreground flex items-center justify-between text-sm'>
             <span>{t('total_payment')}</span>
             <span className='text-foreground text-base font-semibold'>
-              {selectedPackage?.amount.toLocaleString('vi-VN') || 0}đ
+              {selectedPackage?.amount.toLocaleString('vi-VN') || 0}
+              &#8363;
             </span>
           </div>
 
           <Button
             className='h-11 w-full text-sm font-medium'
-            disabled={!selectedPackage || isCreating}
+            disabled={!selectedPackage || createPaymentMutation.isPending}
             onClick={handleCreateQR}
           >
-            {isCreating ? t('creating_qr') : t('create_qr')}
+            {createPaymentMutation.isPending
+              ? t('creating_qr')
+              : t('create_qr')}
           </Button>
         </div>
       </div>
 
-      {/* QR Modal */}
       <QRModal
         open={qrOpen}
         onClose={handleCloseQR}
@@ -147,7 +145,6 @@ export default function PaymentPage() {
         onFailed={handleFailed}
       />
 
-      {/* Success Dialog */}
       <SuccessDialog
         open={successOpen}
         points={successData.points}

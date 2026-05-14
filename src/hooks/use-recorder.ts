@@ -63,9 +63,11 @@ export function useRecorder() {
       timerRef.current = setInterval(() => {
         setRecordingSeconds((prev) => prev + 1)
       }, 1000)
+      return true
     } catch (err) {
       console.error(err)
       toast.error('Không thể bắt đầu ghi âm. Vui lòng kiểm tra Micro.')
+      return false
     }
   }
 

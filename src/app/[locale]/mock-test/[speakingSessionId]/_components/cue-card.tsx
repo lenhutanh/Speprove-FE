@@ -56,7 +56,7 @@ export function NotePanel({
         <span className='text-sm font-medium text-zinc-700'>{t('title')}</span>
         {mode === 'prep' ? (
           <span className='rounded-md bg-blue-500/20 px-2 py-0.5 text-[11px] font-semibold text-blue-400'>
-            {t('prep_status', { seconds: prepSeconds })}
+            {t('prep_status', { seconds: String(prepSeconds) })}
           </span>
         ) : (
           <span className='rounded-md bg-red-500/20 px-2 py-0.5 text-[11px] font-semibold text-red-400'>

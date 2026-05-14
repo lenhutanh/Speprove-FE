@@ -36,7 +36,7 @@ export function QRModal({
   const t = useTranslations('payment')
   const { display, isExpired } = useCountDown(open ? PAYMENT_EXPIRE_SECONDS : 0)
 
-  const paymentQuery = usePaymentQuery(payment?.id, {
+  const paymentQuery = usePaymentQuery(payment?.id ?? '', {
     enabled: !!payment?.id && open && !isExpired,
     refetchInterval: 2000,
   })
