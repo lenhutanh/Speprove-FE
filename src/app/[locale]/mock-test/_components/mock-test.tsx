@@ -111,13 +111,13 @@ export default function MockTest() {
   const handleStartMock = async () => {
     if (!isAuthenticated || !user) {
       toast.error(tMsg('login_required'))
-      navigate(`${route.login}?callbackUrl=${encodeURIComponent(pathname)}`)
+      navigate(`${route.login}?returnUrl=${encodeURIComponent(pathname)}`)
       return
     }
 
     if (user.balance < SPEAKING_PRICING[mode]) {
       toast.error(tMsg('insufficient_balance'))
-      navigate(`${route.payment}?callbackUrl=${encodeURIComponent(pathname)}`)
+      navigate(`${route.payment}?returnUrl=${encodeURIComponent(pathname)}`)
       return
     }
 

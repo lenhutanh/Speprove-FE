@@ -26,7 +26,7 @@ export default function PracticeHistory() {
         <p className='text-muted-foreground text-xs leading-relaxed'>
           Vui lòng{' '}
           <Link
-            href={`${route.login}?callbackUrl=${encodeURIComponent(pathname)}`}
+            href={`${route.login}?returnUrl=${encodeURIComponent(pathname)}`}
             className='font-bold'
           >
             đăng nhập

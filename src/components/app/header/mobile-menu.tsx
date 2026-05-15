@@ -30,7 +30,7 @@ export default function MobileMenu() {
 
   function handleNav(href: string) {
     setOpen(false)
-    navigate(`${href}?callbackUrl=${encodeURIComponent(pathname)}`)
+    navigate(`${href}?returnUrl=${encodeURIComponent(pathname)}`)
   }
 
   return (

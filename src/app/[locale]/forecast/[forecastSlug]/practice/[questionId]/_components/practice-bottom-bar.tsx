@@ -212,7 +212,7 @@ export default function PracticeBottomBar({
         <p>
           Vui lòng&nbsp;
           <Link
-            href={`${route.login}?callbackUrl=${encodeURIComponent(pathname)}`}
+            href={`${route.login}?returnUrl=${encodeURIComponent(pathname)}`}
             className='text-primary'
           >
             đăng nhập
@@ -331,7 +331,7 @@ export default function PracticeBottomBar({
     <>
       <InsufficientBalanceDialog
         open={showBalanceDialog}
-        callbackUrl={pathname}
+        returnUrl={pathname}
         onClose={() => setShowBalanceDialog(false)}
       />
 
