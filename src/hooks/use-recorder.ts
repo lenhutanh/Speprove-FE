@@ -1,7 +1,6 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import RecordRTC from 'recordrtc'
 import { toast } from 'sonner'
 
 export function useRecorder() {
@@ -9,7 +8,7 @@ export function useRecorder() {
   const [recordingSeconds, setRecordingSeconds] = useState(0)
   const [isRecording, setIsRecording] = useState(false)
 
-  const recorderRef = useRef<RecordRTC | null>(null)
+  const recorderRef = useRef<any>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const audioCtxRef = useRef<AudioContext | null>(null)
@@ -35,6 +34,9 @@ export function useRecorder() {
 
   const startRecording = async () => {
     try {
+      const RecordRTCModule = await import('recordrtc')
+      const RecordRTC = RecordRTCModule.default
+
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       streamRef.current = stream
 
