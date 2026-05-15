@@ -16,13 +16,13 @@ import { useTranslations } from 'next-intl'
 
 interface InsufficientBalanceDialogProps {
   open: boolean
-  callbackUrl: string
+  returnUrl: string
   onClose: () => void
 }
 
 export function InsufficientBalanceDialog({
   open,
-  callbackUrl,
+  returnUrl,
   onClose,
 }: InsufficientBalanceDialogProps) {
   const t = useTranslations('balance')
@@ -44,7 +44,7 @@ export function InsufficientBalanceDialog({
         <DialogFooter className='flex-col gap-2 sm:flex-col'>
           <Button asChild>
             <Link
-              href={`${route.payment}?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+              href={`${route.payment}?returnUrl=${encodeURIComponent(returnUrl)}`}
               onClick={onClose}
             >
               {t('recharge_now')}

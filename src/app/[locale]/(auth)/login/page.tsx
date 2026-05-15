@@ -5,6 +5,7 @@ import { BaseForm } from '@/components/form/base-form'
 import Button from '@/components/form/button'
 import { Separator } from '@/components/ui/separator'
 import { ErrorCodes } from '@/constants'
+import envConfig from '@/envConfig'
 import { useNavigate } from '@/hooks'
 import { Link } from '@/i18n/navigation'
 import { useLoginMutation, useProfileQuery } from '@/queries'
@@ -16,7 +17,16 @@ import { loginSchema } from '@/validations'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
 import { toast } from 'sonner'
+
+const oauthErrorCodes: string[] = [
+  ErrorCodes.OAUTH_STATE_INVALID,
+  ErrorCodes.GOOGLE_EMAIL_NOT_VERIFIED,
+  ErrorCodes.GOOGLE_ACCOUNT_CONFLICT,
+  ErrorCodes.GOOGLE_ACCOUNT_MISMATCH,
+  ErrorCodes.GOOGLE_TOKEN_INVALID,
+]
 
 export default function LoginPage() {
   const t = useTranslations('auth.login')
@@ -26,7 +36,10 @@ export default function LoginPage() {
   const { setUser, setAuthenticated } = useAuthStore()
   const { withLoading } = useAppLoadingStore()
   const navigate = useNavigate()
+  const replaceNavigate = useNavigate(false)
   const searchParams = useSearchParams()
+  const returnUrl = searchParams.get('returnUrl')
+  const errorCode = searchParams.get('errorCode')
 
   const defaultValues: LoginBodyType = {
     email: '',
@@ -43,8 +56,7 @@ export default function LoginPage() {
           if (profileRes?.data) {
             setUser(profileRes.data)
             setAuthenticated(true)
-            const callbackUrl = searchParams.get('callbackUrl')
-            navigate(callbackUrl || route.home)
+            navigate(returnUrl || route.home)
           }
         } else {
           if (res.errorCode === ErrorCodes.INVALID_CREDENTIALS) {
@@ -57,6 +69,21 @@ export default function LoginPage() {
       })(),
     )
   }
+
+  const handleGoogleLogin = () => {
+    const googleLoginUrl = new URL(
+      `${envConfig.NEXT_PUBLIC_API_ENDPOINT_URL}/api/v1/auth/google`,
+    )
+
+    window.location.href = googleLoginUrl.toString()
+  }
+
+  useEffect(() => {
+    if (!errorCode || !oauthErrorCodes.includes(errorCode)) return
+
+    toast.error(common('generic_error'))
+    replaceNavigate(route.login, { replace: true })
+  }, [errorCode])
 
   return (
     <div className='m-auto flex max-w-md flex-col gap-5 rounded-md border border-solid p-7.5 shadow-md'>
@@ -116,7 +143,11 @@ export default function LoginPage() {
         <span>{common('or_continue_with')}</span>
         <Separator className='flex-1' />
       </div>
-      <Button type='button' variant={'outline'} className='w-full'>
+      <Button
+        variant={'outline'}
+        className='w-full'
+        onClick={handleGoogleLogin}
+      >
         <Image src={googleIcon} alt='Google Icon' width={20} height={20} />
         {t('login_with', { name: 'Google' })}
       </Button>

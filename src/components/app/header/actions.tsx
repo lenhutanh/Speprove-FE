@@ -19,7 +19,7 @@ export default function Actions() {
         <>
           <Button variant={'outline'} asChild>
             <Link
-              href={`${route.login}?callbackUrl=${encodeURIComponent(pathname)}`}
+              href={`${route.login}?returnUrl=${encodeURIComponent(pathname)}`}
             >
               {common('login')}
             </Link>

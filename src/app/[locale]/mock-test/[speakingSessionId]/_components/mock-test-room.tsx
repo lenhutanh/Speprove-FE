@@ -345,7 +345,7 @@ export default function MockTestRoom() {
     <>
       <InsufficientBalanceDialog
         open={showBalanceDialog}
-        callbackUrl={pathname}
+        returnUrl={pathname}
         onClose={() => setShowBalanceDialog(false)}
       />
 
