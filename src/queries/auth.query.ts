@@ -2,10 +2,13 @@ import { authApiRequest } from '@/api-requests'
 import route from '@/routes'
 import { useAuthStore } from '@/store'
 import {
+  ChangePasswordType,
   ForgotPasswordType,
   LoginBodyType,
   RegisterBodyType,
   ResetPasswordType,
+  SetPasswordType,
+  UpdateProfileType,
   VerifyOtpBodyType,
 } from '@/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -64,5 +67,27 @@ export const useResetPasswordMutation = () => {
   return useMutation({
     mutationKey: ['reset-password'],
     mutationFn: (body: ResetPasswordType) => authApiRequest.resetPassword(body),
+  })
+}
+
+export const useChangePasswordMutation = () => {
+  return useMutation({
+    mutationKey: ['change-password'],
+    mutationFn: (body: ChangePasswordType) =>
+      authApiRequest.changePassword(body),
+  })
+}
+
+export const useSetPasswordMutation = () => {
+  return useMutation({
+    mutationKey: ['set-password'],
+    mutationFn: (body: SetPasswordType) => authApiRequest.setPassword(body),
+  })
+}
+
+export const useUpdateProfileMutation = () => {
+  return useMutation({
+    mutationKey: ['update-profile'],
+    mutationFn: (body: UpdateProfileType) => authApiRequest.updateProfile(body),
   })
 }

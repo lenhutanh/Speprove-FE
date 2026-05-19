@@ -1,5 +1,5 @@
 import { cn } from '@/lib'
-import { HTMLAttributes, PropsWithChildren } from 'react'
+import { CSSProperties, HTMLAttributes, PropsWithChildren } from 'react'
 
 type ColProps = PropsWithChildren<HTMLAttributes<HTMLDivElement>> & {
   span?: number
@@ -16,9 +16,19 @@ export default function Col({
   const width = gutter
     ? `calc(${(span * 100) / 24}% - ${gutter}px)`
     : `${(span * 100) / 24}%`
+  const style = {
+    '--col-width': width,
+  } as CSSProperties
 
   return (
-    <div style={{ width }} className={cn('flex flex-col', className)} {...rest}>
+    <div
+      style={style}
+      className={cn(
+        'flex w-full min-w-0 flex-col sm:w-[var(--col-width)]',
+        className,
+      )}
+      {...rest}
+    >
       {children}
     </div>
   )

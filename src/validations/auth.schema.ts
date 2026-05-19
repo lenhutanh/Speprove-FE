@@ -1,6 +1,8 @@
 import {
   EMAIL_RULE,
   EMAIL_RULE_MESSAGE,
+  OBJECT_ID_RULE,
+  OBJECT_ID_RULE_MESSAGE,
   OTP_RULE,
   OTP_RULE_MESSAGE,
   PASSWORD_RULE,
@@ -64,3 +66,42 @@ export const resetPasswordSchema = z
     message: 'Mật khẩu xác nhận không khớp',
     path: ['confirmPassword'],
   })
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z
+      .string()
+      .min(8, PASSWORD_RULE_MESSAGE)
+      .regex(PASSWORD_RULE, PASSWORD_RULE_MESSAGE),
+    newPassword: z
+      .string()
+      .min(8, PASSWORD_RULE_MESSAGE)
+      .regex(PASSWORD_RULE, PASSWORD_RULE_MESSAGE),
+    confirmPassword: z.string().min(1, REQUIRED_MESSAGE),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'Mật khẩu xác nhận không khớp',
+    path: ['confirmPassword'],
+  })
+
+export const setPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, PASSWORD_RULE_MESSAGE)
+      .regex(PASSWORD_RULE, PASSWORD_RULE_MESSAGE),
+    confirmPassword: z.string().min(1, REQUIRED_MESSAGE),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Mật khẩu xác nhận không khớp',
+    path: ['confirmPassword'],
+  })
+
+export const updateProfileSchema = z.object({
+  avatarId: z
+    .string()
+    .regex(OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE)
+    .nullable()
+    .optional(),
+  fullName: z.string().min(1).max(256).optional(),
+})

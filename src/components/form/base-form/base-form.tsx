@@ -56,25 +56,24 @@
 'use client'
 
 import { Form } from '@/components/ui/form'
-import { cn } from '@/lib/utils' // Đảm bảo import đúng đường dẫn
+import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { DefaultValues, useForm, UseFormReturn } from 'react-hook-form'
 
-// Định nghĩa cấu trúc chung của API Response
 export type FormApiResponse = {
   success: boolean
   message?: string
   errors?: Record<string, string>
-  [key: string]: any // Cho phép chứa các trường khác như data
+  [key: string]: any
 }
 
 type AsyncDefaultValues<T> = (payload?: unknown) => Promise<T>
+type InitialValuesKey = string | number | boolean | null
 
 type BaseFormProps<T extends Record<string, any>> = {
   schema: any
   defaultValues: DefaultValues<T> | AsyncDefaultValues<T>
-  // Thay đổi ở đây: Bắt buộc onSubmit phải trả về FormApiResponse hoặc void
   onSubmit: (
     values: T,
     form: UseFormReturn<T>,
@@ -82,6 +81,7 @@ type BaseFormProps<T extends Record<string, any>> = {
   children?: (methods: UseFormReturn<T>) => React.ReactNode
   className?: string
   initialValues?: T
+  initialValuesKey?: InitialValuesKey
   mode?: 'onBlur' | 'onChange' | 'onSubmit' | 'onTouched' | 'all' | undefined
   onChange?: () => void
 }
@@ -93,6 +93,7 @@ export default function BaseForm<T extends Record<string, any>>({
   children,
   className,
   initialValues,
+  initialValuesKey,
   mode = 'onChange',
   onChange,
 }: BaseFormProps<T>) {
@@ -101,12 +102,31 @@ export default function BaseForm<T extends Record<string, any>>({
     defaultValues,
     mode,
   })
+  const previousInitialValuesKeyRef = useRef<InitialValuesKey | undefined>(
+    undefined,
+  )
+  const previousInitialValuesSnapshotRef = useRef<string | undefined>(undefined)
 
   useEffect(() => {
-    if (initialValues) {
+    if (!initialValues) return
+
+    if (initialValuesKey !== undefined) {
+      if (previousInitialValuesKeyRef.current === initialValuesKey) return
+
+      previousInitialValuesKeyRef.current = initialValuesKey
       form.reset(initialValues)
+      return
     }
-  }, [initialValues, form])
+
+    const initialValuesSnapshot = JSON.stringify(initialValues)
+
+    if (previousInitialValuesSnapshotRef.current === initialValuesSnapshot) {
+      return
+    }
+
+    previousInitialValuesSnapshotRef.current = initialValuesSnapshot
+    form.reset(initialValues)
+  }, [form, initialValues, initialValuesKey])
 
   // Hàm trung gian xử lý submit và tự động map lỗi
   const handleFormSubmit = async (values: T) => {

@@ -13,20 +13,27 @@ export default function useValidatedParams<T extends z.ZodRawShape>(
   const router = useRouter()
   const pathname = usePathname()
 
-  const validation = useMemo(
-    () => validateParams(schema, searchParams),
-    [schema, searchParams],
-  )
+  const validation = useMemo(() => {
+    return validateParams(schema, searchParams)
+  }, [schema, searchParams])
+
+  const invalidKeysKey = validation.invalidKeys.join(',')
 
   useEffect(() => {
     if (validation.invalidKeys.length === 0) return
-    const cleaned = new URLSearchParams(searchParams.toString())
-    validation.invalidKeys.forEach((key) => cleaned.delete(key as any))
-    router.replace(
-      cleaned.toString() ? `${pathname}?${cleaned.toString()}` : pathname,
-      { scroll: false },
-    )
-  }, [pathname, router, validation])
 
-  return validation.valid as z.infer<typeof schema>
+    const cleanedParams = new URLSearchParams(searchParams.toString())
+
+    validation.invalidKeys.forEach((key) => {
+      cleanedParams.delete(key)
+    })
+
+    const nextUrl = cleanedParams.toString()
+      ? `${pathname}?${cleanedParams.toString()}`
+      : pathname
+
+    router.replace(nextUrl, { scroll: false })
+  }, [pathname, router, searchParams, invalidKeysKey])
+
+  return validation.valid as z.infer<z.ZodObject<T>>
 }

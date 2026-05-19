@@ -1,7 +1,7 @@
 import { GroupResType } from './group.type'
 
 export type UserResType = {
-  _id: string
+  id: string
   username: string
   email: string
   fullName?: string
@@ -15,4 +15,5 @@ export type UserResType = {
   updatedAt: string
   selectedVoiceId: string
   balance: number
+  hasPassword: boolean
 }

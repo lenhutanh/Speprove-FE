@@ -19,7 +19,7 @@ export default function AccountDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className='self-center'>
-        <Avatar className='h-10 w-10 cursor-pointer'>
+        <Avatar className='h-10 w-10 cursor-pointer border shadow-xs'>
           <AvatarImage src={user?.avatarUrl} alt={user?.fullName} />
           <AvatarFallback className='font-semibold'>
             {getInitials(user?.fullName || user?.email)}
@@ -28,8 +28,8 @@ export default function AccountDropdown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
         <DropdownMenuItem asChild>
-          <Link href={route.home}>
-            <Avatar className='h-10 w-10'>
+          <Link href={route.account}>
+            <Avatar className='h-10 w-10 border shadow-xs'>
               <AvatarImage src={user?.avatarUrl} alt={user?.fullName} />
               <AvatarFallback className='font-semibold'>
                 {getInitials(user?.fullName || user?.email)}

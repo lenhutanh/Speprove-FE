@@ -4,13 +4,18 @@ import { usePathname, useRouter } from '@/i18n/navigation'
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 
-const useQueryParams = <T extends Record<string, any>>() => {
+type QueryValue = string | number | boolean | null | undefined
+
+const useQueryParams = <T extends Record<string, QueryValue>>() => {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
   const paramsObj = useMemo(
-    () => Object.fromEntries(searchParams.entries()),
+    () =>
+      Object.fromEntries(searchParams.entries()) as Partial<
+        Record<keyof T, string>
+      >,
     [searchParams],
   )
 
@@ -23,7 +28,7 @@ const useQueryParams = <T extends Record<string, any>>() => {
           params.delete(key)
         } else if (
           key === 'page' &&
-          (Number(value) <= 1 || isNaN(Number(value)))
+          (Number(value) <= 1 || Number.isNaN(Number(value)))
         ) {
           params.delete(key)
         } else {
@@ -49,6 +54,7 @@ const useQueryParams = <T extends Record<string, any>>() => {
       options?: { replace?: boolean; keepPage?: boolean },
     ) => {
       const url = createQueryString(newParams, options)
+
       if (options?.replace) {
         router.replace(url, { scroll: false })
       } else {

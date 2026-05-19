@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
-import { ReactNode } from 'react'
+import { HTMLInputTypeAttribute, ReactNode } from 'react'
 import { Control, FieldPath, FieldValues } from 'react-hook-form'
 
 type InputFieldProps<T extends FieldValues> = {
@@ -19,7 +19,7 @@ type InputFieldProps<T extends FieldValues> = {
   label?: string
   placeholder?: string
   description?: string
-  type?: string
+  type?: HTMLInputTypeAttribute
   className?: string
   formItemClassName?: string
   required?: boolean
