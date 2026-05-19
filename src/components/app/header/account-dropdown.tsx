@@ -50,7 +50,7 @@ export default function AccountDropdown() {
             e.preventDefault()
             mutate()
           }}
-          className='cursor-pointer font-medium text-red-500'
+          className='text-destructive cursor-pointer font-medium'
         >
           {common('logout')}
         </DropdownMenuItem>
