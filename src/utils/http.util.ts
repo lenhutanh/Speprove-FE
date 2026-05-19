@@ -55,8 +55,9 @@ const sendRequest = async <T>(
     if (
       response.status === 401 &&
       (errorRes.errorCode === ErrorCodes.SESSION_EXPIRED ||
-        errorRes.errorCode === ErrorCodes.INVALID_TOKEN ||
-        errorRes.errorCode === ErrorCodes.TOKEN_MISSING)
+        errorRes.errorCode === ErrorCodes.SESSION_REPLACED ||
+        errorRes.errorCode === ErrorCodes.TOKEN_REUSED ||
+        errorRes.errorCode === ErrorCodes.INVALID_TOKEN)
     ) {
       if (isClient()) useAuthStore.getState().logout()
       throw errorRes
@@ -67,7 +68,8 @@ const sendRequest = async <T>(
       response.status === 401 &&
       !isRetry &&
       !ignoreAuth &&
-      errorRes.errorCode === ErrorCodes.TOKEN_EXPIRED
+      (errorRes.errorCode === ErrorCodes.TOKEN_EXPIRED ||
+        errorRes.errorCode === ErrorCodes.TOKEN_MISSING)
     ) {
       if (!refreshTokenPromise) {
         refreshTokenPromise = (async () => {
