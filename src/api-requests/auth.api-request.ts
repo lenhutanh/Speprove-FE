@@ -1,10 +1,13 @@
 import apiConfig from '@/constants/api-config'
 import {
   ApiResponse,
+  ChangePasswordType,
   ForgotPasswordType,
   LoginBodyType,
   RegisterBodyType,
   ResetPasswordType,
+  SetPasswordType,
+  UpdateProfileType,
   VerifyOtpBodyType,
 } from '@/types'
 import { http } from '@/utils'
@@ -36,6 +39,18 @@ const authApiRequest = {
     ),
   resetPassword: (body: ResetPasswordType) =>
     http.post<ApiResponse<any>>(apiConfig.auth.resetPassword, {
+      body,
+    }),
+  changePassword: (body: ChangePasswordType) =>
+    http.put<ApiResponse<any>>(apiConfig.auth.changePassword, {
+      body,
+    }),
+  setPassword: (body: SetPasswordType) =>
+    http.put<ApiResponse<any>>(apiConfig.auth.setPassword, {
+      body,
+    }),
+  updateProfile: (body: UpdateProfileType) =>
+    http.put<ApiResponse<any>>(apiConfig.auth.updateProfile, {
       body,
     }),
 }

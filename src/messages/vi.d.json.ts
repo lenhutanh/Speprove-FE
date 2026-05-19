@@ -48,6 +48,9 @@ declare const messages: {
     dont_have_account: 'Chưa có tài khoản?'
     search: 'Tìm kiếm...'
     clear_search: 'Xoá tìm kiếm'
+    current_password: 'Mật khẩu hiện tại'
+    new_password: 'Mật khẩu mới'
+    full_name: 'Họ và tên'
   }
   home: {
     title: 'Trang chủ'
@@ -74,7 +77,6 @@ declare const messages: {
     reset_password: {
       title: 'Đặt lại mật khẩu'
       description: 'Điền vào biểu mẫu bên dưới để đặt lại mật khẩu của bạn'
-      new_password: 'Mật khẩu mới'
     }
     verify_otp: {
       title: 'Nhập mã xác minh'
@@ -212,6 +214,13 @@ declare const messages: {
     expired: 'Hết hạn'
     search_topic: 'Tìm kiếm chủ đề...'
     no_topics_yet: 'Chưa có chủ đề nào trong bộ Forecast này.'
+  }
+  account: {
+    tabs: {
+      profile: 'Thông tin cá nhân'
+      change_password: 'Đổi mật khẩu'
+      set_password: 'Thiết lập mật khẩu'
+    }
   }
   not_found: {
     title: 'Không tìm thấy trang'

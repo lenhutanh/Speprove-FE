@@ -67,6 +67,10 @@ export const AUDIO_PURPOSE = {
   MOCK_TEST: 'mock',
 } as const
 
+export const IMAGE_PURPOSE = {
+  AVATAR: 'user/avatar',
+} as const
+
 export const FILE_KIND = {
   AUDIO: 'audio',
   IMAGE: 'image',
@@ -159,3 +163,11 @@ export const VERIFY_TARGET = {
   REGISTER: 'verify-register',
   FORGOT_PASSWORD: 'verify-forgot-password',
 } as const
+
+export const ACCOUNT_TAB_KEYS = [
+  'profile',
+  'change-password',
+  'set-password',
+] as const
+
+export type AccountTabKey = (typeof ACCOUNT_TAB_KEYS)[number]

@@ -10,6 +10,7 @@ const route = defineRoute({
   forecast: '/forecast',
   payment: '/payment',
   mockTest: '/mock-test',
+  account: '/account',
 })
 
 export default route

@@ -47,6 +47,21 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'POST',
     },
+    changePassword: {
+      baseUrl: `${AppConstants.apiUrl}v1/auth/change-password`,
+      headers: baseHeader,
+      method: 'PUT',
+    },
+    setPassword: {
+      baseUrl: `${AppConstants.apiUrl}v1/auth/set-password`,
+      headers: baseHeader,
+      method: 'PUT',
+    },
+    updateProfile: {
+      baseUrl: `${AppConstants.apiUrl}v1/auth/update-profile`,
+      headers: baseHeader,
+      method: 'PUT',
+    },
   },
   account: {
     getMe: {
@@ -106,6 +121,12 @@ const apiConfig = defineApiConfig({
   file: {
     uploadAudio: {
       baseUrl: `${AppConstants.apiUrl}v1/file/upload-audio`,
+      method: 'POST',
+      headers: {},
+      isUpload: true,
+    },
+    uploadImage: {
+      baseUrl: `${AppConstants.apiUrl}v1/file/upload-image`,
       method: 'POST',
       headers: {},
       isUpload: true,

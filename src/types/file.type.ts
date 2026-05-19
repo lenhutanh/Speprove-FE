@@ -1,8 +1,9 @@
 import { FILE_KIND } from '@/constants'
-import { uploadAudioSchema } from '@/validations/file.schema'
+import { uploadAudioSchema, uploadImageSchema } from '@/validations/file.schema'
 import z from 'zod'
 
 export type UploadAudioBodyType = z.infer<typeof uploadAudioSchema>
+export type UploadImageBodyType = z.infer<typeof uploadImageSchema>
 
 type BaseFile = {
   id: string
@@ -24,5 +25,3 @@ export type ImageFileResponse = BaseFile & {
   width?: number
   height?: number
 }
-
-export type FileResponseDto = AudioFileResponse | ImageFileResponse

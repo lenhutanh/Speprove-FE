@@ -1,11 +1,8 @@
-import {
-  ALLOWED_AUDIO_EXTENSIONS,
-  ALLOWED_AUDIO_TYPES,
-  LIMIT_AUDIO_SIZE,
-} from '@/constants'
-
 export const validateAudioFile = (
   file: File,
+  LIMIT_AUDIO_SIZE: number,
+  ALLOWED_AUDIO_EXTENSIONS: string[],
+  ALLOWED_AUDIO_TYPES: string[],
 ): { isValid: boolean; error?: string } => {
   if (file.size > LIMIT_AUDIO_SIZE) {
     return {

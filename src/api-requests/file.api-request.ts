@@ -1,10 +1,14 @@
 import { apiConfig } from '@/constants'
-import { ApiResponse, FileResponseDto } from '@/types'
+import { ApiResponse, AudioFileResponse, ImageFileResponse } from '@/types'
 import { http } from '@/utils'
 
 const fileApiRequest = {
   uploadAudio: (body: FormData) =>
-    http.post<ApiResponse<FileResponseDto>>(apiConfig.file.uploadAudio, {
+    http.post<ApiResponse<AudioFileResponse>>(apiConfig.file.uploadAudio, {
+      body,
+    }),
+  uploadImage: (body: FormData) =>
+    http.post<ApiResponse<ImageFileResponse>>(apiConfig.file.uploadImage, {
       body,
     }),
 }

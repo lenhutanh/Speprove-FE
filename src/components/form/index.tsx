@@ -16,6 +16,7 @@ export {
   default as RadioField,
   default as RadioGroupField,
 } from './radio-group-field'
+export { default as ReadOnlyInputField } from './read-only-input-field'
 // export { default as RichTextField } from './rich-text-field';
 export { default as Row } from './row'
 // export { default as SelectField } from './select-field';
