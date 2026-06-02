@@ -115,13 +115,13 @@ export default function ProfileAvatarField<T extends FieldValues>({
     >
       <Avatar
         className={cn(
-          'h-24 w-24 border shadow-sm',
+          'h-40 w-40 border shadow-sm',
           !disabled && 'cursor-pointer',
           avatarClassName,
         )}
       >
         <AvatarImage src={previewUrl ?? undefined} />
-        <AvatarFallback className='text-4xl font-medium'>
+        <AvatarFallback className='text-6xl font-medium'>
           {fallback}
         </AvatarFallback>
       </Avatar>

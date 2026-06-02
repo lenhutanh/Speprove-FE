@@ -57,17 +57,22 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'PUT',
     },
-    updateProfile: {
-      baseUrl: `${AppConstants.apiUrl}v1/auth/update-profile`,
-      headers: baseHeader,
-      method: 'PUT',
-    },
   },
   account: {
     getMe: {
       baseUrl: `${AppConstants.apiUrl}v1/account/me`,
       headers: baseHeader,
       method: 'GET',
+    },
+    updateProfile: {
+      baseUrl: `${AppConstants.apiUrl}v1/account/update-profile`,
+      headers: baseHeader,
+      method: 'PUT',
+    },
+    selectVoice: {
+      baseUrl: `${AppConstants.apiUrl}v1/account/select-voice`,
+      headers: baseHeader,
+      method: 'PUT',
     },
   },
   forecast: {

@@ -1,3 +1,4 @@
+export * from './account.schema'
 export * from './attempt.schema'
 export * from './auth.schema'
 export * from './base.query'

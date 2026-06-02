@@ -280,7 +280,7 @@ export const AudioPlayer = ({
       disabled={isLoading || !url}
       aria-label={isPlaying ? 'Pause' : 'Play'}
       className={cn(
-        'flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-50 transition-all hover:bg-indigo-100 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40',
+        'flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-indigo-50 transition-all hover:bg-indigo-100 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40',
       )}
     >
       {isLoading ? (

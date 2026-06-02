@@ -8,7 +8,6 @@ import {
   RegisterBodyType,
   ResetPasswordType,
   SetPasswordType,
-  UpdateProfileType,
   VerifyOtpBodyType,
 } from '@/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -82,12 +81,5 @@ export const useSetPasswordMutation = () => {
   return useMutation({
     mutationKey: ['set-password'],
     mutationFn: (body: SetPasswordType) => authApiRequest.setPassword(body),
-  })
-}
-
-export const useUpdateProfileMutation = () => {
-  return useMutation({
-    mutationKey: ['update-profile'],
-    mutationFn: (body: UpdateProfileType) => authApiRequest.updateProfile(body),
   })
 }

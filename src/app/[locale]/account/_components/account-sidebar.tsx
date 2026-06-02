@@ -2,13 +2,19 @@
 
 import { Button } from '@/components/ui/button'
 import type { AccountTabKey } from '@/constants'
-import { CircleUserRound, LockKeyhole, type LucideIcon } from 'lucide-react'
+import {
+  CircleUserRound,
+  LockKeyhole,
+  Volume2,
+  type LucideIcon,
+} from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 export type AccountTabLabels = {
   profile: string
   changePassword: string
   setPassword: string
+  voiceSetting: string
 }
 
 type AccountSidebarProps = {
@@ -37,6 +43,11 @@ export const getAccountTabs = (
     label: hasPassword ? labels.changePassword : labels.setPassword,
     icon: LockKeyhole,
   },
+  {
+    key: 'voice-setting',
+    label: labels.voiceSetting,
+    icon: Volume2,
+  },
 ]
 
 export default function AccountSidebar({
@@ -49,6 +60,7 @@ export default function AccountSidebar({
     profile: t('profile'),
     changePassword: t('change_password'),
     setPassword: t('set_password'),
+    voiceSetting: t('voice_setting'),
   })
 
   return (

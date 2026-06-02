@@ -1,3 +1,8 @@
+import {
+  selectVoiceSchema,
+  updateProfileSchema,
+} from '@/validations/account.schema'
+import { z } from 'zod'
 import { GroupResType } from './group.type'
 
 export type UserResType = {
@@ -17,3 +22,6 @@ export type UserResType = {
   balance: number
   hasPassword: boolean
 }
+
+export type UpdateProfileType = z.infer<typeof updateProfileSchema>
+export type SelectVoiceBodyType = z.infer<typeof selectVoiceSchema>

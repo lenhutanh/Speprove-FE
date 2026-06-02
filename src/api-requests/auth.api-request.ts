@@ -7,7 +7,6 @@ import {
   RegisterBodyType,
   ResetPasswordType,
   SetPasswordType,
-  UpdateProfileType,
   VerifyOtpBodyType,
 } from '@/types'
 import { http } from '@/utils'
@@ -47,10 +46,6 @@ const authApiRequest = {
     }),
   setPassword: (body: SetPasswordType) =>
     http.put<ApiResponse<any>>(apiConfig.auth.setPassword, {
-      body,
-    }),
-  updateProfile: (body: UpdateProfileType) =>
-    http.put<ApiResponse<any>>(apiConfig.auth.updateProfile, {
       body,
     }),
 }

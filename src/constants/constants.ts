@@ -168,6 +168,7 @@ export const ACCOUNT_TAB_KEYS = [
   'profile',
   'change-password',
   'set-password',
+  'voice-setting',
 ] as const
 
 export type AccountTabKey = (typeof ACCOUNT_TAB_KEYS)[number]
