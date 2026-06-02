@@ -67,7 +67,7 @@ export default function ProfileTab() {
                   control={form.control}
                   name='avatarId'
                   currentImageUrl={user?.avatarUrl}
-                  fallback={getInitials(user?.fullName)}
+                  fallback={getInitials(user?.fullName || user?.email)}
                   uploadAvatar={async (file) => {
                     const res = await uploadImageMutation.mutateAsync({
                       image: file,

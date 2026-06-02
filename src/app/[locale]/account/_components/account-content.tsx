@@ -7,6 +7,7 @@ import { getAccountTabs } from './account-sidebar'
 import ChangePasswordTab from './change-password-tab'
 import ProfileTab from './profile-tab'
 import SetPasswordTab from './set-password'
+import VoiceSettingTab from './voice-setting-tab'
 
 type AccountContentProps = {
   activeTab: AccountTabKey
@@ -22,6 +23,7 @@ export default function AccountContent({
     profile: t('profile'),
     changePassword: t('change_password'),
     setPassword: t('set_password'),
+    voiceSetting: t('voice_setting'),
   })
   const currentTab = accountTabs.find((tab) => tab.key === activeTab)
 
@@ -35,6 +37,9 @@ export default function AccountContent({
 
       case 'set-password':
         return <SetPasswordTab />
+
+      case 'voice-setting':
+        return <VoiceSettingTab />
 
       default:
         return null

@@ -220,6 +220,7 @@ declare const messages: {
       profile: 'Thông tin cá nhân'
       change_password: 'Đổi mật khẩu'
       set_password: 'Thiết lập mật khẩu'
+      voice_setting: 'Chỉnh giọng đọc'
     }
   }
   not_found: {

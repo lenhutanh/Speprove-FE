@@ -5,7 +5,6 @@ import {
   registerSchema,
   resetPasswordSchema,
   setPasswordSchema,
-  updateProfileSchema,
   verifyOtpSchema,
 } from '@/validations/auth.schema'
 import z from 'zod'
@@ -18,7 +17,6 @@ export type ForgotPasswordType = z.infer<typeof forgotPasswordSchema>
 export type ResetPasswordType = z.infer<typeof resetPasswordSchema>
 export type ChangePasswordType = z.infer<typeof changePasswordSchema>
 export type SetPasswordType = z.infer<typeof setPasswordSchema>
-export type UpdateProfileType = z.infer<typeof updateProfileSchema>
 
 export type AuthStoreType = {
   isAuthenticated: boolean
