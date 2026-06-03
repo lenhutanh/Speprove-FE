@@ -5,24 +5,45 @@ import { Link, usePathname } from '@/i18n/navigation'
 import { useAttemptListQuery } from '@/queries'
 import route from '@/routes'
 import { useAuthStore } from '@/store'
+import { useQueryClient } from '@tanstack/react-query'
 import { CalendarIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useParams } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import HistoryItem from './history-item'
 
-export default function PracticeHistory() {
+export default function PracticeHistory({
+  refreshSignal = 0,
+}: {
+  refreshSignal?: number
+}) {
   const t = useTranslations('practice.history')
   const { questionId } = useParams<{ questionId: string }>()
   const [openAttemptId, setOpenAttemptId] = useState<string | null>(null)
   const { isAuthenticated } = useAuthStore()
+  const queryClient = useQueryClient()
   const { data, isLoading } = useAttemptListQuery({
     enabled: !!questionId && isAuthenticated,
     params: { forecastQuestionId: questionId },
+    refetchInterval: (query) => {
+      const histories = query.state.data?.data ?? []
+
+      return histories.some((item) => [0, 1].includes(item.status))
+        ? 2500
+        : false
+    },
   })
   const histories = data?.data || []
 
   const pathname = usePathname()
+
+  useEffect(() => {
+    if (!refreshSignal || !questionId) return
+
+    queryClient.invalidateQueries({
+      queryKey: ['attempt-list', { forecastQuestionId: questionId }],
+    })
+  }, [queryClient, questionId, refreshSignal])
 
   if (!isAuthenticated) {
     return (

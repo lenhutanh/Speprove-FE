@@ -7,8 +7,9 @@ import { useForecastQuestionQuery } from '@/queries'
 import route from '@/routes'
 import { useAppPreference } from '@/store'
 import { useParams, useSearchParams } from 'next/navigation'
+import { useState } from 'react'
 import PracticeBottomBar from './practice-bottom-bar'
-import PracticeLeft from './practice-left'
+import PracticeLeft, { LeftTab } from './practice-left'
 import PracticeRight from './practice-right'
 
 export default function QuestionPractice() {
@@ -23,13 +24,15 @@ export default function QuestionPractice() {
   const categoryName = searchParams.get('categoryName')
 
   const { voiceId } = useAppPreference()
+  const [leftTab, setLeftTab] = useState<LeftTab>('question')
+  const [historyRefreshSignal, setHistoryRefreshSignal] = useState(0)
   const questionQuery = useForecastQuestionQuery(questionId, voiceId)
   const question = questionQuery.data?.data
 
   if (questionQuery.isLoading) return <PracticeSkeleton />
   if (!question) return null
 
-  const breadcrumbItems = [
+  const breadcrumbItems: { label: string; href?: string }[] = [
     { label: 'Forecast', href: route.forecast },
     {
       label: forecastSlug.split('.')[0],
@@ -51,6 +54,11 @@ export default function QuestionPractice() {
 
   breadcrumbItems.push({ label: question.content })
 
+  const handleAttemptCreated = () => {
+    setLeftTab('history')
+    setHistoryRefreshSignal((signal) => signal + 1)
+  }
+
   return (
     <div
       className='mx-auto flex max-w-[1320px] flex-col'
@@ -59,7 +67,12 @@ export default function QuestionPractice() {
       <Breadcrumb items={breadcrumbItems} />
 
       <div className='flex flex-1 gap-2 overflow-hidden p-2'>
-        <PracticeLeft question={question} />
+        <PracticeLeft
+          question={question}
+          active={leftTab}
+          onActiveChange={setLeftTab}
+          refreshSignal={historyRefreshSignal}
+        />
         <PracticeRight question={question} />
       </div>
 
@@ -73,6 +86,7 @@ export default function QuestionPractice() {
         source={source}
         topicId={topicId}
         categoryName={categoryName}
+        onAttemptCreated={handleAttemptCreated}
       />
     </div>
   )

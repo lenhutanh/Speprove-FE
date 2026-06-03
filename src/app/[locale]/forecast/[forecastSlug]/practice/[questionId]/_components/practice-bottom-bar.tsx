@@ -16,26 +16,20 @@ import {
 } from '@/constants'
 import { useRecorder, useRecordingCountdown } from '@/hooks'
 import { Link, usePathname } from '@/i18n/navigation'
-import { cn } from '@/lib/utils'
-import { useAttemptQuery, useCreateAttemptMutation } from '@/queries'
+import { useCreateAttemptMutation } from '@/queries'
 import { useUploadAudioMutation } from '@/queries/file.query'
 import route from '@/routes'
 import { useAuthStore } from '@/store'
 import { UploadAudioBodyType } from '@/types'
 import { uploadAudioSchema } from '@/validations/file.schema'
-import {
-  CheckCircle2,
-  ChevronLeft,
-  ChevronRight,
-  Send,
-  Trash2,
-} from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
+import { ChevronLeft, ChevronRight, Send, Trash2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
-type Phase = 'idle' | 'recording' | 'recorded' | 'processing'
+type Phase = 'idle' | 'recording' | 'recorded'
 
 interface PracticeBottomBarProps {
   forecastSlug: string
@@ -47,107 +41,20 @@ interface PracticeBottomBarProps {
   source?: string | null
   topicId?: string | null
   categoryName?: string | null
-}
-
-const STATUS_MAP: Record<
-  number,
-  {
-    labelKey: 'preparing' | 'processing' | 'completed' | 'failed'
-    isDone: boolean
-    isFailed: boolean
-  }
-> = {
-  0: { labelKey: 'preparing', isDone: false, isFailed: false },
-  1: { labelKey: 'processing', isDone: false, isFailed: false },
-  2: { labelKey: 'completed', isDone: true, isFailed: false },
-  3: {
-    labelKey: 'failed',
-    isDone: false,
-    isFailed: true,
-  },
-}
-
-function ProcessingStatus({
-  attemptId,
-  onDone,
-  onFailed,
-}: {
-  attemptId: string
-  onDone: () => void
-  onFailed: () => void
-}) {
-  const t = useTranslations('practice.bottom_bar')
-  const [status, setStatus] = useState<number>(0)
-  const { isDone, isFailed, labelKey } = STATUS_MAP[status] ?? STATUS_MAP[0]
-
-  const { data } = useAttemptQuery(attemptId, {
-    refetchInterval: isDone || isFailed ? false : 2500,
-    enabled: !!attemptId,
-  })
-
-  useEffect(() => {
-    if (!data?.data) return
-    const s = data.data.status
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setStatus(s)
-    if (s === 2) onDone()
-    if (s === 3) onFailed()
-  }, [data])
-
-  return (
-    <div className='flex min-w-55 flex-col items-center gap-2'>
-      {!isDone && !isFailed && (
-        <div className='flex items-center gap-2'>
-          <div className='flex items-center gap-1'>
-            {[0, 1, 2].map((i) => (
-              <span
-                key={i}
-                className='h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-400'
-                style={{
-                  animationDelay: `${i * 0.15}s`,
-                  animationDuration: '0.9s',
-                }}
-              />
-            ))}
-          </div>
-          <div className='h-4 w-4 animate-spin rounded-full border-2 border-indigo-200 border-t-indigo-500' />
-        </div>
-      )}
-
-      {isDone && (
-        <CheckCircle2 className='animate-in fade-in zoom-in h-5 w-5 text-emerald-500 duration-300' />
-      )}
-
-      {isFailed && <span className='text-destructive text-lg'>×</span>}
-
-      <p
-        className={cn(
-          'text-center text-xs leading-relaxed transition-all duration-300',
-          isDone
-            ? 'font-medium text-emerald-600'
-            : isFailed
-              ? 'text-destructive'
-              : 'text-muted-foreground',
-        )}
-      >
-        {t(labelKey)}
-      </p>
-    </div>
-  )
+  onAttemptCreated?: (attemptId: string) => void
 }
 
 export default function PracticeBottomBar({
   forecastSlug,
-  topicSlug,
   questionId,
   part = 1,
   prev,
   next,
+  onAttemptCreated,
 }: PracticeBottomBarProps) {
   const t = useTranslations('practice.bottom_bar')
   const [phase, setPhase] = useState<Phase>('idle')
   const [submitting, setSubmitting] = useState(false)
-  const [attemptId, setAttemptId] = useState<string | null>(null)
   const [showBalanceDialog, setShowBalanceDialog] = useState(false)
 
   const blobRef = useRef<Blob | null>(null)
@@ -157,6 +64,7 @@ export default function PracticeBottomBar({
 
   const uploadAudioMutation = useUploadAudioMutation()
   const createAttemptMutation = useCreateAttemptMutation()
+  const queryClient = useQueryClient()
 
   const { isAuthenticated } = useAuthStore()
   const pathname = usePathname()
@@ -300,32 +208,14 @@ export default function PracticeBottomBar({
         return
       }
 
-      setAttemptId(attemptRes.data.id)
-      setPhase('processing')
-
-      if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current = null
-      }
-      blobRef.current = null
+      queryClient.invalidateQueries({ queryKey: ['attempt-list'] })
+      onAttemptCreated?.(attemptRes.data.id)
+      deleteRecording()
     } catch {
       toast.error(t('submit_failed'))
     } finally {
       setSubmitting(false)
     }
-  }
-
-  const handleProcessingDone = () => {
-    setTimeout(() => {
-      deleteRecording()
-      setAttemptId(null)
-    }, 1800)
-  }
-
-  const handleProcessingFailed = () => {
-    toast.error(t('scoring_failed'))
-    setPhase('idle')
-    setAttemptId(null)
   }
 
   return (
@@ -412,14 +302,6 @@ export default function PracticeBottomBar({
                 )}
               </Button>
             </div>
-          )}
-
-          {phase === 'processing' && attemptId && (
-            <ProcessingStatus
-              attemptId={attemptId}
-              onDone={handleProcessingDone}
-              onFailed={handleProcessingFailed}
-            />
           )}
         </div>
 
