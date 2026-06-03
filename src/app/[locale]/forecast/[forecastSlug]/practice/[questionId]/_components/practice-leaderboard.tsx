@@ -19,16 +19,24 @@ interface PracticeLeaderboardProps {
 }
 
 function bandBg(band: number) {
-  if (band >= 7) return 'bg-emerald-50 text-emerald-700'
-  if (band >= 6) return 'bg-amber-50 text-amber-700'
+  if (band >= 7) return 'bg-emerald-50 text-emerald-700 border-emerald-200'
+  if (band >= 6) return 'bg-amber-50 text-amber-700 border-amber-200'
   return 'bg-muted text-muted-foreground'
 }
+
+const SCORE_BADGES = [
+  { key: 'fluency', labelKey: 'fluency' },
+  { key: 'pronunciation', labelKey: 'pronunciation' },
+  { key: 'lexical', labelKey: 'lexical' },
+  { key: 'grammar', labelKey: 'grammar' },
+] as const
 
 export default function PracticeLeaderboard({
   questionId,
 }: PracticeLeaderboardProps) {
   const t = useTranslations('practice.leaderboard')
   const [band, setBand] = useState<6 | 7 | 8>(6)
+  const [openAttemptId, setOpenAttemptId] = useState<string | null>(null)
   const { data, isLoading } = useLeaderboardQuery({
     enabled: !!questionId,
     params: { forecastQuestionId: questionId, band },
@@ -68,7 +76,13 @@ export default function PracticeLeaderboard({
 
         {!isLoading &&
           entries.map((entry, index) => (
-            <LeaderboardItem key={entry.id} entry={entry} rank={index + 1} />
+            <LeaderboardItem
+              key={entry.id}
+              entry={entry}
+              rank={index + 1}
+              open={openAttemptId === entry.id}
+              onOpenChange={(open) => setOpenAttemptId(open ? entry.id : null)}
+            />
           ))}
       </div>
     </div>
@@ -78,22 +92,26 @@ export default function PracticeLeaderboard({
 function LeaderboardItem({
   entry,
   rank,
+  open,
+  onOpenChange,
 }: {
   entry: AttemptLeaderBoardType
   rank: number
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }) {
-  const [open, setOpen] = useState(false)
-
+  const tCriteria = useTranslations('practice.attempt.criteria')
   const timeAgo = formatDistanceToNow(new Date(entry.createdAt), {
     addSuffix: true,
     locale: vi,
   })
+  const overall = entry.scores.overall
 
   return (
     <div
       className={cn(
         'border-border/60 overflow-hidden rounded-lg border transition-colors',
-        open && 'border-border',
+        open ? 'border-foreground/40' : 'border-border/60',
       )}
     >
       <div className='flex items-center gap-3 px-3 py-2.5'>
@@ -110,15 +128,15 @@ function LeaderboardItem({
           {rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank}
         </span>
 
-        <Avatar>
+        <Avatar className='size-10'>
           <AvatarImage src={entry.user.avatar} alt={entry.user.fullName} />
-          <AvatarFallback className='text-xs font-semibold'>
+          <AvatarFallback className='text-sm font-semibold'>
             {getInitials(entry.user.fullName)}
           </AvatarFallback>
         </Avatar>
 
         <div className='min-w-0 flex-1'>
-          <p className='truncate text-xs font-medium text-slate-800'>
+          <p className='truncate text-sm font-medium text-slate-800'>
             {entry.user.fullName}
           </p>
           <p className='text-muted-foreground text-[10px]'>{timeAgo}</p>
@@ -127,14 +145,14 @@ function LeaderboardItem({
         <span
           className={cn(
             'flex-shrink-0 rounded px-1.5 py-0.5 text-xs font-semibold',
-            bandBg(entry.band),
+            bandBg(overall ?? 0),
           )}
         >
-          {entry.scores.overall}
+          {overall}
         </span>
 
         <button
-          onClick={() => setOpen((v) => !v)}
+          onClick={() => onOpenChange(!open)}
           className='text-muted-foreground flex-shrink-0'
         >
           {open ? (
@@ -146,13 +164,33 @@ function LeaderboardItem({
       </div>
 
       {open && (
-        <div className='border-border bg-muted/30 border-t px-4 pb-3'>
-          <div className='border-border mb-2 border-b py-2'>
+        <div className='border-border bg-muted/30 border-t'>
+          <div className='border-border border-b px-4 py-2'>
             <AudioPlayer url={entry.audioUrl} variant='full' />
           </div>
 
-          <p className='text-muted-foreground text-[11px] leading-relaxed italic'>
-            &quot;{entry.transcript}&quot;
+          <div className='flex flex-wrap gap-3 border-b px-4 py-2'>
+            {SCORE_BADGES.map(({ key, labelKey }) => {
+              const score = entry.scores[key]
+
+              if (score == null) return null
+
+              return (
+                <span
+                  key={key}
+                  className={cn(
+                    'rounded-full border px-3 py-0.5 text-sm font-medium',
+                    bandBg(score),
+                  )}
+                >
+                  {tCriteria(labelKey)} {score}
+                </span>
+              )
+            })}
+          </div>
+
+          <p className='px-4 py-2 text-sm leading-relaxed'>
+            {entry.transcript}
           </p>
         </div>
       )}

@@ -1,5 +1,7 @@
 import attemptApiRequest from '@/api-requests/attempt.api-request'
 import {
+  ApiResponse,
+  AttemptListItem,
   AttemptQueryType,
   CreateAttemptBodyType,
   GetLeaderboardQueryType,
@@ -28,14 +30,22 @@ export const useAttemptQuery = (
 export const useAttemptListQuery = ({
   enabled = false,
   params,
+  refetchInterval,
 }: {
   enabled: boolean
   params: AttemptQueryType
+  refetchInterval?:
+    | number
+    | false
+    | ((query: {
+        state: { data?: ApiResponse<AttemptListItem[]> }
+      }) => number | false)
 }) => {
   return useQuery({
     queryKey: ['attempt-list', params],
     queryFn: () => attemptApiRequest.getList(params),
     enabled,
+    refetchInterval,
   })
 }
 

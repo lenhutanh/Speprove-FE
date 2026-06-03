@@ -29,6 +29,41 @@ interface HistoryItemProps {
   onOpenChange: (open: boolean) => void
 }
 
+function getAttemptStatusMeta(status: number) {
+  switch (status) {
+    case 0:
+      return {
+        labelKey: 'status_preparing',
+        dot: 'bg-muted-foreground',
+        pill: 'bg-muted text-muted-foreground',
+      } as const
+    case 1:
+      return {
+        labelKey: 'status_processing',
+        dot: 'bg-indigo-400',
+        pill: 'bg-indigo-50 text-indigo-700',
+      } as const
+    case 2:
+      return {
+        labelKey: 'status_completed',
+        dot: 'bg-emerald-500',
+        pill: 'bg-emerald-50 text-emerald-700',
+      } as const
+    case 3:
+      return {
+        labelKey: 'status_failed',
+        dot: 'bg-red-500',
+        pill: 'bg-red-50 text-red-700',
+      } as const
+    default:
+      return {
+        labelKey: 'status_processing',
+        dot: 'bg-muted-foreground',
+        pill: 'bg-muted text-muted-foreground',
+      } as const
+  }
+}
+
 export default function HistoryItem({
   history,
   open,
@@ -38,10 +73,14 @@ export default function HistoryItem({
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
   const toggleShareMutation = useToggleShareMutation()
   const queryClient = useQueryClient()
+  const status = history.status
+  const isCompleted = status === 2
+  const isFailed = status === 3
+  const statusMeta = getAttemptStatusMeta(status)
   const { data: detailRes, isLoading: isDetailLoading } = useAttemptQuery(
     history.id,
     {
-      enabled: open,
+      enabled: open && isCompleted,
     },
   )
 
@@ -99,11 +138,11 @@ export default function HistoryItem({
             <div
               className={cn(
                 'h-2 w-2 flex-shrink-0 rounded-full',
-                overallColor.dot,
+                isCompleted ? overallColor.dot : statusMeta.dot,
               )}
             />
             <span className='text-muted-foreground text-sm'>{timeAgo}</span>
-            {overall != null && (
+            {isCompleted && overall != null ? (
               <span
                 className={cn(
                   'rounded px-1.5 py-0.5 text-sm font-medium',
@@ -112,25 +151,36 @@ export default function HistoryItem({
               >
                 Band {overall}
               </span>
+            ) : (
+              <span
+                className={cn(
+                  'rounded px-1.5 py-0.5 text-sm font-medium',
+                  statusMeta.pill,
+                )}
+              >
+                {t(statusMeta.labelKey)}
+              </span>
             )}
           </div>
 
           <div className='flex items-center gap-4'>
-            <Badge
-              variant={history.isPublic ? 'default' : 'secondary'}
-              className='cursor-pointer gap-1 rounded-full'
-              onClick={(e) => {
-                e.stopPropagation()
-                setShareDialogOpen(true)
-              }}
-            >
-              {history.isPublic ? (
-                <Globe className='h-3 w-3' />
-              ) : (
-                <Lock className='h-3 w-3' />
-              )}
-              {history.isPublic ? t('public') : t('private')}
-            </Badge>
+            {isCompleted && (
+              <Badge
+                variant={history.isPublic ? 'default' : 'secondary'}
+                className='cursor-pointer gap-1 rounded-full'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setShareDialogOpen(true)
+                }}
+              >
+                {history.isPublic ? (
+                  <Globe className='h-3 w-3' />
+                ) : (
+                  <Lock className='h-3 w-3' />
+                )}
+                {history.isPublic ? t('public') : t('private')}
+              </Badge>
+            )}
             {open ? (
               <ChevronDown className='text-muted-foreground h-3.5 w-3.5' />
             ) : (
@@ -147,13 +197,24 @@ export default function HistoryItem({
               </div>
             )}
 
-            {isDetailLoading && (
+            {!isCompleted && (
+              <div
+                className={cn(
+                  'px-3 py-3 text-sm',
+                  isFailed ? 'text-red-700' : 'text-muted-foreground',
+                )}
+              >
+                {t(statusMeta.labelKey)}
+              </div>
+            )}
+
+            {isCompleted && isDetailLoading && (
               <div className='text-muted-foreground px-3 py-3 text-sm'>
                 {t('loading_analysis')}
               </div>
             )}
 
-            {!isDetailLoading && (
+            {isCompleted && !isDetailLoading && (
               <>
                 {detail && <AttemptDetailTabs detail={detail} />}
                 {!detail && (

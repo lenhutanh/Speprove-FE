@@ -5,18 +5,24 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { ForecastQuestionType } from '@/types'
 import { useTranslations } from 'next-intl'
-import { useState } from 'react'
 import PracticeHistory from './practice-history'
 
 interface PracticeLeftProps {
   question: ForecastQuestionType
+  active: LeftTab
+  onActiveChange: (tab: LeftTab) => void
+  refreshSignal: number
 }
 
-type LeftTab = 'question' | 'history'
+export type LeftTab = 'question' | 'history'
 
-export default function PracticeLeft({ question }: PracticeLeftProps) {
+export default function PracticeLeft({
+  question,
+  active,
+  onActiveChange,
+  refreshSignal,
+}: PracticeLeftProps) {
   const t = useTranslations('practice.tabs')
-  const [active, setActive] = useState<LeftTab>('question')
   const tabs: { key: LeftTab; label: string }[] = [
     { key: 'question', label: t('question') },
     { key: 'history', label: t('history') },
@@ -28,7 +34,7 @@ export default function PracticeLeft({ question }: PracticeLeftProps) {
         {tabs.map((tab) => (
           <button
             key={tab.key}
-            onClick={() => setActive(tab.key)}
+            onClick={() => onActiveChange(tab.key)}
             className={cn(
               'relative px-4 py-2.5 text-sm font-medium transition-colors',
               active === tab.key
@@ -43,7 +49,9 @@ export default function PracticeLeft({ question }: PracticeLeftProps) {
 
       <div className='flex-1 overflow-hidden'>
         {active === 'question' && <QuestionTab question={question} />}
-        {active === 'history' && <PracticeHistory />}
+        {active === 'history' && (
+          <PracticeHistory refreshSignal={refreshSignal} />
+        )}
       </div>
     </div>
   )
