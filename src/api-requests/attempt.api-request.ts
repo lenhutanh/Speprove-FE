@@ -1,11 +1,15 @@
 import { apiConfig } from '@/constants'
 import {
   ApiResponse,
+  AttemptDetail,
   AttemptLeaderBoardType,
+  AttemptListItem,
   AttemptQueryType,
   AttemptResponseDto,
+  AttemptWordAudioResponse,
   CreateAttemptBodyType,
   GetLeaderboardQueryType,
+  GetWordAudioQueryType,
 } from '@/types'
 import { http } from '@/utils'
 
@@ -15,11 +19,11 @@ const attemptApiRequest = {
       body,
     }),
   getDetails: (id: string) =>
-    http.get<ApiResponse<AttemptResponseDto>>(apiConfig.attempt.getById, {
+    http.get<ApiResponse<AttemptDetail>>(apiConfig.attempt.getById, {
       pathParams: { id },
     }),
   getList: (params: AttemptQueryType) =>
-    http.get<ApiResponse<AttemptResponseDto[]>>(apiConfig.attempt.getList, {
+    http.get<ApiResponse<AttemptListItem[]>>(apiConfig.attempt.getList, {
       params,
     }),
   getLeaderBoard: (params: GetLeaderboardQueryType) =>
@@ -34,6 +38,14 @@ const attemptApiRequest = {
       pathParams: { id },
       body: { isPublic },
     }),
+  getWordAudio: (id: string, params: GetWordAudioQueryType) =>
+    http.get<ApiResponse<AttemptWordAudioResponse>>(
+      apiConfig.attempt.getWordAudio,
+      {
+        pathParams: { id },
+        params,
+      },
+    ),
 }
 
 export default attemptApiRequest

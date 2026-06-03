@@ -7,10 +7,12 @@ import route from '@/routes'
 import { useAuthStore } from '@/store'
 import { CalendarIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
+import { useState } from 'react'
 import HistoryItem from './history-item'
 
 export default function PracticeHistory() {
   const { questionId } = useParams<{ questionId: string }>()
+  const [openAttemptId, setOpenAttemptId] = useState<string | null>(null)
   const { isAuthenticated } = useAuthStore()
   const { data, isLoading } = useAttemptListQuery({
     enabled: !!questionId && isAuthenticated,
@@ -58,7 +60,14 @@ export default function PracticeHistory() {
       )}
 
       {!isLoading &&
-        histories.map((h) => <HistoryItem key={h.id} history={h} />)}
+        histories.map((h) => (
+          <HistoryItem
+            key={h.id}
+            history={h}
+            open={openAttemptId === h.id}
+            onOpenChange={(open) => setOpenAttemptId(open ? h.id : null)}
+          />
+        ))}
     </div>
   )
 }

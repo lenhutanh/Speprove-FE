@@ -296,16 +296,8 @@ export const AudioPlayer = ({
   }
 
   return (
-    <div className={cn('flex w-full items-center gap-2', className)}>
+    <div className={cn('flex w-full items-center gap-4', className)}>
       {PlayBtn}
-
-      {/* Current time — updated via ref, no re-render */}
-      <span
-        ref={currentTimeRef}
-        className='text-muted-foreground w-7 text-xs font-medium tabular-nums'
-      >
-        0:00
-      </span>
 
       {/* Seek bar */}
       <div
@@ -346,10 +338,17 @@ export const AudioPlayer = ({
         />
       </div>
 
-      {/* Total duration — fixed */}
-      <span className='text-muted-foreground w-7 text-right text-xs font-medium tabular-nums'>
-        {duration}
-      </span>
+      <div className='text-muted-foreground flex items-center gap-1 text-xs font-medium tabular-nums'>
+        {/* Current time — updated via ref, no re-render */}
+        <span ref={currentTimeRef} className='w-fit text-right'>
+          0:00
+        </span>
+
+        <span className='text-center'>/</span>
+
+        {/* Total duration — fixed */}
+        <span className='w-fit text-left'>{duration}</span>
+      </div>
     </div>
   )
 }

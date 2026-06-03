@@ -15,3 +15,7 @@ export const getLeaderboardQuerySchema = z.object({
   forecastQuestionId: z.string(),
   band: z.coerce.number().int().min(6).max(8),
 })
+
+export const getWordAudioQuerySchema = z.object({
+  wordIndex: z.coerce.number().int().min(0),
+})
