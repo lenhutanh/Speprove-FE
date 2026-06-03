@@ -3,6 +3,7 @@ import {
   AttemptQueryType,
   CreateAttemptBodyType,
   GetLeaderboardQueryType,
+  GetWordAudioQueryType,
 } from '@/types'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
@@ -56,6 +57,22 @@ export const useLeaderboardQuery = ({
   return useQuery({
     queryKey: ['leaderboard', params],
     queryFn: () => attemptApiRequest.getLeaderBoard(params),
+    enabled,
+  })
+}
+
+export const useGetWordAudioQuery = ({
+  enabled,
+  id,
+  params,
+}: {
+  enabled: boolean
+  id: string
+  params: GetWordAudioQueryType
+}) => {
+  return useQuery({
+    queryKey: ['attempt-word-audio', id, params],
+    queryFn: () => attemptApiRequest.getWordAudio(id, params),
     enabled,
   })
 }

@@ -163,6 +163,11 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
     },
+    getWordAudio: {
+      baseUrl: `${AppConstants.apiUrl}v1/attempt/:id/word-audio`,
+      method: 'GET',
+      headers: baseHeader,
+    },
   },
   voice: {
     getDefault: {
