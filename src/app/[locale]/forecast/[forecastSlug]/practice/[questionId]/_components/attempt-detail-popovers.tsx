@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { useGetWordAudioQuery } from '@/queries'
 import { AttemptWordAssessment } from '@/types'
 import { ArrowRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { PauseIssue, RangeIssue } from './attempt-detail-types'
 
 function scorePillClass(score?: number) {
@@ -25,6 +26,7 @@ export function PronunciationPopover({
   word: AttemptWordAssessment
   audioUrl?: string
 }) {
+  const t = useTranslations('practice.attempt.popover')
   const { data: expectedAudioRes, isLoading: isExpectedAudioLoading } =
     useGetWordAudioQuery({
       id: attemptId,
@@ -51,7 +53,7 @@ export function PronunciationPopover({
         {word.expectedIpa && (
           <div className='flex items-center justify-between'>
             <div>
-              Expected:{' '}
+              {t('expected')}:{' '}
               <span className='text-foreground font-mono'>
                 /{word.expectedIpa}/
               </span>
@@ -67,7 +69,7 @@ export function PronunciationPopover({
         {word.spokenIpa && (
           <div className='flex items-center justify-between'>
             <div>
-              Spoken:{' '}
+              {t('spoken')}:{' '}
               <span className='text-foreground font-mono'>
                 /{word.spokenIpa}/
               </span>
@@ -89,10 +91,14 @@ export function PronunciationPopover({
 }
 
 export function FluencyPopover({ pause }: { pause: PauseIssue }) {
+  const t = useTranslations('practice.attempt.popover')
+
   return (
     <div className='space-y-2'>
       <div className='flex items-center justify-between gap-2'>
-        <span className='text-foreground text-sm font-medium'>Pause</span>
+        <span className='text-foreground text-sm font-medium'>
+          {t('pause')}
+        </span>
         {pause.duration != null && (
           <span className='rounded-full bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-700'>
             {pause.duration.toFixed(2)}s

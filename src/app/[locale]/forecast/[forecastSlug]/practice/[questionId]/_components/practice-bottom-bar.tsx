@@ -30,11 +30,10 @@ import {
   Send,
   Trash2,
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
-
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 type Phase = 'idle' | 'recording' | 'recorded' | 'processing'
 
@@ -52,19 +51,21 @@ interface PracticeBottomBarProps {
 
 const STATUS_MAP: Record<
   number,
-  { label: string; isDone: boolean; isFailed: boolean }
+  {
+    labelKey: 'preparing' | 'processing' | 'completed' | 'failed'
+    isDone: boolean
+    isFailed: boolean
+  }
 > = {
-  0: { label: 'Đang chuẩn bị...', isDone: false, isFailed: false },
-  1: { label: 'Đang xử lý...', isDone: false, isFailed: false },
-  2: { label: 'Hoàn thành!', isDone: true, isFailed: false },
+  0: { labelKey: 'preparing', isDone: false, isFailed: false },
+  1: { labelKey: 'processing', isDone: false, isFailed: false },
+  2: { labelKey: 'completed', isDone: true, isFailed: false },
   3: {
-    label: 'Có lỗi xảy ra, vui lòng thử lại.',
+    labelKey: 'failed',
     isDone: false,
     isFailed: true,
   },
 }
-
-// ─── ProcessingStatus ─────────────────────────────────────────────────────────
 
 function ProcessingStatus({
   attemptId,
@@ -75,8 +76,9 @@ function ProcessingStatus({
   onDone: () => void
   onFailed: () => void
 }) {
+  const t = useTranslations('practice.bottom_bar')
   const [status, setStatus] = useState<number>(0)
-  const { isDone, isFailed, label } = STATUS_MAP[status] ?? STATUS_MAP[0]
+  const { isDone, isFailed, labelKey } = STATUS_MAP[status] ?? STATUS_MAP[0]
 
   const { data } = useAttemptQuery(attemptId, {
     refetchInterval: isDone || isFailed ? false : 2500,
@@ -116,7 +118,7 @@ function ProcessingStatus({
         <CheckCircle2 className='animate-in fade-in zoom-in h-5 w-5 text-emerald-500 duration-300' />
       )}
 
-      {isFailed && <span className='text-destructive text-lg'>✕</span>}
+      {isFailed && <span className='text-destructive text-lg'>×</span>}
 
       <p
         className={cn(
@@ -128,13 +130,11 @@ function ProcessingStatus({
               : 'text-muted-foreground',
         )}
       >
-        {label}
+        {t(labelKey)}
       </p>
     </div>
   )
 }
-
-// ─── PracticeBottomBar ────────────────────────────────────────────────────────
 
 export default function PracticeBottomBar({
   forecastSlug,
@@ -144,6 +144,7 @@ export default function PracticeBottomBar({
   prev,
   next,
 }: PracticeBottomBarProps) {
+  const t = useTranslations('practice.bottom_bar')
   const [phase, setPhase] = useState<Phase>('idle')
   const [submitting, setSubmitting] = useState(false)
   const [attemptId, setAttemptId] = useState<string | null>(null)
@@ -211,14 +212,14 @@ export default function PracticeBottomBar({
     if (!isAuthenticated) {
       toast.error(
         <p>
-          Vui lòng&nbsp;
+          {t('login_prefix')}&nbsp;
           <Link
             href={`${route.login}?returnUrl=${encodeURIComponent(pathname)}`}
             className='text-primary'
           >
-            đăng nhập
+            {t('login_link')}
           </Link>
-          &nbsp;để luyện tập
+          &nbsp;{t('login_suffix')}
         </p>,
       )
       return
@@ -257,13 +258,12 @@ export default function PracticeBottomBar({
     if (!blob) return
 
     if (blob.size < 1000) {
-      toast.error('Bài nói quá ngắn, vui lòng thử lại.')
+      toast.error(t('too_short'))
       return
     }
 
     setSubmitting(true)
 
-    // 1. Upload audio — bỏ qua nếu đã upload thành công trước đó
     if (!audioFileIdRef.current) {
       const file = new File([blob], 'recording.webm', { type: 'audio/webm' })
       const payload: UploadAudioBodyType = {
@@ -282,7 +282,7 @@ export default function PracticeBottomBar({
         const uploadRes = await uploadAudioMutation.mutateAsync(payload)
         audioFileIdRef.current = uploadRes.data.id
       } catch {
-        toast.error('Tải file lên thất bại, vui lòng thử lại.')
+        toast.error(t('upload_failed'))
         setSubmitting(false)
         return
       }
@@ -309,7 +309,7 @@ export default function PracticeBottomBar({
       }
       blobRef.current = null
     } catch {
-      toast.error('Gửi bài thất bại, vui lòng thử lại.')
+      toast.error(t('submit_failed'))
     } finally {
       setSubmitting(false)
     }
@@ -323,7 +323,7 @@ export default function PracticeBottomBar({
   }
 
   const handleProcessingFailed = () => {
-    toast.error('Chấm điểm thất bại. Vui lòng thử lại.')
+    toast.error(t('scoring_failed'))
     setPhase('idle')
     setAttemptId(null)
   }
@@ -337,7 +337,6 @@ export default function PracticeBottomBar({
       />
 
       <div className='bg-background flex h-26 shrink-0 items-center justify-between px-6'>
-        {/* Prev */}
         {prev ? (
           <Tooltip>
             <TooltipTrigger asChild>
@@ -346,7 +345,7 @@ export default function PracticeBottomBar({
                   href={`/forecast/${forecastSlug}/practice/${prev.id}${queryString}`}
                 >
                   <ChevronLeft className='h-3.5 w-3.5' />
-                  Câu trước
+                  {t('previous_question')}
                 </Link>
               </Button>
             </TooltipTrigger>
@@ -356,7 +355,6 @@ export default function PracticeBottomBar({
           <div className='w-24' />
         )}
 
-        {/* Center controls */}
         <div className='flex flex-col items-center gap-1'>
           {phase === 'idle' && (
             <RecordButton
@@ -380,7 +378,7 @@ export default function PracticeBottomBar({
                 onStart={handleStartRecording}
                 onStop={handleStopRecording}
                 disabled={!canStop}
-                disabledTooltip='Nói ít nhất 10 giây'
+                disabledTooltip={t('min_speaking_time')}
                 statusText=''
               />
             </div>
@@ -425,7 +423,6 @@ export default function PracticeBottomBar({
           )}
         </div>
 
-        {/* Next */}
         {next ? (
           <Tooltip>
             <TooltipTrigger asChild>
@@ -433,7 +430,7 @@ export default function PracticeBottomBar({
                 <Link
                   href={`/forecast/${forecastSlug}/practice/${next.id}${queryString}`}
                 >
-                  Câu sau
+                  {t('next_question')}
                   <ChevronRight className='h-3.5 w-3.5' />
                 </Link>
               </Button>

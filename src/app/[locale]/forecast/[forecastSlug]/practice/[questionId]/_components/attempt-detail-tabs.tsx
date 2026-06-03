@@ -2,6 +2,7 @@
 
 import { cn } from '@/lib/utils'
 import { AttemptDetail } from '@/types'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { PronunciationPopover } from './attempt-detail-popovers'
 import { PauseToken, RangeToken, WordToken } from './attempt-detail-tokens'
@@ -23,6 +24,8 @@ import {
 import { AttemptFluencySummary } from './attempt-fluency-summary'
 
 export function AttemptDetailTabs({ detail }: { detail: AttemptDetail }) {
+  const tAttempt = useTranslations('practice.attempt')
+  const tCriteria = useTranslations('practice.attempt.criteria')
   const [activeTab, setActiveTab] = useState<CriteriaTab>('fluency')
   const words =
     detail.wordAssessments?.length != null && detail.wordAssessments.length > 0
@@ -125,13 +128,13 @@ export function AttemptDetailTabs({ detail }: { detail: AttemptDetail }) {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={cn(
-                '-mb-px flex flex-shrink-0 items-center gap-1.5 border-b-2 px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors',
+                '-mb-px flex flex-shrink-0 items-center gap-1.5 border-b-2 px-3 py-2 text-base font-medium whitespace-nowrap transition-colors',
                 isActive
                   ? 'border-emerald-500 text-emerald-700'
                   : 'text-muted-foreground hover:text-foreground border-transparent',
               )}
             >
-              {TAB_LABELS[tab]}
+              {tCriteria(tab)}
               {score != null && (
                 <span
                   className={cn(
@@ -159,7 +162,7 @@ export function AttemptDetailTabs({ detail }: { detail: AttemptDetail }) {
 
         <div className='px-3 py-2.5'>
           <p className='text-muted-foreground mb-2 text-[10px] font-medium tracking-wide uppercase'>
-            Transcript
+            {tAttempt('transcript')}
           </p>
           <div className='text-foreground text-sm leading-[2.5]'>
             {activeTab === 'lexical' || activeTab === 'grammar'

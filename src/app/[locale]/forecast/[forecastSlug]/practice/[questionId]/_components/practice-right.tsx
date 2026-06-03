@@ -2,6 +2,7 @@
 
 import { cn } from '@/lib/utils'
 import { ForecastQuestionType } from '@/types'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import AIAssistant from './ai-assistant'
 import PracticeLeaderboard from './practice-leaderboard'
@@ -12,20 +13,20 @@ interface PracticeRightProps {
 
 type RightTab = 'ai' | 'leaderboard'
 
-const TABS: { key: RightTab; label: string }[] = [
-  { key: 'ai', label: 'Trợ lý AI' },
-  { key: 'leaderboard', label: 'Bảng vàng' },
-]
-
-const AI_OPTIONS = [
-  { key: 'improve', label: 'Cải thiện câu trả lời' },
-  { key: 'vocabulary', label: 'Gợi ý từ vựng nâng cao' },
-  { key: 'ideas', label: 'Ý tưởng mở rộng câu trả lời' },
-]
-
 export default function PracticeRight({ question }: PracticeRightProps) {
+  const tTabs = useTranslations('practice.tabs')
+  const tAI = useTranslations('practice.ai')
   const [active, setActive] = useState<RightTab>('ai')
   const [loading, setLoading] = useState(false)
+  const tabs: { key: RightTab; label: string }[] = [
+    { key: 'ai', label: tTabs('ai') },
+    { key: 'leaderboard', label: tTabs('leaderboard') },
+  ]
+  const aiOptions = [
+    { key: 'improve', label: tAI('improve') },
+    { key: 'vocabulary', label: tAI('vocabulary') },
+    { key: 'ideas', label: tAI('ideas') },
+  ]
 
   async function handleOption(_key: string, _label: string) {
     setLoading(true)
@@ -33,9 +34,8 @@ export default function PracticeRight({ question }: PracticeRightProps) {
 
   return (
     <div className='border-border flex flex-1 flex-col overflow-hidden rounded-xl border bg-white shadow-sm'>
-      {/* Tab bar */}
       <div className='border-border bg-muted/40 flex flex-shrink-0 border-b'>
-        {TABS.map((tab) => (
+        {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActive(tab.key)}
@@ -51,11 +51,10 @@ export default function PracticeRight({ question }: PracticeRightProps) {
         ))}
       </div>
 
-      {/* Tab content */}
       <div className='flex flex-1 flex-col overflow-hidden'>
         {active === 'ai' && (
           <AIAssistant
-            options={AI_OPTIONS}
+            options={aiOptions}
             loading={loading}
             onOption={handleOption}
           />
