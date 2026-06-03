@@ -224,5 +224,86 @@
     "title": "Không tìm thấy trang",
     "description": "Đường dẫn bạn truy cập không tồn tại hoặc đã bị xóa.",
     "back_home": "Quay lại trang chủ"
+  },
+  "practice": {
+    "tabs": {
+      "question": "Câu hỏi",
+      "history": "Lịch sử luyện tập",
+      "ai": "Trợ lý AI",
+      "leaderboard": "Bảng vàng"
+    },
+    "history": {
+      "login_prefix": "Vui lòng",
+      "login_link": "đăng nhập",
+      "login_suffix": "để xem",
+      "login_history": "lịch sử luyện tập của bạn.",
+      "empty": "Chưa có lịch sử luyện tập.",
+      "empty_hint": "Hãy ghi âm câu đầu tiên!",
+      "public": "Công khai",
+      "private": "Riêng tư",
+      "loading_analysis": "Đang tải phân tích...",
+      "empty_detail": "Chưa có dữ liệu phân tích chi tiết.",
+      "make_private_title": "Chuyển sang riêng tư?",
+      "make_public_title": "Chuyển sang công khai?",
+      "make_private_desc": "Bài làm này sẽ không còn hiển thị với người dùng khác.",
+      "make_public_desc": "Bài làm này sẽ hiển thị với người dùng khác.",
+      "cancel": "Hủy",
+      "confirm": "Xác nhận"
+    },
+    "ai": {
+      "improve": "Cải thiện câu trả lời",
+      "vocabulary": "Gợi ý từ vựng nâng cao",
+      "ideas": "Ý tưởng mở rộng câu trả lời",
+      "analyzing": "Đang phân tích..."
+    },
+    "leaderboard": {
+      "empty": "Chưa có bài nào được chia sẻ.",
+      "empty_hint": "Hãy là người đầu tiên!"
+    },
+    "bottom_bar": {
+      "preparing": "Đang chuẩn bị...",
+      "processing": "Đang xử lý...",
+      "completed": "Hoàn thành!",
+      "failed": "Có lỗi xảy ra, vui lòng thử lại.",
+      "login_prefix": "Vui lòng",
+      "login_link": "đăng nhập",
+      "login_suffix": "để luyện tập",
+      "too_short": "Bài nói quá ngắn, vui lòng thử lại.",
+      "upload_failed": "Tải file lên thất bại, vui lòng thử lại.",
+      "submit_failed": "Gửi bài thất bại, vui lòng thử lại.",
+      "scoring_failed": "Chấm điểm thất bại. Vui lòng thử lại.",
+      "previous_question": "Câu trước",
+      "next_question": "Câu sau",
+      "min_speaking_time": "Nói ít nhất 10 giây"
+    },
+    "attempt": {
+      "criteria": {
+        "fluency": "Trôi chảy",
+        "pronunciation": "Phát âm",
+        "lexical": "Từ vựng",
+        "grammar": "Ngữ pháp"
+      },
+      "fluency": {
+        "speech_rate": "Tốc độ nói",
+        "long_pauses": "Ngắt nghỉ dài",
+        "repetitions": "Lặp từ",
+        "no_data": "Chưa có dữ liệu",
+        "slow": "Chậm",
+        "fast": "Nhanh",
+        "good": "Tốt",
+        "smooth": "Mượt",
+        "some_pauses": "Có vài lần ngắt",
+        "many_pauses": "Ngắt nhiều",
+        "low_repeats": "Ít lặp",
+        "some_repeats": "Có lặp",
+        "many_repeats": "Lặp nhiều"
+      },
+      "transcript": "Bài nói",
+      "popover": {
+        "expected": "Mẫu",
+        "spoken": "Bạn nói",
+        "pause": "Ngắt nghỉ"
+      }
+    }
   }
 }

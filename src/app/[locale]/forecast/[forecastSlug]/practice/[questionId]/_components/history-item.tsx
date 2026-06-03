@@ -19,6 +19,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { formatDistanceToNow } from 'date-fns'
 import { vi } from 'date-fns/locale'
 import { ChevronDown, ChevronRight, Globe, Lock } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { AttemptDetailTabs } from './attempt-detail-tabs'
 
@@ -33,6 +34,7 @@ export default function HistoryItem({
   open,
   onOpenChange,
 }: HistoryItemProps) {
+  const t = useTranslations('practice.history')
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
   const toggleShareMutation = useToggleShareMutation()
   const queryClient = useQueryClient()
@@ -127,7 +129,7 @@ export default function HistoryItem({
               ) : (
                 <Lock className='h-3 w-3' />
               )}
-              {history.isPublic ? 'Public' : 'Private'}
+              {history.isPublic ? t('public') : t('private')}
             </Badge>
             {open ? (
               <ChevronDown className='text-muted-foreground h-3.5 w-3.5' />
@@ -147,7 +149,7 @@ export default function HistoryItem({
 
             {isDetailLoading && (
               <div className='text-muted-foreground px-3 py-3 text-sm'>
-                Loading analysis...
+                {t('loading_analysis')}
               </div>
             )}
 
@@ -156,7 +158,7 @@ export default function HistoryItem({
                 {detail && <AttemptDetailTabs detail={detail} />}
                 {!detail && (
                   <div className='text-muted-foreground px-3 py-3 text-sm'>
-                    Chua co du lieu phan tich chi tiet.
+                    {t('empty_detail')}
                   </div>
                 )}
               </>
@@ -169,21 +171,23 @@ export default function HistoryItem({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {history.isPublic ? 'Make this private?' : 'Make this public?'}
+              {history.isPublic
+                ? t('make_private_title')
+                : t('make_public_title')}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {history.isPublic
-                ? 'This attempt will no longer be visible to other users.'
-                : 'This attempt will be visible to other users.'}
+                ? t('make_private_desc')
+                : t('make_public_desc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={onToggleShare}
               disabled={toggleShareMutation.isPending}
             >
-              Confirm
+              {t('confirm')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

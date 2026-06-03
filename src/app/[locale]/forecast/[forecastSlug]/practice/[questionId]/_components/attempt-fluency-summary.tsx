@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils'
 import { AttemptFluencyMetrics } from '@/types'
+import { useTranslations } from 'next-intl'
 import { PauseIssue } from './attempt-detail-types'
 
 type MetricTone = 'good' | 'minor' | 'major'
@@ -11,6 +12,22 @@ type MetricItem = {
   tone: MetricTone
 }
 
+type FluencyLabels = {
+  speechRate: string
+  longPauses: string
+  repetitions: string
+  noData: string
+  slow: string
+  fast: string
+  good: string
+  smooth: string
+  somePauses: string
+  manyPauses: string
+  lowRepeats: string
+  someRepeats: string
+  manyRepeats: string
+}
+
 function toneClass(tone: MetricTone) {
   return {
     good: 'bg-emerald-50 text-emerald-700 border-emerald-100',
@@ -19,72 +36,79 @@ function toneClass(tone: MetricTone) {
   }[tone]
 }
 
-function getSpeechRateMetric(speechRate?: number): MetricItem {
+function getSpeechRateMetric(
+  labels: FluencyLabels,
+  speechRate?: number,
+): MetricItem {
   if (speechRate == null) {
     return {
-      label: 'Speech rate',
+      label: labels.speechRate,
       value: '-',
-      status: 'No data',
+      status: labels.noData,
       tone: 'minor',
     }
   }
 
   if (speechRate < 80) {
     return {
-      label: 'Speech rate',
+      label: labels.speechRate,
       value: `${Math.round(speechRate)} wpm`,
-      status: 'Slow',
+      status: labels.slow,
       tone: 'major',
     }
   }
 
   if (speechRate > 170) {
     return {
-      label: 'Speech rate',
+      label: labels.speechRate,
       value: `${Math.round(speechRate)} wpm`,
-      status: 'Fast',
+      status: labels.fast,
       tone: 'minor',
     }
   }
 
   return {
-    label: 'Speech rate',
+    label: labels.speechRate,
     value: `${Math.round(speechRate)} wpm`,
-    status: 'Good',
+    status: labels.good,
     tone: 'good',
   }
 }
 
-function getPauseMetric(pauses: PauseIssue[]): MetricItem {
+function getPauseMetric(
+  labels: FluencyLabels,
+  pauses: PauseIssue[],
+): MetricItem {
   const count = pauses.length
 
   if (count <= 1) {
     return {
-      label: 'Long pauses',
+      label: labels.longPauses,
       value: String(count),
-      status: 'Smooth',
+      status: labels.smooth,
       tone: 'good',
     }
   }
 
   if (count < 5) {
     return {
-      label: 'Long pauses',
+      label: labels.longPauses,
       value: String(count),
-      status: 'Some pauses',
+      status: labels.somePauses,
       tone: 'minor',
     }
   }
 
   return {
-    label: 'Long pauses',
+    label: labels.longPauses,
     value: String(count),
-    status: 'Many pauses',
+    status: labels.manyPauses,
     tone: 'major',
   }
 }
 
 function getRepetitionMetric(
+  labels: FluencyLabels,
   fluencyMetrics?: AttemptFluencyMetrics,
 ): MetricItem {
   const repetitionCount =
@@ -96,35 +120,35 @@ function getRepetitionMetric(
 
   if (repetitionCount == null) {
     return {
-      label: 'Repetitions',
+      label: labels.repetitions,
       value: '-',
-      status: 'No data',
+      status: labels.noData,
       tone: 'minor',
     }
   }
 
   if (repetitionCount <= 1) {
     return {
-      label: 'Repetitions',
+      label: labels.repetitions,
       value: String(repetitionCount),
-      status: 'Low repeats',
+      status: labels.lowRepeats,
       tone: 'good',
     }
   }
 
   if (repetitionCount < 5) {
     return {
-      label: 'Repetitions',
+      label: labels.repetitions,
       value: String(repetitionCount),
-      status: 'Some repeats',
+      status: labels.someRepeats,
       tone: 'minor',
     }
   }
 
   return {
-    label: 'Repetitions',
+    label: labels.repetitions,
     value: String(repetitionCount),
-    status: 'Many repeats',
+    status: labels.manyRepeats,
     tone: 'major',
   }
 }
@@ -136,10 +160,26 @@ export function AttemptFluencySummary({
   fluencyMetrics?: AttemptFluencyMetrics
   pauses: PauseIssue[]
 }) {
+  const t = useTranslations('practice.attempt.fluency')
+  const labels: FluencyLabels = {
+    speechRate: t('speech_rate'),
+    longPauses: t('long_pauses'),
+    repetitions: t('repetitions'),
+    noData: t('no_data'),
+    slow: t('slow'),
+    fast: t('fast'),
+    good: t('good'),
+    smooth: t('smooth'),
+    somePauses: t('some_pauses'),
+    manyPauses: t('many_pauses'),
+    lowRepeats: t('low_repeats'),
+    someRepeats: t('some_repeats'),
+    manyRepeats: t('many_repeats'),
+  }
   const items = [
-    getSpeechRateMetric(fluencyMetrics?.speechRate),
-    getPauseMetric(pauses),
-    getRepetitionMetric(fluencyMetrics),
+    getSpeechRateMetric(labels, fluencyMetrics?.speechRate),
+    getPauseMetric(labels, pauses),
+    getRepetitionMetric(labels, fluencyMetrics),
   ]
 
   return (

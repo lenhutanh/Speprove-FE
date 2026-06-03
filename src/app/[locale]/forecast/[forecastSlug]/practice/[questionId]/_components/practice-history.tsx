@@ -6,11 +6,13 @@ import { useAttemptListQuery } from '@/queries'
 import route from '@/routes'
 import { useAuthStore } from '@/store'
 import { CalendarIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import HistoryItem from './history-item'
 
 export default function PracticeHistory() {
+  const t = useTranslations('practice.history')
   const { questionId } = useParams<{ questionId: string }>()
   const [openAttemptId, setOpenAttemptId] = useState<string | null>(null)
   const { isAuthenticated } = useAuthStore()
@@ -26,14 +28,14 @@ export default function PracticeHistory() {
     return (
       <div className='flex h-full flex-col items-center justify-center gap-2 px-4 text-center'>
         <p className='text-muted-foreground text-xs leading-relaxed'>
-          Vui lòng{' '}
+          {t('login_prefix')}{' '}
           <Link
             href={`${route.login}?returnUrl=${encodeURIComponent(pathname)}`}
             className='font-bold'
           >
-            đăng nhập
+            {t('login_link')}
           </Link>{' '}
-          để xem <br /> lịch sử luyện tập của bạn.
+          {t('login_suffix')} <br /> {t('login_history')}
         </p>
       </div>
     )
@@ -52,9 +54,9 @@ export default function PracticeHistory() {
             <CalendarIcon className='text-muted-foreground h-4 w-4' />
           </div>
           <p className='text-muted-foreground text-xs leading-relaxed'>
-            Chưa có lịch sử luyện tập.
+            {t('empty')}
             <br />
-            Hãy ghi âm câu đầu tiên!
+            {t('empty_hint')}
           </p>
         </div>
       )}

@@ -11,6 +11,7 @@ import { getInitials } from '@/utils'
 import { formatDistanceToNow } from 'date-fns'
 import { vi } from 'date-fns/locale'
 import { ChevronDown, ChevronRight, Trophy } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 interface PracticeLeaderboardProps {
@@ -26,6 +27,7 @@ function bandBg(band: number) {
 export default function PracticeLeaderboard({
   questionId,
 }: PracticeLeaderboardProps) {
+  const t = useTranslations('practice.leaderboard')
   const [band, setBand] = useState<6 | 7 | 8>(6)
   const { data, isLoading } = useLeaderboardQuery({
     enabled: !!questionId,
@@ -35,14 +37,6 @@ export default function PracticeLeaderboard({
 
   return (
     <div className='flex h-full flex-col overflow-hidden'>
-      {/* Header */}
-      {/* <div className="px-4 py-2.5 border-b border-border flex items-center gap-2 flex-shrink-0">
-        <Trophy className="w-3.5 h-3.5 text-amber-500" />
-        <p className="text-[11px] font-medium text-muted-foreground">
-          Bài nói hay nhất từ cộng đồng
-        </p>
-      </div> */}
-
       <Tabs
         value={String(band)}
         onValueChange={(v) => setBand(Number(v) as 6 | 7 | 8)}
@@ -55,7 +49,6 @@ export default function PracticeLeaderboard({
         </TabsList>
       </Tabs>
 
-      {/* List */}
       <div className='flex-1 space-y-2 overflow-y-auto p-3'>
         {isLoading &&
           Array.from({ length: 3 }).map((_, i) => (
@@ -66,9 +59,9 @@ export default function PracticeLeaderboard({
           <div className='flex h-full flex-col items-center justify-center gap-2 px-4 text-center'>
             <Trophy className='text-muted-foreground/30 h-8 w-8' />
             <p className='text-muted-foreground text-xs leading-relaxed'>
-              Chưa có bài nào được chia sẻ.
+              {t('empty')}
               <br />
-              Hãy là người đầu tiên!
+              {t('empty_hint')}
             </p>
           </div>
         )}
@@ -103,9 +96,7 @@ function LeaderboardItem({
         open && 'border-border',
       )}
     >
-      {/* Row header */}
       <div className='flex items-center gap-3 px-3 py-2.5'>
-        {/* Rank */}
         <span
           className={cn(
             'w-5 flex-shrink-0 text-center text-[11px] font-semibold',
@@ -119,8 +110,6 @@ function LeaderboardItem({
           {rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank}
         </span>
 
-        {/* Avatar */}
-
         <Avatar>
           <AvatarImage src={entry.user.avatar} alt={entry.user.fullName} />
           <AvatarFallback className='text-xs font-semibold'>
@@ -128,7 +117,6 @@ function LeaderboardItem({
           </AvatarFallback>
         </Avatar>
 
-        {/* Info */}
         <div className='min-w-0 flex-1'>
           <p className='truncate text-xs font-medium text-slate-800'>
             {entry.user.fullName}
@@ -136,7 +124,6 @@ function LeaderboardItem({
           <p className='text-muted-foreground text-[10px]'>{timeAgo}</p>
         </div>
 
-        {/* Band */}
         <span
           className={cn(
             'flex-shrink-0 rounded px-1.5 py-0.5 text-xs font-semibold',
@@ -158,15 +145,12 @@ function LeaderboardItem({
         </button>
       </div>
 
-      {/* Expanded transcript */}
       {open && (
         <div className='border-border bg-muted/30 border-t px-4 pb-3'>
-          {/* Waveform mockup */}
-          <div className='border-border mb-2 border-b'>
+          <div className='border-border mb-2 border-b py-2'>
             <AudioPlayer url={entry.audioUrl} variant='full' />
           </div>
 
-          {/* Transcript */}
           <p className='text-muted-foreground text-[11px] leading-relaxed italic'>
             &quot;{entry.transcript}&quot;
           </p>

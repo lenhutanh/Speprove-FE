@@ -4,6 +4,7 @@ import { AudioPlayer } from '@/components/ui/audio-player'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { ForecastQuestionType } from '@/types'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import PracticeHistory from './practice-history'
 
@@ -13,18 +14,18 @@ interface PracticeLeftProps {
 
 type LeftTab = 'question' | 'history'
 
-const TABS: { key: LeftTab; label: string }[] = [
-  { key: 'question', label: 'Câu hỏi' },
-  { key: 'history', label: 'Lịch sử luyện tập' },
-]
-
 export default function PracticeLeft({ question }: PracticeLeftProps) {
+  const t = useTranslations('practice.tabs')
   const [active, setActive] = useState<LeftTab>('question')
+  const tabs: { key: LeftTab; label: string }[] = [
+    { key: 'question', label: t('question') },
+    { key: 'history', label: t('history') },
+  ]
 
   return (
     <div className='border-border flex w-[55%] flex-col overflow-hidden rounded-xl border bg-white shadow-sm'>
       <div className='border-border bg-muted/40 flex flex-shrink-0 border-b'>
-        {TABS.map((tab) => (
+        {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActive(tab.key)}
@@ -60,9 +61,9 @@ function QuestionTab({ question }: { question: ForecastQuestionType }) {
         </span>
       </div>
 
-      <div className='flex gap-2'>
+      <div className='flex items-center gap-4'>
         <AudioPlayer url={question.audioUrl} autoPlay variant='minimal' />
-        <h2 className='mb-5 text-[15px] leading-relaxed font-semibold text-slate-800'>
+        <h2 className='text-base leading-relaxed font-semibold text-slate-800'>
           {question.content}
         </h2>
       </div>
