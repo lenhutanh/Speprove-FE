@@ -19,12 +19,15 @@ export default function TopicListSection({
   forecastSlug,
 }: TopicListSectionProps) {
   const t = useTranslations('forecast')
-  const { page, limit, search } = useValidatedParams(forecastDetailQuerySchema)
+  const { page, limit, search, sortOrder } = useValidatedParams(
+    forecastDetailQuerySchema,
+  )
   const { data, isLoading } = useForecastTopicListQuery({
     params: {
       forecastId,
       page,
       limit,
+      sortOrder,
       search,
     },
     enabled: !!forecastId,

@@ -3,13 +3,13 @@
 import { forecastThumbnail } from '@/assets'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import { ForecastResType } from '@/types'
+import { ForecastType } from '@/types'
 import { BookOpen, CalendarDays, Layers, TrendingUp } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
 
 interface ForecastInfoProps {
-  forecast: ForecastResType
+  forecast: ForecastType
 }
 
 export default function ForecastInfo({ forecast }: ForecastInfoProps) {

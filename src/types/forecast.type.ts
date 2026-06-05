@@ -1,4 +1,4 @@
-import { forecastQuerySchema } from '@/validations'
+import { forecastListQuerySchema } from '@/validations'
 import z from 'zod'
 
 export type ForecastType = {
@@ -22,4 +22,4 @@ export type ForecastType = {
   }
 }
 
-export type ForecastQueryType = z.infer<typeof forecastQuerySchema>
+export type ForecastQueryType = z.infer<typeof forecastListQuerySchema>
