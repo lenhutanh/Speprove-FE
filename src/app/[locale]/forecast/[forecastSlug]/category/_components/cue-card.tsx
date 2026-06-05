@@ -9,8 +9,7 @@ import { ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 
 interface CueCardProps {
-  cueCard: ForecastQuestionType
-  index: number
+  cueCard: Extract<ForecastQuestionType, { part: 2 }>
   discussions: ForecastQuestionType[]
   forecastSlug: string
   topicSlug?: string
@@ -19,7 +18,6 @@ interface CueCardProps {
 
 export default function CueCard({
   cueCard,
-  _index,
   discussions,
   forecastSlug,
   topicSlug,

@@ -27,7 +27,6 @@ export default function ToolTip({
       <Tooltip>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent
-          showArrow
           side={side}
           align={align}
           sideOffset={sideOffset}

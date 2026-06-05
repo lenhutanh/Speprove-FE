@@ -35,15 +35,16 @@ export default function Part23Section({
     )
   }
 
-  const cueCards = questions.filter((q) => q.part === 2)
+  const cueCards = questions.filter(
+    (q): q is Extract<ForecastQuestionType, { part: 2 }> => q.part === 2,
+  )
 
   return (
     <div className='space-y-4'>
-      {cueCards.map((cueCard, index) => (
+      {cueCards.map((cueCard) => (
         <CueCard
           key={cueCard.id}
           cueCard={cueCard}
-          index={index + 1}
           discussions={cueCard.childPart3 || []}
           forecastSlug={forecastSlug}
           topicSlug={topicSlug}

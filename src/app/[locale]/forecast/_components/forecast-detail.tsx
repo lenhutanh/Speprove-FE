@@ -31,7 +31,7 @@ export default function ForecastDetail() {
     return <ForecastDetailSkeleton />
   }
 
-  if (forecastQuery.isError || (forecastQuery.isSuccess && !forecast)) {
+  if (forecastQuery.isError || !forecast) {
     notFound()
   }
 

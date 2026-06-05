@@ -11,11 +11,11 @@ import { forecastListQuerySchema } from '@/validations'
 import { keepPreviousData } from '@tanstack/react-query'
 
 export default function ForecastPage() {
-  const { limit, page, quarter, year, search } = useValidatedParams(
+  const { limit, page, quarter, year, search, sortOrder } = useValidatedParams(
     forecastListQuerySchema,
   )
   const forecastListQuery = useForecastListQuery({
-    params: { limit, page, quarter, year, search },
+    params: { limit, page, quarter, year, search, sortOrder },
     enabled: true,
     placeholderData: keepPreviousData,
   })

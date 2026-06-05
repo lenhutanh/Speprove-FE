@@ -27,7 +27,9 @@ export default function CategoryDetail() {
       forecastId: forecastId,
       category: categoryName,
       part: PART_GROUP.PART23,
+      page: 1,
       limit: 100,
+      sortOrder: 'asc',
     },
   })
 
