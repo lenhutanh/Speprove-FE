@@ -67,7 +67,7 @@ export default function ResetPasswordPage() {
               <Col>
                 <InputField
                   control={form.control}
-                  label={t('new_password')}
+                  label={common('new_password')}
                   name='newPassword'
                   placeholder={common('password_placeholder')}
                   type='password'
