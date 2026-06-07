@@ -1,4 +1,8 @@
-import { SPEAKING_SESSION_MODE } from '@/constants'
+import {
+  OBJECT_ID_RULE,
+  OBJECT_ID_RULE_MESSAGE,
+  SPEAKING_SESSION_MODE,
+} from '@/constants'
 import z, { nativeEnum } from 'zod'
 
 export const createAttemptSchema = z.object({
@@ -18,4 +22,5 @@ export const getLeaderboardQuerySchema = z.object({
 
 export const getWordAudioQuerySchema = z.object({
   wordIndex: z.coerce.number().int().min(0),
+  voiceId: z.string().regex(OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE),
 })

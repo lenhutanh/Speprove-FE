@@ -6,5 +6,6 @@ export { default as forecastQuestionApiRequest } from './forecast-question.api-r
 export { default as forecastTopicApiRequest } from './forecast-topic.api-request'
 export { default as forecastApiRequest } from './forecast.api-request'
 export { default as paymentApiRequest } from './payment.api-request'
+export { default as questionApiRequest } from './question.api-request'
 export { default as speakingSessionApiRequest } from './speaking-session.api-request'
 export { default as voiceApiRequest } from './voice.api-request'

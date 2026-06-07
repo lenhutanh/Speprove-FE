@@ -116,11 +116,5 @@ export type AttemptLeaderBoardType = {
   createdAt: Date
 }
 
-export type AttemptWordAudioResponse = {
-  audioUrl: string
-  fileId: string
-  cached: boolean
-}
-
 export type GetLeaderboardQueryType = z.infer<typeof getLeaderboardQuerySchema>
 export type GetWordAudioQueryType = z.infer<typeof getWordAudioQuerySchema>

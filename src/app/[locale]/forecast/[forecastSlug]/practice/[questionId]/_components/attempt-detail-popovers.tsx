@@ -3,6 +3,7 @@
 import { AudioPlayer } from '@/components/ui/audio-player'
 import { cn } from '@/lib/utils'
 import { useGetWordAudioQuery } from '@/queries'
+import { useAppPreference } from '@/store'
 import { AttemptWordAssessment } from '@/types'
 import { ArrowRight } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -27,11 +28,12 @@ export function PronunciationPopover({
   audioUrl?: string
 }) {
   const t = useTranslations('practice.attempt.popover')
+  const { voiceId } = useAppPreference()
   const { data: expectedAudioRes, isLoading: isExpectedAudioLoading } =
     useGetWordAudioQuery({
       id: attemptId,
-      enabled: isOpen,
-      params: { wordIndex: word.wordIndex },
+      enabled: isOpen && !!voiceId,
+      params: { wordIndex: word.wordIndex, voiceId: voiceId! },
     })
   const expectedAudioUrl = expectedAudioRes?.data.audioUrl
 
@@ -60,9 +62,9 @@ export function PronunciationPopover({
             </div>
             <AudioPlayer
               url={expectedAudioUrl}
+              loading={isExpectedAudioLoading}
               variant='minimal'
               iconVariant='volume'
-              className={cn(isExpectedAudioLoading && 'opacity-50')}
             />
           </div>
         )}

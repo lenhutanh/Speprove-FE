@@ -3,7 +3,7 @@
 import { Breadcrumb } from '@/components/breadcumb'
 import { Skeleton } from '@/components/ui/skeleton'
 import { HEADER_HEIGHT } from '@/constants'
-import { useForecastQuestionQuery } from '@/queries'
+import { useForecastQuestionQuery, useGetQuestionAudioQuery } from '@/queries'
 import route from '@/routes'
 import { useAppPreference } from '@/store'
 import { useParams, useSearchParams } from 'next/navigation'
@@ -26,8 +26,13 @@ export default function QuestionPractice() {
   const { voiceId } = useAppPreference()
   const [leftTab, setLeftTab] = useState<LeftTab>('question')
   const [historyRefreshSignal, setHistoryRefreshSignal] = useState(0)
-  const questionQuery = useForecastQuestionQuery(questionId, voiceId)
+  const questionQuery = useForecastQuestionQuery(questionId)
   const question = questionQuery.data?.data
+  const questionAudioQuery = useGetQuestionAudioQuery(
+    question?.questionId,
+    voiceId ?? undefined,
+  )
+  const questionAudioUrl = questionAudioQuery.data?.data.audioUrl
 
   if (questionQuery.isLoading) return <PracticeSkeleton />
   if (!question) return null
@@ -69,6 +74,8 @@ export default function QuestionPractice() {
       <div className='flex flex-1 gap-2 overflow-hidden p-2'>
         <PracticeLeft
           question={question}
+          audioUrl={questionAudioUrl}
+          isAudioLoading={questionAudioQuery.isLoading}
           active={leftTab}
           onActiveChange={setLeftTab}
           refreshSignal={historyRefreshSignal}
