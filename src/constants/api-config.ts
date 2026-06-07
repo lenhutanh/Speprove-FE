@@ -200,6 +200,13 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
     },
   },
+  question: {
+    getQuestionAudio: {
+      baseUrl: `${AppConstants.apiUrl}v1/question/:id/audio`,
+      method: 'GET',
+      headers: baseHeader,
+    },
+  },
 })
 
 export default apiConfig

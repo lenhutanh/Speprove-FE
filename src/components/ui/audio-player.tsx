@@ -16,6 +16,7 @@ interface AudioPlayerProps {
   startTime?: number
   endTime?: number
   onEnded?: () => void
+  loading?: boolean
 }
 
 const iconMap: Record<
@@ -48,10 +49,13 @@ export const AudioPlayer = ({
   startTime,
   endTime,
   onEnded,
+  loading,
 }: AudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [duration, setDuration] = useState('0:00')
+
+  const isPending = loading || isLoading
 
   // Adjust state when URL changes to avoid cascading renders in useEffect
   const [prevUrl, setPrevUrl] = useState(url)
@@ -277,13 +281,13 @@ export const AudioPlayer = ({
   const PlayBtn = (
     <button
       onClick={togglePlay}
-      disabled={isLoading || !url}
+      disabled={isPending || !url}
       aria-label={isPlaying ? 'Pause' : 'Play'}
       className={cn(
         'flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-indigo-50 transition-all hover:bg-indigo-100 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40',
       )}
     >
-      {isLoading ? (
+      {isPending ? (
         <Loader2 className='h-5 w-5 animate-spin text-indigo-600' />
       ) : (
         iconMap[(iconVariant ?? 'play') as AudioIconVariant](isPlaying)

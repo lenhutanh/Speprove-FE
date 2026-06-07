@@ -9,6 +9,8 @@ import PracticeHistory from './practice-history'
 
 interface PracticeLeftProps {
   question: ForecastQuestionType
+  audioUrl?: string
+  isAudioLoading?: boolean
   active: LeftTab
   onActiveChange: (tab: LeftTab) => void
   refreshSignal: number
@@ -18,6 +20,8 @@ export type LeftTab = 'question' | 'history'
 
 export default function PracticeLeft({
   question,
+  audioUrl,
+  isAudioLoading,
   active,
   onActiveChange,
   refreshSignal,
@@ -48,7 +52,13 @@ export default function PracticeLeft({
       </div>
 
       <div className='flex-1 overflow-hidden'>
-        {active === 'question' && <QuestionTab question={question} />}
+        {active === 'question' && (
+          <QuestionTab
+            question={question}
+            audioUrl={audioUrl}
+            isAudioLoading={isAudioLoading}
+          />
+        )}
         {active === 'history' && (
           <PracticeHistory refreshSignal={refreshSignal} />
         )}
@@ -57,7 +67,15 @@ export default function PracticeLeft({
   )
 }
 
-function QuestionTab({ question }: { question: ForecastQuestionType }) {
+function QuestionTab({
+  question,
+  audioUrl,
+  isAudioLoading,
+}: {
+  question: ForecastQuestionType
+  audioUrl?: string
+  isAudioLoading?: boolean
+}) {
   return (
     <div className='h-full overflow-y-auto p-5'>
       <div className='mb-4 flex items-center gap-2'>
@@ -70,7 +88,12 @@ function QuestionTab({ question }: { question: ForecastQuestionType }) {
       </div>
 
       <div className='flex items-center gap-4'>
-        <AudioPlayer url={question.audioUrl} autoPlay variant='minimal' />
+        <AudioPlayer
+          url={audioUrl}
+          loading={isAudioLoading}
+          autoPlay={!!audioUrl}
+          variant='minimal'
+        />
         <h2 className='text-base leading-relaxed font-semibold text-slate-800'>
           {question.content}
         </h2>
