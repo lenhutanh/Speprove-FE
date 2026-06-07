@@ -6,7 +6,6 @@ import {
   AttemptListItem,
   AttemptQueryType,
   AttemptResponseDto,
-  AttemptWordAudioResponse,
   CreateAttemptBodyType,
   GetLeaderboardQueryType,
   GetWordAudioQueryType,
@@ -39,7 +38,7 @@ const attemptApiRequest = {
       body: { isPublic },
     }),
   getWordAudio: (id: string, params: GetWordAudioQueryType) =>
-    http.get<ApiResponse<AttemptWordAudioResponse>>(
+    http.get<ApiResponse<{ audioUrl: string }>>(
       apiConfig.attempt.getWordAudio,
       {
         pathParams: { id },
