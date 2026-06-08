@@ -207,6 +207,13 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
     },
   },
+  vocabularySuggestion: {
+    getVocabSuggestion: {
+      baseUrl: `${AppConstants.apiUrl}v1/vocabulary-suggestion/approved`,
+      method: 'GET',
+      headers: baseHeader,
+    },
+  },
 })
 
 export default apiConfig

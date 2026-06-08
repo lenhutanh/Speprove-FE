@@ -51,9 +51,9 @@ export default function PracticeLeaderboard({
         className='px-3 pt-3'
       >
         <TabsList className='w-full'>
-          <TabsTrigger value='6'>Band 6</TabsTrigger>
-          <TabsTrigger value='7'>Band 7</TabsTrigger>
-          <TabsTrigger value='8'>Band 8</TabsTrigger>
+          <TabsTrigger value='6'>{t('band_label', { band: '6' })}</TabsTrigger>
+          <TabsTrigger value='7'>{t('band_label', { band: '7' })}</TabsTrigger>
+          <TabsTrigger value='8'>{t('band_label', { band: '8' })}</TabsTrigger>
         </TabsList>
       </Tabs>
 

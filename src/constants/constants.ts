@@ -172,3 +172,18 @@ export const ACCOUNT_TAB_KEYS = [
 ] as const
 
 export type AccountTabKey = (typeof ACCOUNT_TAB_KEYS)[number]
+
+export const VOCABULARY_SUGGESTION_LEVEL = {
+  BASIC: 'basic',
+  INTERMEDIATE: 'intermediate',
+  ADVANCED: 'advanced',
+} as const
+
+export type VocabularyLevel =
+  (typeof VOCABULARY_SUGGESTION_LEVEL)[keyof typeof VOCABULARY_SUGGESTION_LEVEL]
+
+export const VOCABULARY_SUGGESTION_LEVEL_OPTIONS = [
+  { label: 'Basic', value: VOCABULARY_SUGGESTION_LEVEL.BASIC },
+  { label: 'Intermediate', value: VOCABULARY_SUGGESTION_LEVEL.INTERMEDIATE },
+  { label: 'Advanced', value: VOCABULARY_SUGGESTION_LEVEL.ADVANCED },
+]

@@ -150,7 +150,6 @@ declare const messages: {
     components: {
       cue_card: {
         title: 'Cue Card'
-        you_should_say: 'You should say:'
       }
       notes: {
         title: 'Ghi chú của bạn'
@@ -234,6 +233,18 @@ declare const messages: {
       history: 'Lịch sử luyện tập'
       ai: 'Trợ lý AI'
       leaderboard: 'Bảng vàng'
+      vocabulary: 'Từ vựng'
+    }
+    question: {
+      related_part_2_topic: 'Chủ đề Part 2 liên quan'
+    }
+    vocabulary: {
+      empty: 'Chưa có gợi ý từ vựng cho cấp độ này.'
+      levels: {
+        basic: 'Cơ bản'
+        intermediate: 'Trung cấp'
+        advanced: 'Nâng cao'
+      }
     }
     history: {
       login_prefix: 'Vui lòng'
@@ -264,6 +275,7 @@ declare const messages: {
       analyzing: 'Đang phân tích...'
     }
     leaderboard: {
+      band_label: 'Band {band}'
       empty: 'Chưa có bài nào được chia sẻ.'
       empty_hint: 'Hãy là người đầu tiên!'
     }
