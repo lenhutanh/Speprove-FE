@@ -21,7 +21,7 @@ export function CueCardPanel({ data }: CueCardPanelProps) {
         {t('title')}
       </span>
       <p className='text-base leading-relaxed font-medium'>{data.prompt}</p>
-      <p className='text-sm font-medium italic'>{t('you_should_say')}</p>
+      <p className='text-sm font-medium italic'>You should say</p>
       <ul className='mt-1 flex flex-col gap-2'>
         {data.bullets.map((b) => (
           <li key={b} className='flex items-start gap-2 text-sm text-zinc-700'>

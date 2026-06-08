@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 import { ForecastQuestionType } from '@/types'
 import { useTranslations } from 'next-intl'
 import PracticeHistory from './practice-history'
+import VocabularyTab from './vocabulary-tab'
 
 interface PracticeLeftProps {
   question: ForecastQuestionType
@@ -16,7 +17,7 @@ interface PracticeLeftProps {
   refreshSignal: number
 }
 
-export type LeftTab = 'question' | 'history'
+export type LeftTab = 'question' | 'history' | 'vocabulary'
 
 export default function PracticeLeft({
   question,
@@ -29,6 +30,7 @@ export default function PracticeLeft({
   const t = useTranslations('practice.tabs')
   const tabs: { key: LeftTab; label: string }[] = [
     { key: 'question', label: t('question') },
+    { key: 'vocabulary', label: t('vocabulary') },
     { key: 'history', label: t('history') },
   ]
 
@@ -59,6 +61,9 @@ export default function PracticeLeft({
             isAudioLoading={isAudioLoading}
           />
         )}
+        {active === 'vocabulary' && (
+          <VocabularyTab questionId={question.questionId} />
+        )}
         {active === 'history' && (
           <PracticeHistory refreshSignal={refreshSignal} />
         )}
@@ -76,6 +81,8 @@ function QuestionTab({
   audioUrl?: string
   isAudioLoading?: boolean
 }) {
+  const t = useTranslations('practice.question')
+
   return (
     <div className='h-full overflow-y-auto p-5'>
       <div className='mb-4 flex items-center gap-2'>
@@ -121,7 +128,7 @@ function QuestionTab({
       {question.part === 3 && question.parent && (
         <div className='rounded-lg border border-indigo-100 bg-indigo-50 p-3'>
           <p className='mb-1 text-[10px] font-semibold tracking-wider text-indigo-500 uppercase'>
-            Related Part 2 Topic
+            {t('related_part_2_topic')}
           </p>
           <p className='text-sm font-medium text-indigo-900 italic'>
             {question.parent.content}
