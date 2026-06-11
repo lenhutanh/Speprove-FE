@@ -3,9 +3,9 @@
 import { Breadcrumb } from '@/components/breadcumb'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PART2_CATEGORY_OPTIONS, PART_GROUP } from '@/constants'
-import { useForecastQuestionListQuery } from '@/queries'
+import { useForecastQuery, useForecastQuestionListQuery } from '@/queries'
 import route from '@/routes'
-import { useParams } from 'next/navigation'
+import { notFound, useParams } from 'next/navigation'
 import Part23Section from './part23-section'
 
 export default function CategoryDetail() {
@@ -19,13 +19,14 @@ export default function CategoryDetail() {
     (c) => c.value === categorySlug,
   )
 
-  const categoryName = categoryItem?.label || categorySlug
+  const forecastQuery = useForecastQuery(forecastId)
+  const forecast = forecastQuery.data?.data
 
   const { data, isLoading } = useForecastQuestionListQuery({
-    enabled: !!categorySlug && !!forecastId,
+    enabled: !!categoryItem && !!categorySlug && !!forecastId,
     params: {
       forecastId: forecastId,
-      category: categoryName,
+      category: categorySlug,
       part: PART_GROUP.PART23,
       page: 1,
       limit: 100,
@@ -33,22 +34,32 @@ export default function CategoryDetail() {
     },
   })
 
+  if (!categoryItem) {
+    notFound()
+  }
+
+  if (forecastQuery.isLoading) return <CategoryDetailSkeleton />
+
+  if (forecastQuery.isError || !forecast) {
+    notFound()
+  }
+
   return (
     <div className='mx-auto space-y-6 px-6 py-6'>
       <Breadcrumb
         items={[
           { label: 'Forecast', href: route.forecast },
           {
-            label: forecastSlug.split('.')[0],
+            label: forecast.name,
             href: `${route.forecast}/${forecastSlug}?part=${PART_GROUP.PART23}`,
           },
-          { label: categoryName },
+          { label: `Part 2 & 3 - ${categoryItem.label}` },
         ]}
       />
 
       <div className='mb-8'>
         <h1 className='text-foreground text-2xl leading-snug font-semibold'>
-          {categoryName}
+          {categoryItem.label}
         </h1>
       </div>
 
@@ -59,7 +70,6 @@ export default function CategoryDetail() {
           questions={data?.data}
           isLoading={isLoading}
           forecastSlug={forecastSlug}
-          categorySlug={categorySlug}
         />
       )}
     </div>

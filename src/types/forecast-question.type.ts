@@ -1,5 +1,7 @@
 import { forecastQuestionQuerySchema } from '@/validations'
 import z from 'zod'
+import type { ForecastSummaryType } from './forecast.type'
+import type { TopicType } from './topic.type'
 
 export type ForecastQuestionQueryType = z.infer<
   typeof forecastQuestionQuerySchema
@@ -12,7 +14,9 @@ export type ForecastQuestionQueryType = z.infer<
 
 type BaseForecastQuestion = {
   id: string
+  forecast: ForecastSummaryType
   forecastTopicId?: string
+  forecastTopic?: ForecastTopicSummaryType | null
   questionId: string
   order: number
   content: string
@@ -20,6 +24,11 @@ type BaseForecastQuestion = {
   band?: number | string | null
   prev?: { id: string; content: string } | null
   next?: { id: string; content: string } | null
+}
+
+export type ForecastTopicSummaryType = {
+  id: string
+  topic: TopicType
 }
 
 export type ForecastQuestionType = BaseForecastQuestion &

@@ -23,3 +23,9 @@ export type ForecastType = {
 }
 
 export type ForecastQueryType = z.infer<typeof forecastListQuerySchema>
+
+export type ForecastSummaryType = {
+  id: string
+  name: string
+  slug: string
+}

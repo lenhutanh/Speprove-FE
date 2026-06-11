@@ -46,10 +46,10 @@ export default function TopicDetail() {
         items={[
           { label: 'Forecast', href: route.forecast },
           {
-            label: forecastSlug.split('.')[0],
+            label: topic.forecast.name,
             href: `${route.forecast}/${forecastSlug}`,
           },
-          { label: topic.name },
+          { label: `Part 1 - ${topic.name}` },
         ]}
       />
 
