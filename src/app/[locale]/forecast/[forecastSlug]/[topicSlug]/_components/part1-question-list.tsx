@@ -14,7 +14,6 @@ export default function Part1QuestionList({
   questions,
   isLoading,
   forecastSlug,
-  topicSlug,
 }: Part1QuestionListProps) {
   const tCommon = useTranslations('common')
 
@@ -44,7 +43,6 @@ export default function Part1QuestionList({
           question={q}
           index={index + 1}
           forecastSlug={forecastSlug}
-          topicSlug={topicSlug}
         />
       ))}
     </div>

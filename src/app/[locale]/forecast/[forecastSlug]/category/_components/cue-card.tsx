@@ -12,26 +12,18 @@ interface CueCardProps {
   cueCard: Extract<ForecastQuestionType, { part: 2 }>
   discussions: ForecastQuestionType[]
   forecastSlug: string
-  topicSlug?: string
-  categorySlug?: string
 }
 
 export default function CueCard({
   cueCard,
   discussions,
   forecastSlug,
-  topicSlug,
-  categorySlug,
 }: CueCardProps) {
   const [discussionOpen, setDiscussionOpen] = useState(false)
   const isPracticed = !!cueCard.practicedAt
 
-  const getPracticeUrl = (questionId: string) => {
-    if (categorySlug) {
-      return `/forecast/${forecastSlug}/practice/${questionId}?source=category&categoryName=${categorySlug}`
-    }
-    return `/forecast/${forecastSlug}/practice/${questionId}?source=topic&topicId=${topicSlug}`
-  }
+  const getPracticeUrl = (questionId: string) =>
+    `/forecast/${forecastSlug}/practice/${questionId}`
 
   return (
     <div

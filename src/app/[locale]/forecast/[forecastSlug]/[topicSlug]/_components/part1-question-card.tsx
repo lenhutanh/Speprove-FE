@@ -8,20 +8,18 @@ interface Part1QuestionCardProps {
   question: ForecastQuestionType
   index: number
   forecastSlug: string
-  topicSlug: string
 }
 
 export default function Part1QuestionCard({
   question,
   index,
   forecastSlug,
-  topicSlug,
 }: Part1QuestionCardProps) {
   const tCommon = useTranslations('common')
   const { content, practicedAt, id } = question
   const isPracticed = !!practicedAt
 
-  const href = `/forecast/${forecastSlug}/practice/${id}?source=topic&topicId=${topicSlug}`
+  const href = `/forecast/${forecastSlug}/practice/${id}`
 
   return (
     <div

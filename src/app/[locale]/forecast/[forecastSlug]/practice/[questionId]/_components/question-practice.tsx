@@ -2,26 +2,20 @@
 
 import { Breadcrumb } from '@/components/breadcumb'
 import { Skeleton } from '@/components/ui/skeleton'
-import { HEADER_HEIGHT } from '@/constants'
+import { HEADER_HEIGHT, PART2_CATEGORY_OPTIONS } from '@/constants'
 import { useForecastQuestionQuery, useGetQuestionAudioQuery } from '@/queries'
 import route from '@/routes'
 import { useAppPreference } from '@/store'
-import { useParams, useSearchParams } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import PracticeBottomBar from './practice-bottom-bar'
 import PracticeLeft, { LeftTab } from './practice-left'
 import PracticeRight from './practice-right'
 
 export default function QuestionPractice() {
-  const { forecastSlug, questionId } = useParams<{
-    forecastSlug: string
+  const { questionId } = useParams<{
     questionId: string
   }>()
-
-  const searchParams = useSearchParams()
-  const source = searchParams.get('source')
-  const topicId = searchParams.get('topicId')
-  const categoryName = searchParams.get('categoryName')
 
   const { voiceId } = useAppPreference()
   const [leftTab, setLeftTab] = useState<LeftTab>('question')
@@ -37,27 +31,37 @@ export default function QuestionPractice() {
   if (questionQuery.isLoading) return <PracticeSkeleton />
   if (!question) return null
 
-  const breadcrumbItems: { label: string; href?: string }[] = [
+  const resolvedForecastSlug = `${question.forecast.slug}.${question.forecast.id}`
+  const topic = question.forecastTopic?.topic
+  const categoryValue =
+    question.part === 2
+      ? question.category
+      : question.part === 3 && question.parent?.part === 2
+        ? question.parent.category
+        : undefined
+  const categoryItem = Object.values(PART2_CATEGORY_OPTIONS).find(
+    (category) => category.value === categoryValue,
+  )
+  const contextItem =
+    question.part === 1
+      ? {
+          label: `Part ${question.part} - ${topic!.name}`,
+          href: `${route.forecast}/${resolvedForecastSlug}/${topic!.slug}.${question.forecastTopic!.id}`,
+        }
+      : {
+          label: `Part 2 & 3 - ${categoryItem!.label}`,
+          href: `${route.forecast}/${resolvedForecastSlug}/category/${categoryValue}`,
+        }
+
+  const breadcrumbItems = [
     { label: 'Forecast', href: route.forecast },
     {
-      label: forecastSlug.split('.')[0],
-      href: `${route.forecast}/${forecastSlug}`,
+      label: question.forecast.name,
+      href: `${route.forecast}/${resolvedForecastSlug}`,
     },
+    contextItem,
+    { label: question.content },
   ]
-
-  if (source === 'topic' && topicId) {
-    breadcrumbItems.push({
-      label: `Part 1 - Topic`,
-      href: `${route.forecast}/${forecastSlug}/${topicId}`,
-    })
-  } else if (source === 'category' && categoryName) {
-    breadcrumbItems.push({
-      label: `Part 2 & 3 - Category`,
-      href: `${route.forecast}/${forecastSlug}/category/${categoryName}`,
-    })
-  }
-
-  breadcrumbItems.push({ label: question.content })
 
   const handleAttemptCreated = () => {
     setLeftTab('history')
@@ -85,14 +89,11 @@ export default function QuestionPractice() {
 
       <PracticeBottomBar
         key={questionId}
-        forecastSlug={forecastSlug}
+        forecastSlug={resolvedForecastSlug}
         questionId={questionId}
         part={question.part}
         prev={question.prev!}
         next={question.next!}
-        source={source}
-        topicId={topicId}
-        categoryName={categoryName}
         onAttemptCreated={handleAttemptCreated}
       />
     </div>

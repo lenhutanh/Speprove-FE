@@ -6,16 +6,12 @@ interface Part23SectionProps {
   questions?: ForecastQuestionType[]
   isLoading: boolean
   forecastSlug: string
-  topicSlug?: string
-  categorySlug?: string
 }
 
 export default function Part23Section({
   questions,
   isLoading,
   forecastSlug,
-  topicSlug,
-  categorySlug,
 }: Part23SectionProps) {
   if (isLoading) {
     return (
@@ -47,8 +43,6 @@ export default function Part23Section({
           cueCard={cueCard}
           discussions={cueCard.childPart3 || []}
           forecastSlug={forecastSlug}
-          topicSlug={topicSlug}
-          categorySlug={categorySlug}
         />
       ))}
     </div>

@@ -33,14 +33,10 @@ type Phase = 'idle' | 'recording' | 'recorded'
 
 interface PracticeBottomBarProps {
   forecastSlug: string
-  topicSlug?: string
   questionId: string
   part?: number
   prev?: { id: string; content: string }
   next?: { id: string; content: string }
-  source?: string | null
-  topicId?: string | null
-  categoryName?: string | null
   onAttemptCreated?: (attemptId: string) => void
 }
 
