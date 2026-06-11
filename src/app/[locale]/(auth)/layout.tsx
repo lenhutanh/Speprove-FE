@@ -11,7 +11,9 @@ export default function AuthLayout({
       <Header />
 
       <Container className='flex flex-1 items-center justify-center'>
-        {children}
+        <div className='sm:bg-card m-auto flex w-full max-w-md flex-col gap-5 px-4 py-6 sm:rounded-md sm:border sm:p-7.5 sm:shadow-md'>
+          {children}
+        </div>
       </Container>
     </div>
   )

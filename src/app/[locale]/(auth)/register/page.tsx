@@ -47,10 +47,12 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className='m-auto flex max-w-md flex-col gap-5 rounded-md border border-solid p-7.5 shadow-md'>
+    <>
       <div className='text-center'>
         <h1 className='text-2xl font-bold'>{t('title')}</h1>
-        <span>{t('description')}</span>
+        <span className='text-muted-foreground text-sm'>
+          {t('description')}
+        </span>
       </div>
       <BaseForm
         onSubmit={onSubmit}
@@ -103,19 +105,24 @@ export default function RegisterPage() {
       </BaseForm>
       <div className='flex items-center gap-2'>
         <Separator className='flex-1' />
-        <span>{common('or_continue_with')}</span>
+        <span className='text-muted-foreground text-sm whitespace-nowrap'>
+          {common('or_continue_with')}
+        </span>
         <Separator className='flex-1' />
       </div>
       <Button type='button' variant={'outline'} className='w-full'>
         <Image src={googleIcon} alt='Google Icon' width={20} height={20} />
         {t('sign_up_with', { name: 'Google' })}
       </Button>
-      <div className='text-center'>
+      <div className='text-center text-sm'>
         <span>{common('already_have_account')} </span>
-        <Link href={route.login} className='underline'>
+        <Link
+          href={route.login}
+          className='text-primary font-medium underline-offset-4 hover:underline'
+        >
           {common('login')}
         </Link>
       </div>
-    </div>
+    </>
   )
 }

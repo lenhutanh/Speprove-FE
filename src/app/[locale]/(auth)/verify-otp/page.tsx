@@ -78,10 +78,12 @@ export default function VerifyOtpPage() {
   }
 
   return (
-    <div className='m-auto flex max-w-md flex-col gap-5 rounded-md border border-solid p-7.5 shadow-md'>
+    <>
       <div className='text-center'>
         <h1 className='text-2xl font-bold'>{t('title')}</h1>
-        <span>{t('description')}</span>
+        <span className='text-muted-foreground text-sm'>
+          {t('description')}
+        </span>
       </div>
       <BaseForm
         onSubmit={onSubmit}
@@ -106,12 +108,15 @@ export default function VerifyOtpPage() {
           </>
         )}
       </BaseForm>
-      <div className='text-center'>
+      <div className='text-center text-sm'>
         <span>{t('didnt_receive_code')} </span>
-        <Button className='p-0 underline' variant={'ghost'}>
+        <Button
+          className='text-primary h-auto p-0 font-medium underline-offset-4 hover:underline'
+          variant={'ghost'}
+        >
           {common('resend')}
         </Button>
       </div>
-    </div>
+    </>
   )
 }

@@ -51,10 +51,12 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className='m-auto flex max-w-md flex-col gap-5 rounded-md border border-solid p-7.5 shadow-md'>
+    <>
       <div className='text-center'>
         <h1 className='text-2xl font-bold'>{t('title')}</h1>
-        <span>{t('description')}</span>
+        <span className='text-muted-foreground text-sm'>
+          {t('description')}
+        </span>
       </div>
       <BaseForm
         onSubmit={onSubmit}
@@ -93,6 +95,6 @@ export default function ResetPasswordPage() {
           </>
         )}
       </BaseForm>
-    </div>
+    </>
   )
 }

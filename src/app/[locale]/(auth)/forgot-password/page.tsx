@@ -40,10 +40,12 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className='m-auto flex max-w-md flex-col gap-5 rounded-md border border-solid p-7.5 shadow-md'>
+    <>
       <div className='text-center'>
         <h1 className='text-2xl font-bold'>{t('title')}</h1>
-        <span>{t('description')}</span>
+        <span className='text-muted-foreground text-sm'>
+          {t('description')}
+        </span>
       </div>
       <BaseForm
         onSubmit={onSubmit}
@@ -64,12 +66,20 @@ export default function ForgotPasswordPage() {
                 />
               </Col>
             </Row>
-            <Button type='submit' className={'w-full'}>
+            <Button type='submit' className={'mb-4 w-full'}>
               {common('send')}
+            </Button>
+            <Button
+              type='button'
+              variant={'secondary'}
+              className={'w-full'}
+              onClick={() => navigate(route.login)}
+            >
+              {common('back_to_login')}
             </Button>
           </>
         )}
       </BaseForm>
-    </div>
+    </>
   )
 }
