@@ -15,6 +15,7 @@ declare const messages: {
     email_placeholder: 'example@gmail.com'
     password_placeholder: '••••••••'
     login: 'Đăng nhập'
+    back_to_login: 'Quay lại đăng nhập'
     or_continue_with: 'Hoặc tiếp tục với'
     sign_up: 'Đăng ký'
     send: 'Gửi'
