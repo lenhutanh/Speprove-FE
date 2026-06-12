@@ -1,6 +1,6 @@
 'use client'
 
-import { Breadcrumb } from '@/components/breadcumb'
+import { Breadcrumb } from '@/components/breadcrumb'
 import { Skeleton } from '@/components/ui/skeleton'
 import { HEADER_HEIGHT, PART2_CATEGORY_OPTIONS } from '@/constants'
 import { useForecastQuestionQuery, useGetQuestionAudioQuery } from '@/queries'

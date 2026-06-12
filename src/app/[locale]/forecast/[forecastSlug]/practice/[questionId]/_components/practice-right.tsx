@@ -33,7 +33,7 @@ export default function PracticeRight({ question }: PracticeRightProps) {
   }
 
   return (
-    <div className='border-border flex flex-1 flex-col overflow-hidden rounded-xl border bg-white shadow-sm'>
+    <div className='border-border bg-card flex flex-1 flex-col overflow-hidden rounded-xl border shadow-sm'>
       <div className='border-border bg-muted/40 flex flex-shrink-0 border-b'>
         {tabs.map((tab) => (
           <button
@@ -42,8 +42,8 @@ export default function PracticeRight({ question }: PracticeRightProps) {
             className={cn(
               'relative px-4 py-2.5 text-sm font-medium transition-colors',
               active === tab.key
-                ? 'bg-white text-slate-800 after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5 after:bg-indigo-500'
-                : 'text-muted-foreground hover:bg-muted/60 hover:text-slate-700',
+                ? 'bg-card text-foreground after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5 after:bg-indigo-500'
+                : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground',
             )}
           >
             {tab.label}

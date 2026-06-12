@@ -41,7 +41,7 @@ export default function VocabularyItem({ vocabulary }: VocabularyItemProps) {
           <Badge variant='secondary' className='text-xs font-medium'>
             {vocabulary.type}
           </Badge>
-          <Badge className='bg-indigo-50 text-xs font-medium text-indigo-700 hover:bg-indigo-50'>
+          <Badge className='bg-indigo-50 text-xs font-medium text-indigo-700 hover:bg-indigo-50 dark:bg-indigo-950/40 dark:text-indigo-300 dark:hover:bg-indigo-950/40'>
             {levelLabel}
           </Badge>
         </div>
@@ -50,7 +50,7 @@ export default function VocabularyItem({ vocabulary }: VocabularyItemProps) {
           {vocabulary.meaning}
         </p>
 
-        <p className='text-xs leading-relaxed text-slate-600 italic'>
+        <p className='text-muted-foreground text-xs leading-relaxed italic'>
           {vocabulary.example}
         </p>
       </div>

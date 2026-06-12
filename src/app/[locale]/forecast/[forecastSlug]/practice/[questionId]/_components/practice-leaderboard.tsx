@@ -19,8 +19,10 @@ interface PracticeLeaderboardProps {
 }
 
 function bandBg(band: number) {
-  if (band >= 7) return 'bg-emerald-50 text-emerald-700 border-emerald-200'
-  if (band >= 6) return 'bg-amber-50 text-amber-700 border-amber-200'
+  if (band >= 7)
+    return 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/50'
+  if (band >= 6)
+    return 'bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-900/50'
   return 'bg-muted text-muted-foreground'
 }
 
@@ -136,7 +138,7 @@ function LeaderboardItem({
         </Avatar>
 
         <div className='min-w-0 flex-1'>
-          <p className='truncate text-sm font-medium text-slate-800'>
+          <p className='text-foreground truncate text-sm font-medium'>
             {entry.user.fullName}
           </p>
           <p className='text-muted-foreground text-[10px]'>{timeAgo}</p>

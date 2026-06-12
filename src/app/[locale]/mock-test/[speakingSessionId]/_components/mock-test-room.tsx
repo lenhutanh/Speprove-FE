@@ -13,12 +13,13 @@ import {
 import { Button } from '@/components/ui/button'
 import { InsufficientBalanceDialog } from '@/components/ui/insufficient-balance-dialog'
 import { RecordButton } from '@/components/ui/recorder'
+import { Spinner } from '@/components/ui/spinner'
 import { SpeakingSessionType, formatCountdown } from '@/constants'
 import { useNavigate, useRecorder, useRecordingCountdown } from '@/hooks'
 import { useMockTestSession } from '@/hooks/use-mock-test-session'
 import { usePathname } from '@/i18n/navigation'
 import route from '@/routes'
-import { Headphones, Loader2 } from 'lucide-react'
+import { Headphones } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useParams } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -147,8 +148,8 @@ export default function MockTestRoom() {
     return (
       <div className='flex h-full items-center justify-center'>
         <div className='flex flex-col items-center gap-4'>
-          <div className='h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent' />
-          <p className='text-sm text-zinc-400'>{t('loading_room')}</p>
+          <Spinner className='h-8 w-8 text-blue-500' />
+          <p className='text-muted-foreground text-sm'>{t('loading_room')}</p>
         </div>
       </div>
     )
@@ -296,7 +297,7 @@ export default function MockTestRoom() {
 
   const renderSubmitting = () => (
     <div className='flex flex-col items-center justify-center gap-4'>
-      <Loader2 className='h-8 w-8 animate-spin text-blue-500' />
+      <Spinner className='h-8 w-8 text-blue-500' />
       <p className='text-base font-medium'>{t('submitting')}</p>
     </div>
   )
@@ -313,8 +314,10 @@ export default function MockTestRoom() {
       case 'fetching':
         return (
           <div className='flex flex-col items-center justify-center gap-4'>
-            <Loader2 className='h-6 w-6 animate-spin text-zinc-400' />
-            <p className='text-sm text-zinc-400'>{t('loading_question')}</p>
+            <Spinner className='text-muted-foreground h-6 w-6' />
+            <p className='text-muted-foreground text-sm'>
+              {t('loading_question')}
+            </p>
           </div>
         )
 

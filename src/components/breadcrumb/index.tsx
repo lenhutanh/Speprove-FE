@@ -10,7 +10,7 @@ import { Link } from '@/i18n/navigation'
 import { Fragment } from 'react'
 
 type BreadcrumbItemType = {
-  label: string
+  label: React.ReactNode
   href?: string
 }
 

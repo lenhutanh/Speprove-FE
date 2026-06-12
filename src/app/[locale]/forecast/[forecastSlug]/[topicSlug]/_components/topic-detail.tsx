@@ -1,6 +1,6 @@
 'use client'
 
-import { Breadcrumb } from '@/components/breadcumb'
+import { Breadcrumb } from '@/components/breadcrumb'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PART_GROUP } from '@/constants'
 import { useValidatedParams } from '@/hooks'
@@ -69,7 +69,7 @@ export default function TopicDetail() {
 
 function TopicDetailSkeleton() {
   return (
-    <div className='max-w mx-auto space-y-6 px-6 py-8'>
+    <div className='mx-auto max-w-330 space-y-6 px-6 py-6'>
       <Skeleton className='h-4 w-20' />
       <div className='space-y-2'>
         <Skeleton className='h-6 w-24' />
