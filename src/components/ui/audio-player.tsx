@@ -8,6 +8,7 @@ type AudioIconVariant = 'play' | 'volume'
 
 interface AudioPlayerProps {
   url?: string
+  resolveUrl?: () => Promise<string | undefined>
   variant?: 'minimal' | 'full'
   autoPlay?: boolean
   delay?: number
@@ -41,6 +42,7 @@ const iconMap: Record<
 
 export const AudioPlayer = ({
   url,
+  resolveUrl,
   variant = 'minimal',
   autoPlay = false,
   delay = 2000,
@@ -53,14 +55,16 @@ export const AudioPlayer = ({
 }: AudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [resolvedUrl, setResolvedUrl] = useState<string>()
   const [duration, setDuration] = useState('0:00')
 
+  const audioUrl = url ?? resolvedUrl
   const isPending = loading || isLoading
 
   // Adjust state when URL changes to avoid cascading renders in useEffect
-  const [prevUrl, setPrevUrl] = useState(url)
-  if (url !== prevUrl) {
-    setPrevUrl(url)
+  const [prevUrl, setPrevUrl] = useState(audioUrl)
+  if (audioUrl !== prevUrl) {
+    setPrevUrl(audioUrl)
     setIsPlaying(false)
     setDuration('0:00')
   }
@@ -155,32 +159,35 @@ export const AudioPlayer = ({
 
   // ─── Audio initialisation ─────────────────────────────────────────────────────
 
-  const initAudio = useCallback((): HTMLAudioElement | null => {
-    if (!url) return null
-    const audio = new Audio(url)
-    audioRef.current = audio
+  const initAudio = useCallback(
+    (sourceUrl = audioUrl): HTMLAudioElement | null => {
+      if (!sourceUrl) return null
+      const audio = new Audio(sourceUrl)
+      audioRef.current = audio
 
-    audio.onplay = () => {
-      setIsPlaying(true)
-      startRaf()
-    }
-    audio.onpause = () => {
-      setIsPlaying(false)
-      stopRaf()
-    }
-    audio.onended = () => {
-      setIsPlaying(false)
-      stopRaf()
-      applyProgress(0)
-      applyCurrentTime(0)
-      if (onEnded) onEnded()
-    }
-    audio.onloadstart = () => setIsLoading(true)
-    audio.oncanplaythrough = () => setIsLoading(false)
-    audio.onloadedmetadata = () => setDuration(formatTime(audio.duration))
+      audio.onplay = () => {
+        setIsPlaying(true)
+        startRaf()
+      }
+      audio.onpause = () => {
+        setIsPlaying(false)
+        stopRaf()
+      }
+      audio.onended = () => {
+        setIsPlaying(false)
+        stopRaf()
+        applyProgress(0)
+        applyCurrentTime(0)
+        if (onEnded) onEnded()
+      }
+      audio.onloadstart = () => setIsLoading(true)
+      audio.oncanplaythrough = () => setIsLoading(false)
+      audio.onloadedmetadata = () => setDuration(formatTime(audio.duration))
 
-    return audio
-  }, [url, startRaf, stopRaf, applyProgress, applyCurrentTime, onEnded])
+      return audio
+    },
+    [audioUrl, startRaf, stopRaf, applyProgress, applyCurrentTime, onEnded],
+  )
 
   // ─── Seek bar pointer events ──────────────────────────────────────────────────
 
@@ -219,14 +226,31 @@ export const AudioPlayer = ({
 
   // ─── Play / Pause ─────────────────────────────────────────────────────────────
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
+    if (isLoading) return
+
     if (timerRef.current) {
       clearTimeout(timerRef.current)
       timerRef.current = null
     }
 
+    let nextUrl = audioUrl
+    if (!nextUrl && resolveUrl) {
+      setIsLoading(true)
+      try {
+        nextUrl = await resolveUrl()
+        if (nextUrl) setResolvedUrl(nextUrl)
+      } catch (error) {
+        console.warn('Failed to resolve audio URL:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    if (!nextUrl) return
+
     if (!audioRef.current) {
-      const audio = initAudio()
+      const audio = initAudio(nextUrl)
       if (startTime !== undefined) audio!.currentTime = startTime // thêm
       audio?.play().catch(() => {})
       return
@@ -240,6 +264,8 @@ export const AudioPlayer = ({
 
   // ─── Effect: reset on URL change ─────────────────────────────────────────────
 
+  // Only external URL changes reset the audio element. Lazy resolved URLs are
+  // initialized inside togglePlay so fetching does not immediately pause playback.
   useEffect(() => {
     stopRaf()
     if (audioRef.current) {
@@ -256,7 +282,7 @@ export const AudioPlayer = ({
 
     if (!url) return
 
-    const audio = initAudio()
+    const audio = initAudio(url)
 
     if (autoPlay) {
       timerRef.current = setTimeout(() => {
@@ -281,7 +307,7 @@ export const AudioPlayer = ({
   const PlayBtn = (
     <button
       onClick={togglePlay}
-      disabled={isPending || !url}
+      disabled={isPending || (!audioUrl && !resolveUrl)}
       aria-label={isPlaying ? 'Pause' : 'Play'}
       className={cn(
         'flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-indigo-50 transition-all hover:bg-indigo-100 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40',

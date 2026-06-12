@@ -16,3 +16,14 @@ export const useGetVocabularySuggestionQuery = (
     enabled: !!questionId,
   })
 }
+
+export const vocabularyAudioQueryKey = (id: string, voiceId: string) =>
+  ['vocab-audio', id, voiceId] as const
+
+export const getVocabularyAudioQueryOptions = (
+  id: string,
+  voiceId: string,
+) => ({
+  queryKey: vocabularyAudioQueryKey(id, voiceId),
+  queryFn: () => vocabularySuggestionApiRequest.getVocabularyAudio(id, voiceId),
+})

@@ -14,6 +14,14 @@ const vocabularySuggestionApiRequest = {
         params,
       },
     ),
+  getVocabularyAudio: (id: string, voiceId: string) =>
+    http.get<ApiResponse<{ audioUrl: string }>>(
+      apiConfig.vocabularySuggestion.getVocabAudio,
+      {
+        pathParams: { id },
+        params: { voiceId },
+      },
+    ),
 }
 
 export default vocabularySuggestionApiRequest
