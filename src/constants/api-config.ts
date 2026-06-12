@@ -213,6 +213,11 @@ const apiConfig = defineApiConfig({
       method: 'GET',
       headers: baseHeader,
     },
+    getVocabAudio: {
+      baseUrl: `${AppConstants.apiUrl}v1/vocabulary-suggestion/:id/audio`,
+      method: 'GET',
+      headers: baseHeader,
+    },
   },
 })
 
