@@ -47,7 +47,7 @@ export default function AccountContent({
   }
 
   return (
-    <div className='w-full flex-1 rounded-xl bg-white'>
+    <div className='bg-card w-full flex-1 rounded-xl border'>
       <div className='px-4 py-4 sm:px-6'>
         <h1 className='text-xl font-semibold sm:text-2xl'>
           {currentTab?.label}

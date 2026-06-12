@@ -27,7 +27,7 @@ export default function FullPageLoading({
           }}
           transition={{ ease: 'linear', duration: 0.3 }}
           className={cn(
-            'fixed inset-0 z-[9999] flex items-center justify-center bg-white/40 backdrop-blur-[2px]',
+            'bg-background/40 fixed inset-0 z-[9999] flex items-center justify-center backdrop-blur-[2px]',
             className,
           )}
         >

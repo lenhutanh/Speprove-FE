@@ -1,6 +1,6 @@
 'use client'
 
-import { Breadcrumb } from '@/components/breadcumb'
+import { Breadcrumb } from '@/components/breadcrumb'
 import SearchInput from '@/components/ui/search-input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -81,7 +81,7 @@ export default function ForecastDetail() {
 
 function ForecastDetailSkeleton() {
   return (
-    <div className='mx-auto max-w-6xl space-y-6 px-6 py-8'>
+    <div className='mx-auto max-w-330 space-y-6 px-6 py-8'>
       <div className='space-y-3'>
         <Skeleton className='h-5 w-24' />
         <Skeleton className='h-8 w-2/3' />

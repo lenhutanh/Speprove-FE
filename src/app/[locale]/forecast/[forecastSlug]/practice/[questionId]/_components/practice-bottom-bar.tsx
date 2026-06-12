@@ -4,6 +4,7 @@ import { AudioPlayer } from '@/components/ui/audio-player'
 import { Button } from '@/components/ui/button'
 import { InsufficientBalanceDialog } from '@/components/ui/insufficient-balance-dialog'
 import { RecordButton } from '@/components/ui/recorder'
+import { Spinner } from '@/components/ui/spinner'
 import {
   Tooltip,
   TooltipContent,
@@ -254,7 +255,7 @@ export default function PracticeBottomBar({
 
           {phase === 'recording' && (
             <div className='flex items-center gap-3'>
-              <span className='text-sm font-medium text-zinc-500 tabular-nums'>
+              <span className='text-muted-foreground text-sm font-medium tabular-nums'>
                 {formatCountdown(countdown)}
               </span>
               <RecordButton
@@ -292,7 +293,7 @@ export default function PracticeBottomBar({
                 className='shrink-0 rounded-full'
               >
                 {submitting ? (
-                  <span className='border-muted-foreground/40 border-t-muted-foreground h-3.5 w-3.5 animate-spin rounded-full border-2' />
+                  <Spinner className='size-3.5' />
                 ) : (
                   <Send className='h-3.5 w-3.5' />
                 )}

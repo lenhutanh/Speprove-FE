@@ -64,7 +64,7 @@ export default function AccountSidebar({
   })
 
   return (
-    <aside className='h-fit w-full shrink-0 rounded-2xl bg-white p-3 shadow-sm lg:w-72'>
+    <aside className='bg-card h-fit w-full shrink-0 rounded-2xl border p-3 lg:w-72'>
       <nav className='flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible'>
         {accountTabs.map((tab) => {
           const Icon = tab.icon

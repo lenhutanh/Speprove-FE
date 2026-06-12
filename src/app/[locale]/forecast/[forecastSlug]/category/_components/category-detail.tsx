@@ -1,6 +1,6 @@
 'use client'
 
-import { Breadcrumb } from '@/components/breadcumb'
+import { Breadcrumb } from '@/components/breadcrumb'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PART2_CATEGORY_OPTIONS, PART_GROUP } from '@/constants'
 import { useForecastQuery, useForecastQuestionListQuery } from '@/queries'
@@ -38,24 +38,28 @@ export default function CategoryDetail() {
     notFound()
   }
 
-  if (forecastQuery.isLoading) return <CategoryDetailSkeleton />
-
-  if (forecastQuery.isError || !forecast) {
+  if (forecastQuery.isError) {
     notFound()
   }
 
+  const breadcrumbItems = [
+    { label: 'Forecast', href: route.forecast },
+    {
+      label: forecast ? (
+        forecast.name
+      ) : (
+        <Skeleton className='inline-block h-4 w-28' />
+      ),
+      href: forecast
+        ? `${route.forecast}/${forecastSlug}?part=${PART_GROUP.PART23}`
+        : undefined,
+    },
+    { label: `Part 2 & 3 - ${categoryItem.label}` },
+  ]
+
   return (
     <div className='mx-auto space-y-6 px-6 py-6'>
-      <Breadcrumb
-        items={[
-          { label: 'Forecast', href: route.forecast },
-          {
-            label: forecast.name,
-            href: `${route.forecast}/${forecastSlug}?part=${PART_GROUP.PART23}`,
-          },
-          { label: `Part 2 & 3 - ${categoryItem.label}` },
-        ]}
-      />
+      <Breadcrumb items={breadcrumbItems} />
 
       <div className='mb-8'>
         <h1 className='text-foreground text-2xl leading-snug font-semibold'>
@@ -63,15 +67,15 @@ export default function CategoryDetail() {
         </h1>
       </div>
 
-      {isLoading ? (
+      {forecastQuery.isLoading || isLoading ? (
         <CategoryDetailSkeleton />
-      ) : (
+      ) : forecast ? (
         <Part23Section
           questions={data?.data}
           isLoading={isLoading}
           forecastSlug={forecastSlug}
         />
-      )}
+      ) : null}
     </div>
   )
 }
