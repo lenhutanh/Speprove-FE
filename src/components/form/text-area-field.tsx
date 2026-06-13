@@ -87,11 +87,13 @@ export default function TextAreaField<T extends FieldValues>({
                 rows={rows ?? 4}
                 className={cn(
                   floatLabel && 'bg-background pt-6',
-                  'focus-visible:ring-green-primary field-sizing-fixed shadow-none placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-[2px] aria-invalid:ring-transparent',
+                  'placeholder:text-muted-foreground field-sizing-fixed shadow-none focus-visible:border-transparent focus-visible:ring-[2px]',
                   {
-                    'aria-invalid:border-1 aria-invalid:border-gray-200 aria-invalid:ring-[2px] aria-invalid:focus-visible:border-transparent aria-invalid:focus-visible:ring-[2px] aria-invalid:focus-visible:ring-red-500':
-                      fieldState.invalid && required,
+                    'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500':
+                      fieldState.error,
                   },
+                  !fieldState.error &&
+                    'focus-visible:ring-green-primary focus-visible:border-transparent',
                   className,
                 )}
                 {...field}

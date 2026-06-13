@@ -93,6 +93,12 @@ declare const messages: {
       mock_test: 'Thi thử'
       flashcards: 'Flashcards'
     }
+    theme: {
+      title: 'Giao diện'
+      light: 'Giao diện sáng'
+      dark: 'Giao diện tối'
+      system: 'Theo hệ thống'
+    }
   }
   mock_test: {
     setup: {

@@ -310,7 +310,7 @@ export const AudioPlayer = ({
       disabled={isPending || (!audioUrl && !resolveUrl)}
       aria-label={isPlaying ? 'Pause' : 'Play'}
       className={cn(
-        'flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-indigo-50 transition-all hover:bg-indigo-100 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40',
+        'flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-indigo-200 bg-indigo-50 transition-all hover:bg-indigo-100 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 dark:border-indigo-900/50 dark:bg-indigo-950/40 dark:hover:bg-indigo-900/50',
       )}
     >
       {isPending ? (
@@ -338,7 +338,7 @@ export const AudioPlayer = ({
         aria-valuenow={0}
         aria-label='Audio seek bar'
         tabIndex={0}
-        className='relative h-1.5 flex-1 cursor-pointer rounded-full bg-indigo-100'
+        className='relative h-1.5 flex-1 cursor-pointer rounded-full bg-indigo-100 dark:bg-indigo-950/60'
         onMouseDown={onMouseDown}
         onTouchStart={onTouchStart}
         onKeyDown={(e) => {
