@@ -33,7 +33,7 @@ export function ProgressDots({
                 ? isRecording
                   ? 'bg-red-500'
                   : 'bg-blue-500'
-                : 'bg-zinc-200',
+                : 'bg-muted',
           )}
         />
       ))}

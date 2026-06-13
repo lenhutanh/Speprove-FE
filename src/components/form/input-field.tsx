@@ -78,7 +78,7 @@ export default function InputField<T extends FieldValues>({
                 {...field}
                 className={cn(
                   className,
-                  'pt-0! pb-[0.5px] font-normal placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-[2px]',
+                  'placeholder:text-muted-foreground pt-0! pb-[0.5px] font-normal focus-visible:border-transparent focus-visible:ring-[2px]',
                   {
                     'pl-10': prefixIcon,
                     'pr-10': suffixIcon,

@@ -1,4 +1,4 @@
-import { fullLogo } from '@/assets'
+import { fullLogo, fullLogoDark } from '@/assets'
 import { HEADER_HEIGHT } from '@/constants'
 import { Link } from '@/i18n/navigation'
 import route from '@/routes'
@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Actions from './actions'
 import MobileMenu from './mobile-menu'
 import NavBar from './navbar'
+import ThemeToggle from './theme-toggle'
 
 export default function Header() {
   return (
@@ -23,6 +24,15 @@ export default function Header() {
                 height={32}
                 width={167}
                 priority
+                className='dark:hidden'
+              />
+              <Image
+                src={fullLogoDark}
+                alt='Speprove Logo'
+                height={32}
+                width={167}
+                priority
+                className='hidden dark:block'
               />
             </Link>
             {/* Desktop nav */}
@@ -32,6 +42,7 @@ export default function Header() {
           </div>
 
           <div className='flex items-center gap-3'>
+            <ThemeToggle />
             {/* Desktop actions */}
             <div className='hidden md:flex'>
               <Actions />

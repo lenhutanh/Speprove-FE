@@ -237,7 +237,7 @@ export default function MockTestRoom() {
     return (
       <div className='flex flex-col items-center gap-3'>
         {showTimer && (
-          <p className='text-3xl font-bold tracking-tight text-zinc-800 tabular-nums'>
+          <p className='text-foreground text-3xl font-bold tracking-tight tabular-nums'>
             {timerDisplay}
           </p>
         )}

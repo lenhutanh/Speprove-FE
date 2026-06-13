@@ -3,7 +3,6 @@
 import { FullPageLoading } from '@/components/loading'
 import { useDefaultVoiceQuery, useProfileQuery } from '@/queries'
 import { useAppLoadingStore, useAppPreference, useAuthStore } from '@/store'
-import { setData } from '@/utils'
 import { useEffect } from 'react'
 
 export default function AppProvider({
@@ -30,10 +29,6 @@ export default function AppProvider({
   } = useProfileQuery(isAuthenticated)
 
   const { data: defaultVoiceData } = useDefaultVoiceQuery()
-
-  useEffect(() => {
-    setData('theme', 'light')
-  }, [])
 
   useEffect(() => {
     setLoading(isProfileLoading)

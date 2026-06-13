@@ -181,7 +181,7 @@ export default function MockTest() {
               <span className='flex items-baseline gap-1.5'>
                 <span className='inline-block h-2.5 w-2.5 translate-y-[-1px] rounded-full bg-amber-400' />
                 <span>{cost}</span>
-                <span className='text-base font-normal text-zinc-400'>
+                <span className='text-muted-foreground text-base font-normal'>
                   {tCommon('points')}
                 </span>
               </span>

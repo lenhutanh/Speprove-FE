@@ -36,12 +36,12 @@ export default function CueCard({
           <div className='mb-3 flex items-center gap-2'>
             <Badge
               variant='secondary'
-              className='border-orange-200 bg-orange-100 text-orange-800'
+              className='border-orange-200 bg-orange-100 text-orange-800 dark:border-orange-900/50 dark:bg-orange-950/40 dark:text-orange-400'
             >
               Part 2
             </Badge>
             {cueCard.category && (
-              <span className='text-muted-foreground rounded-md bg-slate-100 px-2 py-0.5 text-xs'>
+              <span className='text-muted-foreground dark:bg-muted rounded-md bg-slate-100 px-2 py-0.5 text-xs'>
                 {cueCard.category}
               </span>
             )}
@@ -64,20 +64,20 @@ export default function CueCard({
       {discussions.length > 0 && (
         <button
           onClick={() => setDiscussionOpen((v) => !v)}
-          className='border-border flex w-full items-center justify-between border-t bg-slate-50 px-5 py-3 transition-colors hover:bg-slate-100'
+          className='border-border dark:bg-muted/40 dark:hover:bg-muted flex w-full items-center justify-between border-t bg-slate-50 px-5 py-3 transition-colors hover:bg-slate-100'
         >
           <div className='flex items-center gap-3'>
             <Badge
               variant='secondary'
-              className='border border-indigo-200 bg-indigo-50 text-[10px] text-indigo-700'
+              className='border border-indigo-200 bg-indigo-50 text-[10px] text-indigo-700 dark:border-indigo-900 dark:bg-indigo-950/40 dark:text-indigo-300'
             >
               Part 3
             </Badge>
-            <span className='text-sm font-medium text-slate-700'>
+            <span className='text-foreground text-sm font-medium'>
               Discussion Questions
             </span>
 
-            <div className='ml-2 h-1.5 w-24 overflow-hidden rounded-full bg-slate-200'>
+            <div className='dark:bg-muted ml-2 h-1.5 w-24 overflow-hidden rounded-full bg-slate-200'>
               <div
                 className='h-full rounded-full bg-indigo-500 transition-all duration-500'
                 style={{
@@ -100,16 +100,16 @@ export default function CueCard({
       )}
 
       {discussionOpen && (
-        <div className='divide-border border-border divide-y border-t bg-white'>
+        <div className='divide-border border-border bg-card divide-y border-t'>
           {discussions.map((q, i) => (
             <div
               key={q.id}
-              className='group flex items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-slate-50'
+              className='group dark:hover:bg-muted/50 flex items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-slate-50'
             >
               <div className='flex min-w-0 flex-1 items-start gap-3'>
                 <span className='text-sm font-medium'>{i + 1}.</span>
                 <div>
-                  <p className='text-sm leading-snug font-medium text-slate-800'>
+                  <p className='text-foreground text-sm leading-snug font-medium'>
                     {q.content}
                   </p>
                 </div>

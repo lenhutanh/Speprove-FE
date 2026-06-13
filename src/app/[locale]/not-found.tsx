@@ -15,7 +15,7 @@ export default function NotFoundPage() {
   return (
     <>
       <Header />
-      <Container contentClassName='mx-auto flex flex-col items-center min-h-[80vh] justify-center bg-white text-center'>
+      <Container contentClassName='mx-auto flex flex-col items-center min-h-[80vh] justify-center bg-background text-center'>
         <Image
           src={notFoundImg}
           width={400}
@@ -24,7 +24,7 @@ export default function NotFoundPage() {
           priority
         />
         <h1 className='mt-8 text-2xl font-bold'>{t('title')}</h1>
-        <p className='mt-2 mb-4 text-gray-600'>{t('description')}</p>
+        <p className='text-muted-foreground mt-2 mb-4'>{t('description')}</p>
         <Button asChild>
           <Link href={route.home}>{t('back_home')}</Link>
         </Button>

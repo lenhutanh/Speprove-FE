@@ -154,7 +154,7 @@ export default function BaseForm<T extends Record<string, any>>({
   return (
     <Form {...form}>
       <form
-        className={cn('relative bg-white', className)}
+        className={cn('bg-card relative', className)}
         onSubmit={form.handleSubmit(handleFormSubmit)} // Thay đổi ở đây
         onChange={onChange}
       >

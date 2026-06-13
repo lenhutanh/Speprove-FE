@@ -49,7 +49,7 @@ export function SessionTopBar({
 
   return (
     <header className='flex h-12 shrink-0 items-center gap-3'>
-      <div className='flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-xs font-medium text-zinc-700'>
+      <div className='border-border bg-muted/50 text-foreground flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium'>
         {getPartBadge(mode, questionIndex, isPartTwo)}
       </div>
 
