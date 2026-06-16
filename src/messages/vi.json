@@ -187,6 +187,21 @@
       "login_required": "Vui lòng đăng nhập để thi thử",
       "insufficient_balance": "Số dư không đủ! Vui lòng nạp thêm",
       "create_session_error": "Có lỗi xảy ra khi tạo phòng thi. Vui lòng thử lại!"
+    },
+    "history": {
+      "no_sessions": "Chưa có lượt thi thử nào",
+      "no_sessions_desc": "Hãy bắt đầu lượt thi thử IELTS Speaking đầu tiên của bạn để nhận đánh giá AI và điểm số.",
+      "start_test": "Bắt đầu thi thử",
+      "loading_error": "Có lỗi xảy ra khi tải lịch sử thi thử.",
+      "retry": "Thử lại",
+      "status_not_started": "Chưa bắt đầu",
+      "status_in_progress": "Đang làm bài",
+      "status_processing": "Đang chấm điểm",
+      "status_completed": "Hoàn thành",
+      "status_failed": "Thất bại",
+      "status_refunded": "Đã hoàn điểm",
+      "action_resume": "Tiếp tục",
+      "action_view_result": "Xem kết quả"
     }
   },
   "balance": {
