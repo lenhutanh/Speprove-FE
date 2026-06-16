@@ -1,5 +1,6 @@
 'use client'
 
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,25 +12,44 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { InsufficientBalanceDialog } from '@/components/ui/insufficient-balance-dialog'
 import { RecordButton } from '@/components/ui/recorder'
 import { Spinner } from '@/components/ui/spinner'
 import { SpeakingSessionType, formatCountdown } from '@/constants'
 import { useNavigate, useRecorder, useRecordingCountdown } from '@/hooks'
 import { useMockTestSession } from '@/hooks/use-mock-test-session'
-import { usePathname } from '@/i18n/navigation'
+import { Link, usePathname } from '@/i18n/navigation'
 import route from '@/routes'
-import { Headphones } from 'lucide-react'
+import { AlertTriangle, Check, Headphones, History, Plus } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useParams } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { MicChecker } from '../../_components/mic-checker'
 import { CueCardPanel, NotePanel } from './cue-card'
 import { SessionTopBar } from './session-top-bar'
 import { WaveBars } from './wave-bars'
 
 export default function MockTestRoom() {
   const t = useTranslations('mock_test.room')
+  const tCommon = useTranslations('common')
   const { speakingSessionId } = useParams<{ speakingSessionId: string }>()
+
+  const [hasEntered, setHasEntered] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return (
+        sessionStorage.getItem(`mock_${speakingSessionId}_entered`) === 'true'
+      )
+    }
+    return false
+  })
 
   const {
     state,
@@ -40,7 +60,18 @@ export default function MockTestRoom() {
     hasReplayed,
     isReplayingQuestion,
     isLoading,
-  } = useMockTestSession(speakingSessionId)
+    isError,
+    isFetching,
+    refetch,
+  } = useMockTestSession(speakingSessionId, hasEntered)
+
+  const [failedAudioBlob, setFailedAudioBlob] = useState<Blob | null>(null)
+
+  useEffect(() => {
+    return () => {
+      sessionStorage.removeItem(`mock_${speakingSessionId}_entered`)
+    }
+  }, [speakingSessionId])
 
   const [notes, setNotes] = useState<Record<string, string>>({})
   const [showBalanceDialog, setShowBalanceDialog] = useState(false)
@@ -63,14 +94,33 @@ export default function MockTestRoom() {
   const doStop = useCallback(async () => {
     try {
       const blob = await stopRecording()
+      if (!blob) return
       const res = await submitAttempt(blob)
-      if (res?.success === false && res.errorCode === 'BUS_003') {
-        setShowBalanceDialog(true)
+      if (res?.success === false) {
+        if (res.errorCode === 'BUS_003') {
+          setShowBalanceDialog(true)
+        } else {
+          setFailedAudioBlob(blob)
+        }
       }
     } catch (e) {
       console.error(e)
     }
   }, [stopRecording, submitAttempt])
+
+  const handleResubmit = async () => {
+    if (!failedAudioBlob) return
+    const blob = failedAudioBlob
+    setFailedAudioBlob(null)
+    const res = await submitAttempt(blob)
+    if (res?.success === false) {
+      if (res.errorCode === 'BUS_003') {
+        setShowBalanceDialog(true)
+      } else {
+        setFailedAudioBlob(blob)
+      }
+    }
+  }
 
   const { countdown, canStop, startCountdown, stopCountdown } =
     useRecordingCountdown({
@@ -136,6 +186,11 @@ export default function MockTestRoom() {
   }
 
   const handleExit = () => {
+    if (!hasEntered || (state === 'fetching' && isError)) {
+      navigate(route.mockTest)
+      return
+    }
+
     if (state === 'done') {
       navigate(route.mockTest)
       return
@@ -144,7 +199,91 @@ export default function MockTestRoom() {
     setShowExitDialog(true)
   }
 
-  if (isLoading || !questionData) {
+  if (!hasEntered) {
+    return (
+      <Card className='animate-in fade-in mx-auto my-8 w-full max-w-lg duration-300'>
+        <CardHeader className='pb-2 text-center'>
+          <CardTitle className='text-foreground text-2xl font-bold tracking-tight'>
+            {t('lobby_title')}
+          </CardTitle>
+          <CardDescription className='text-muted-foreground text-sm leading-relaxed'>
+            {t('lobby_desc')}
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent className='space-y-6'>
+          <div className='bg-muted/30 border-border/50 rounded-xl border p-4'>
+            <MicChecker />
+          </div>
+
+          <Alert className='border-amber-500/10 bg-amber-500/5 text-amber-600 dark:text-amber-400'>
+            <AlertTriangle className='h-4 w-4 text-amber-500' />
+            <AlertDescription className='text-xs leading-relaxed'>
+              {t('lobby_warning')}
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+
+        <CardFooter className='flex justify-end gap-3 pt-2'>
+          <Button variant='outline' onClick={handleExit}>
+            {tCommon('exit')}
+          </Button>
+          <Button
+            onClick={() => {
+              sessionStorage.setItem(
+                `mock_${speakingSessionId}_entered`,
+                'true',
+              )
+              setHasEntered(true)
+            }}
+          >
+            {t('enter_room')}
+          </Button>
+        </CardFooter>
+      </Card>
+    )
+  }
+
+  if ((isLoading || isFetching) && !questionData) {
+    return (
+      <div className='flex h-full items-center justify-center'>
+        <div className='flex flex-col items-center gap-4'>
+          <Spinner className='h-8 w-8 text-blue-500' />
+          <p className='text-muted-foreground text-sm'>{t('loading_room')}</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (state === 'fetching' && isError) {
+    return (
+      <Card className='animate-in fade-in mx-auto my-8 w-full max-w-md duration-300'>
+        <CardContent className='flex flex-col items-center justify-center gap-6 pt-6 text-center'>
+          <div className='flex size-14 items-center justify-center rounded-full bg-red-50 text-red-500 dark:bg-red-950/30 dark:text-red-400'>
+            <AlertTriangle className='size-7' />
+          </div>
+          <div className='space-y-2'>
+            <h2 className='text-foreground text-xl font-semibold'>
+              {t('fetch_error_title')}
+            </h2>
+            <p className='text-muted-foreground text-sm leading-relaxed'>
+              {t('fetch_error_desc')}
+            </p>
+          </div>
+        </CardContent>
+        <CardFooter className='flex justify-center gap-3 pt-2 pb-6'>
+          <Button variant='outline' onClick={handleExit}>
+            {tCommon('exit')}
+          </Button>
+          <Button onClick={() => refetch()}>
+            {tCommon('please_try_again')}
+          </Button>
+        </CardFooter>
+      </Card>
+    )
+  }
+
+  if (!questionData) {
     return (
       <div className='flex h-full items-center justify-center'>
         <div className='flex flex-col items-center gap-4'>
@@ -303,10 +442,41 @@ export default function MockTestRoom() {
   )
 
   const renderDone = () => (
-    <div className='flex flex-col items-center justify-center gap-4'>
-      <p className='text-lg font-semibold'>{t('done_title')}</p>
-      <p className='text-muted-foreground text-sm'>{t('done_desc')}</p>
-    </div>
+    <Card className='animate-in fade-in mx-auto my-8 w-full max-w-lg duration-300'>
+      <CardContent className='flex flex-col items-center justify-center gap-6 pt-6 text-center'>
+        <div className='animate-in fade-in zoom-in flex size-16 items-center justify-center rounded-full bg-emerald-100/80 text-emerald-600 duration-300 dark:bg-emerald-900/30 dark:text-emerald-400'>
+          <Check className='size-8 stroke-[3]' />
+        </div>
+
+        <div className='space-y-2'>
+          <h2 className='text-foreground text-2xl font-bold tracking-tight sm:text-3xl'>
+            {t('done_title')}
+          </h2>
+          <p className='text-muted-foreground max-w-md text-sm leading-relaxed whitespace-pre-line sm:text-base'>
+            {t('done_desc')}
+          </p>
+        </div>
+      </CardContent>
+
+      <CardFooter className='flex w-full flex-col justify-center gap-3 px-6 pt-2 pb-6 sm:flex-row'>
+        <Button
+          asChild
+          variant='outline'
+          className='h-10 w-full gap-2 rounded-xl px-5 sm:w-auto'
+        >
+          <Link href={`${route.account}?tab=mock-test-history`}>
+            <History className='size-4' />
+            {t('view_history')}
+          </Link>
+        </Button>
+        <Button asChild className='h-10 w-full gap-2 rounded-xl px-5 sm:w-auto'>
+          <Link href={route.mockTest}>
+            <Plus className='size-4' />
+            {t('start_new_test')}
+          </Link>
+        </Button>
+      </CardFooter>
+    </Card>
   )
 
   const renderContent = () => {
@@ -370,16 +540,45 @@ export default function MockTestRoom() {
         </AlertDialogContent>
       </AlertDialog>
 
+      <AlertDialog
+        open={failedAudioBlob !== null}
+        onOpenChange={(open) => {
+          if (!open) setFailedAudioBlob(null)
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('submit_failed_title')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('submit_failed_desc')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => {
+                setFailedAudioBlob(null)
+              }}
+            >
+              {t('re_record')}
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleResubmit}>
+              {t('retry_submit')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className='mx-auto flex max-w-6xl flex-col px-6 py-4'>
-        <SessionTopBar
-          state={state}
-          mode={mode}
-          questionIndex={questionIndex}
-          totalQuestions={totalQuestions}
-          isPartTwo={isPartTwo}
-          prepSeconds={prepSeconds}
-          onExit={handleExit}
-        />
+        {state !== 'done' && (
+          <SessionTopBar
+            state={state}
+            mode={mode}
+            questionIndex={questionIndex}
+            totalQuestions={totalQuestions}
+            part={questionData?.question?.part}
+            onExit={handleExit}
+          />
+        )}
 
         <main className='mx-auto flex w-full flex-1 items-center justify-center overflow-hidden py-6'>
           {renderContent()}

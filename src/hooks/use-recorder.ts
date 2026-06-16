@@ -1,5 +1,6 @@
 'use client'
 
+import { useAppPreference } from '@/store'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -37,7 +38,11 @@ export function useRecorder() {
       const RecordRTCModule = await import('recordrtc')
       const RecordRTC = RecordRTCModule.default
 
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const { deviceId } = useAppPreference.getState()
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: deviceId ? { deviceId: { exact: deviceId } } : true,
+      })
       streamRef.current = stream
 
       const audioCtx = new AudioContext()

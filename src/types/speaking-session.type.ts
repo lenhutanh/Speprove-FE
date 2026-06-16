@@ -1,4 +1,3 @@
-import { MOCK_TYPE, SPEAKING_SESSION_MODE } from '@/constants'
 import { createSpeakingSessionSchema } from '@/validations'
 import z from 'zod'
 
@@ -14,31 +13,23 @@ export type SpeakingResult = {
   overall: number | null
 }
 
-interface BaseSpeakingSession {
+export type SpeakingSessionResponseDto = {
   id: string
   userId: string
   forecastId: string
+  voiceId: string
+  type: string
   status: number
-  result?: SpeakingResult
-  startedAt: string
-  finishedAt?: string
+  result?: {
+    fluency: number | null
+    lexical: number | null
+    grammar: number | null
+    pronunciation: number | null
+    overall: number | null
+  }
+  startedAt: Date
+  finishedAt?: Date
 }
-
-export type PracticeSessionResponse = BaseSpeakingSession & {
-  mode: typeof SPEAKING_SESSION_MODE.PRACTICE
-  mockType?: never
-  part?: never
-}
-
-export type MockSessionResponse = BaseSpeakingSession & {
-  mode: typeof SPEAKING_SESSION_MODE.MOCK
-  mockType: typeof MOCK_TYPE
-  part?: number // 1 | 2 | 3
-}
-
-export type SpeakingSessionResponseDto =
-  | PracticeSessionResponse
-  | MockSessionResponse
 
 export type SessionState =
   | 'fetching'

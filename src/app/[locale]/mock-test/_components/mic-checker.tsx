@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { cn } from '@/lib'
+import { useAppPreference } from '@/store'
 import { useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -22,7 +23,7 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
   const t = useTranslations('mock_test.components.mic_checker')
   const tCommon = useTranslations('common')
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
-  const [deviceId, setDeviceId] = useState<string>('')
+  const { deviceId, setDeviceId } = useAppPreference()
   const [recording, setRecording] = useState(false)
   const [audioUrl, setAudioUrl] = useState<string>()
 
@@ -37,10 +38,14 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
     navigator.mediaDevices.enumerateDevices().then((all) => {
       const mics = all.filter((d) => d.kind === 'audioinput')
       setDevices(mics)
-      if (mics[0]) setDeviceId(mics[0].deviceId)
+      const hasSavedDevice = mics.some((d) => d.deviceId === deviceId)
+      if (!hasSavedDevice && mics[0]) {
+        setDeviceId(mics[0].deviceId)
+      }
     })
 
     return () => stopStream()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -116,11 +121,20 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
   function handleDeviceChange(id: string) {
     setDeviceId(id)
     onDeviceChange?.(id)
+
+    if (audioUrl) {
+      URL.revokeObjectURL(audioUrl)
+      setAudioUrl(undefined)
+    }
   }
 
   return (
     <div className={cn('flex flex-col gap-4', className)}>
-      <Select value={deviceId} onValueChange={handleDeviceChange}>
+      <Select
+        value={deviceId || ''}
+        onValueChange={handleDeviceChange}
+        disabled={recording}
+      >
         <SelectTrigger className='w-full'>
           <SelectValue placeholder={t('placeholder')} />
         </SelectTrigger>

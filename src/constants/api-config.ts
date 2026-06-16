@@ -122,6 +122,16 @@ const apiConfig = defineApiConfig({
       method: 'GET',
       headers: baseHeader,
     },
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/speaking-session`,
+      method: 'GET',
+      headers: baseHeader,
+    },
+    getDetails: {
+      baseUrl: `${AppConstants.apiUrl}v1/speaking-session/:id`,
+      method: 'GET',
+      headers: baseHeader,
+    },
   },
   file: {
     uploadAudio: {

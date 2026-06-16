@@ -23,6 +23,7 @@
     "start": "Bắt đầu",
     "stop": "Dừng",
     "exit": "Thoát",
+    "part": "Phần thi",
     "loading": "Đang tải...",
     "error_occurred": "Có lỗi xảy ra",
     "please_try_again": "Vui lòng thử lại",
@@ -134,7 +135,7 @@
       },
       "start_button": "Bắt đầu thi thử",
       "modal": {
-        "title": "Chuẩn bị thi {part}",
+        "title": "Thiết lập bài thi",
         "start_now": "Vào thi ngay"
       }
     },
@@ -143,13 +144,25 @@
       "loading_question": "Đang tải câu hỏi...",
       "examiner_speaking": "Giám khảo đang nói...",
       "listen_carefully": "Hãy lắng nghe cẩn thận",
-      "submitting": "Đang nộp câu trả lời...",
-      "done_title": "Bài thi hoàn tất",
-      "done_desc": "Chúc mừng bạn đã hoàn thành!",
+      "submitting": "Đang ghi nhận câu trả lời...",
+      "done_title": "Đã nộp bài thi thử",
+      "done_desc": "Bài thi của bạn đã được nộp thành công.\nKết quả đánh giá AI đang được xử lý và thường mất khoảng 1–2 phút.",
+      "view_history": "Xem lịch sử",
+      "start_new_test": "Thi thử lượt mới",
       "replay_question": "Nghe lại câu hỏi",
       "min_speaking_time": "Nói ít nhất 10 giây",
       "prep_time": "Chuẩn bị {seconds}s...",
-      "start_recording_in": "Bắt đầu ghi âm sau {seconds}s..."
+      "start_recording_in": "Bắt đầu ghi âm sau {seconds}s...",
+      "fetch_error_title": "Tải câu hỏi thất bại",
+      "fetch_error_desc": "Không thể kết nối tới máy chủ để tải thông tin câu hỏi. Vui lòng kiểm tra kết nối internet hoặc thử lại.",
+      "submit_failed_title": "Nộp câu trả lời thất bại",
+      "submit_failed_desc": "Không thể tải lên file ghi âm của bạn. Bạn muốn thử nộp lại file ghi âm này hay hủy để ghi âm lại?",
+      "retry_submit": "Thử gửi lại",
+      "re_record": "Ghi âm lại",
+      "lobby_title": "Kiểm tra thiết bị âm thanh",
+      "lobby_desc": "Vui lòng nói thử vào micro và nghe lại đoạn thu âm để đảm bảo micro và tai nghe hoạt động tốt trước khi thi.",
+      "lobby_warning": "Lưu ý: Chỉ nên vào phòng thi khi thanh hiển thị âm lượng hoạt động khi nói và bạn có thể nghe rõ giọng ghi âm của mình.",
+      "enter_room": "Vào phòng thi"
     },
     "components": {
       "cue_card": {
@@ -223,7 +236,8 @@
       "profile": "Thông tin cá nhân",
       "change_password": "Đổi mật khẩu",
       "set_password": "Thiết lập mật khẩu",
-      "voice_setting": "Chỉnh giọng đọc"
+      "voice_setting": "Chỉnh giọng đọc",
+      "mock_test_history": "Lịch sử thi thử"
     }
   },
   "not_found": {
