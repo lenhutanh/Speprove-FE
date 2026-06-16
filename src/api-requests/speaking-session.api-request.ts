@@ -33,6 +33,13 @@ const speakingSessionApiRequest = {
         pathParams: { id },
       },
     ),
+  retry: (id: string) =>
+    http.post<ApiResponse<SpeakingSessionResponseDto>>(
+      apiConfig.speakingSession.retry,
+      {
+        pathParams: { id },
+      },
+    ),
 }
 
 export default speakingSessionApiRequest

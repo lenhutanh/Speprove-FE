@@ -41,3 +41,10 @@ export const useSpeakingSessionQuery = (
     ...options,
   })
 }
+
+export const useRetrySpeakingSessionMutation = () => {
+  return useMutation({
+    mutationKey: ['retry-speaking-session'],
+    mutationFn: (id: string) => speakingSessionApiRequest.retry(id),
+  })
+}

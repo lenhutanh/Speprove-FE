@@ -48,7 +48,7 @@ export default function AccountPage() {
   return (
     <Container
       style={{ minHeight: `calc(100vh - ${HEADER_HEIGHT}px)` }}
-      className='bg-muted/40 py-4 sm:py-8'
+      className='bg-muted/40 py-4 sm:py-6'
     >
       <div className='flex flex-col gap-4 lg:flex-row lg:gap-8'>
         <AccountSidebar

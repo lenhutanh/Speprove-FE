@@ -1,6 +1,9 @@
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/i18n/navigation'
+import { useRetrySpeakingSessionMutation } from '@/queries'
+import { SESSION_STATUS, SpeakingSessionResponseDto } from '@/types'
+import { useQueryClient } from '@tanstack/react-query'
 import { formatDistanceToNow } from 'date-fns'
 import { enUS, vi } from 'date-fns/locale'
 import {
@@ -12,27 +15,27 @@ import {
   RotateCcw,
 } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
-import { MockSession } from './mock-test-history-tab'
+import { toast } from 'sonner'
 
 interface MockTestItemProps {
-  session: MockSession
-  onRetry: (id: string) => void
-  isRetrying: boolean
+  session: SpeakingSessionResponseDto
 }
 
-export default function MockTestItem({
-  session,
-  onRetry,
-  isRetrying,
-}: MockTestItemProps) {
+export default function MockTestItem({ session }: MockTestItemProps) {
   const locale = useLocale()
   const tModes = useTranslations('mock_test.setup.modes')
+  const tHistory = useTranslations('mock_test.history')
   const dateLocale = locale === 'vi' ? vi : enUS
+  const retrySpeakingSessionMutation = useRetrySpeakingSessionMutation()
 
-  const timeAgo = formatDistanceToNow(new Date(session.createdAt), {
-    addSuffix: true,
-    locale: dateLocale,
-  })
+  const parsedDate = session.startedAt ? new Date(session.startedAt) : null
+  const timeAgo =
+    parsedDate && !isNaN(parsedDate.getTime())
+      ? formatDistanceToNow(parsedDate, {
+          addSuffix: true,
+          locale: dateLocale,
+        })
+      : ''
 
   const getTypeLabel = (type: string) => {
     switch (type) {
@@ -49,43 +52,68 @@ export default function MockTestItem({
     }
   }
 
+  const queryClient = useQueryClient()
+
+  const handleRetry = async () => {
+    if (retrySpeakingSessionMutation.isPending) return
+
+    toast.promise(
+      retrySpeakingSessionMutation.mutateAsync(session.id, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['speaking-session-list'] })
+        },
+      }),
+      {
+        loading: 'Đang gửi yêu cầu chấm lại...',
+        success: 'Đã gửi yêu cầu chấm lại thành công!',
+        error: 'Gửi yêu cầu chấm lại thất bại.',
+      },
+    )
+  }
+
   let statusBadge: React.ReactNode = null
   let actionButton: React.ReactNode = null
 
   const isFailedRefunded =
-    session.status === 'FAILED' && session.refundedAt != null
+    session.status === SESSION_STATUS.FAILED && session.refundedAt != null
   const isFailedNotRefunded =
-    session.status === 'FAILED' && session.refundedAt == null
+    session.status === SESSION_STATUS.FAILED && session.refundedAt == null
 
-  if (session.status === 'IN_PROGRESS') {
+  if (
+    session.status === SESSION_STATUS.NOT_STARTED ||
+    session.status === SESSION_STATUS.IN_PROGRESS
+  ) {
+    const isNotStarted = session.status === SESSION_STATUS.NOT_STARTED
     statusBadge = (
       <Badge
         variant='outline'
         className='gap-1 rounded-md border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/20 dark:text-amber-400'
       >
         <span className='h-1.5 w-1.5 rounded-full bg-amber-500' />
-        In Progress
+        {isNotStarted
+          ? tHistory('status_not_started')
+          : tHistory('status_in_progress')}
       </Badge>
     )
     actionButton = (
-      <Button asChild size='sm' className='h-8 w-full gap-1 px-3 sm:w-auto'>
+      <Button asChild size='sm'>
         <Link href={`/mock-test/${session.id}`}>
-          <Play className='size-3.5 fill-current' />
-          Resume
+          <Play className='fill-current' />
+          {tHistory('action_resume')}
         </Link>
       </Button>
     )
-  } else if (session.status === 'PROCESSING') {
+  } else if (session.status === SESSION_STATUS.PROCESSING) {
     statusBadge = (
       <Badge
         variant='outline'
         className='animate-pulse gap-1 rounded-md border-blue-200 bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:border-blue-900/50 dark:bg-blue-950/20 dark:text-blue-400'
       >
         <Loader2 className='size-3 animate-spin text-blue-500 dark:text-blue-400' />
-        Processing
+        {tHistory('status_processing')}
       </Badge>
     )
-  } else if (session.status === 'COMPLETED') {
+  } else if (session.status === SESSION_STATUS.COMPLETED) {
     const overallScore = session.result?.overall ?? 0
     const isHigh = overallScore >= 7.0
     statusBadge = (
@@ -108,15 +136,10 @@ export default function MockTestItem({
       </Badge>
     )
     actionButton = (
-      <Button
-        asChild
-        variant='outline'
-        size='sm'
-        className='h-8 w-full gap-1 px-3 sm:w-auto'
-      >
+      <Button asChild variant='outline' size='sm'>
         <Link href={`/mock-test/${session.id}/result`}>
-          <Eye className='size-3.5' />
-          View Result
+          <Eye className='size-4' />
+          {tHistory('action_view_result')}
         </Link>
       </Button>
     )
@@ -127,23 +150,23 @@ export default function MockTestItem({
         className='gap-1 rounded-md border-red-200 bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 dark:border-red-900/50 dark:bg-red-950/20 dark:text-red-400'
       >
         <AlertCircle className='size-3 text-red-500 dark:text-red-400' />
-        Failed
+        {tHistory('status_failed')}
       </Badge>
     )
     actionButton = (
       <Button
-        variant='secondary'
+        variant='outline'
         size='sm'
-        className='h-8 w-full gap-1 px-3 sm:w-auto'
-        onClick={() => onRetry(session.id)}
-        disabled={isRetrying}
+        className='border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive'
+        onClick={handleRetry}
+        disabled={retrySpeakingSessionMutation.isPending}
       >
-        {isRetrying ? (
-          <Loader2 className='size-3.5 animate-spin' />
+        {retrySpeakingSessionMutation.isPending ? (
+          <Loader2 className='size-4 animate-spin' />
         ) : (
-          <RotateCcw className='size-3.5' />
+          <RotateCcw className='size-4' />
         )}
-        Retry
+        {tHistory('retry')}
       </Button>
     )
   } else if (isFailedRefunded) {
@@ -153,13 +176,13 @@ export default function MockTestItem({
         className='gap-1 rounded-md border-slate-200 bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 dark:border-slate-700/50 dark:bg-slate-800/40 dark:text-slate-400'
       >
         <CircleDollarSign className='size-3 text-slate-500 dark:text-slate-400' />
-        Refunded
+        {tHistory('status_refunded')}
       </Badge>
     )
   }
 
   return (
-    <div className='bg-card hover:bg-accent/5 border-border flex flex-col gap-3 rounded-xl border p-4 transition-all duration-200 sm:grid sm:grid-cols-[1.8fr_1.2fr_1.2fr_110px] sm:items-center'>
+    <div className='bg-card hover:bg-accent/5 border-border flex flex-col gap-3 rounded-xl border p-4 transition-all duration-200 sm:grid sm:grid-cols-[1fr_1fr_1fr_1fr] sm:items-center'>
       <div className='flex w-full items-center justify-between sm:contents'>
         <div className='text-foreground truncate text-sm font-semibold sm:pr-2 sm:text-base'>
           {getTypeLabel(session.type)}
