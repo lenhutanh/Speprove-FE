@@ -8,16 +8,22 @@ import { SessionState, UploadAudioBodyType } from '@/types'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
-export function useMockTestSession(sessionId: string) {
+export function useMockTestSession(
+  sessionId: string,
+  hasEntered: boolean = true,
+) {
   const [state, setState] = useState<SessionState>('fetching')
   const [prepSeconds, setPrepSeconds] = useState(60)
   const [isReplayingQuestion, setIsReplayingQuestion] = useState(false)
+  const lastSubmittedQuestionIdRef = useRef<string | null>(null)
 
   const {
     data: res,
     refetch,
     isLoading,
-  } = useGetCurrentQuestionQuery(sessionId)
+    isError,
+    isFetching,
+  } = useGetCurrentQuestionQuery(sessionId, { enabled: hasEntered })
   const questionData = res?.data
 
   const uploadAudioMutation = useUploadAudioMutation()
@@ -66,28 +72,42 @@ export function useMockTestSession(sessionId: string) {
     }, 1000)
   }, [clearTimer])
 
+  const questionId = questionData?.question?.id
+  const isFinished = questionData?.isFinished
+  const instruction = questionData?.instruction
   useEffect(() => {
+    if (!hasEntered) return
     if (!questionData) return
 
+    let active = true
+
     const cleanup = () => {
+      active = false
       clearTimer()
       stopAudio()
     }
 
     if (state === 'fetching') {
-      if (questionData.isFinished) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setState('done')
+      if (questionId && questionId === lastSubmittedQuestionIdRef.current) {
+        return
+      }
+
+      lastSubmittedQuestionIdRef.current = null
+
+      if (isFinished) {
+        const doneRead = sessionStorage.getItem(`mock_${sessionId}_doneRead`)
+        if (instruction && doneRead !== 'true') {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
+          setState('examiner_speaking')
+        } else {
+          setState('done')
+        }
       } else {
-        const questionId = questionData.question?.id
         const lastReadId = sessionStorage.getItem(`mock_${sessionId}_lastRead`)
 
         if (questionId && lastReadId === questionId) {
           setState(questionData.question?.part === 2 ? 'prep' : 'transition')
         } else {
-          if (questionId) {
-            sessionStorage.setItem(`mock_${sessionId}_lastRead`, questionId)
-          }
           setState('examiner_speaking')
         }
       }
@@ -96,20 +116,41 @@ export function useMockTestSession(sessionId: string) {
     if (state === 'examiner_speaking') {
       const playSequence = async () => {
         try {
-          if (questionData.instruction) {
-            await playAudio(questionData.instruction)
+          if (instruction) {
+            await playAudio(instruction)
           }
+          if (!active) return
+
+          if (isFinished) {
+            sessionStorage.setItem(`mock_${sessionId}_doneRead`, 'true')
+            setState('done')
+            return
+          }
+
           if (questionData.question?.audioUrl) {
             await playAudio(questionData.question.audioUrl)
           }
+          if (!active) return
+
+          if (questionId) {
+            sessionStorage.setItem(`mock_${sessionId}_lastRead`, questionId)
+          }
+
           if (questionData.question?.part === 2) {
             setState('prep')
           } else {
             setState('transition')
           }
         } catch {
+          if (!active) return
           toast.error('Khong the phat am thanh cua giam khao')
-          setState('transition')
+
+          if (isFinished) {
+            sessionStorage.setItem(`mock_${sessionId}_doneRead`, 'true')
+            setState('done')
+          } else {
+            setState('transition')
+          }
         }
       }
       playSequence()
@@ -135,24 +176,14 @@ export function useMockTestSession(sessionId: string) {
       }, 1000)
     }
 
-    if (state === 'done') {
-      const finish = async () => {
-        if (questionData.instruction) {
-          try {
-            await playAudio(questionData.instruction)
-          } catch {
-            // ignore
-          }
-        }
-        toast.success('Chuc mung ban da hoan thanh bai thi!')
-      }
-      finish()
-    }
-
     return cleanup
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    hasEntered,
     state,
-    questionData,
+    questionId,
+    isFinished,
+    instruction,
     sessionId,
     clearTimer,
     stopAudio,
@@ -181,12 +212,15 @@ export function useMockTestSession(sessionId: string) {
         mode: SPEAKING_SESSION_MODE.MOCK,
         forecastQuestionId: questionData.question.id,
         audioFileId,
+        speakingSessionId: sessionId,
       })
 
       if (attemptRes.errorCode === 'BUS_003') {
         setState('user_speaking')
         return { success: false, errorCode: 'BUS_003' }
       }
+
+      lastSubmittedQuestionIdRef.current = questionData.question.id
 
       setState('fetching')
       await refetch()
@@ -226,6 +260,9 @@ export function useMockTestSession(sessionId: string) {
     questionData,
     prepSeconds,
     isLoading,
+    isError,
+    isFetching,
+    refetch,
     submitAttempt,
     replayQuestion,
     hasReplayed,

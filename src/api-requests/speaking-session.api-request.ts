@@ -22,6 +22,17 @@ const speakingSessionApiRequest = {
         pathParams: { id },
       },
     ),
+  getList: () =>
+    http.get<ApiResponse<SpeakingSessionResponseDto[]>>(
+      apiConfig.speakingSession.getList,
+    ),
+  getDetails: (id: string) =>
+    http.get<ApiResponse<SpeakingSessionResponseDto>>(
+      apiConfig.speakingSession.getDetails,
+      {
+        pathParams: { id },
+      },
+    ),
 }
 
 export default speakingSessionApiRequest

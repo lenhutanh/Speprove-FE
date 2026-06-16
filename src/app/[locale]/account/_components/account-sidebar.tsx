@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import type { AccountTabKey } from '@/constants'
 import {
   CircleUserRound,
+  History,
   LockKeyhole,
   Volume2,
   type LucideIcon,
@@ -15,6 +16,7 @@ export type AccountTabLabels = {
   changePassword: string
   setPassword: string
   voiceSetting: string
+  mockTestHistory: string
 }
 
 type AccountSidebarProps = {
@@ -48,6 +50,11 @@ export const getAccountTabs = (
     label: labels.voiceSetting,
     icon: Volume2,
   },
+  {
+    key: 'mock-test-history',
+    label: labels.mockTestHistory,
+    icon: History,
+  },
 ]
 
 export default function AccountSidebar({
@@ -61,6 +68,7 @@ export default function AccountSidebar({
     changePassword: t('change_password'),
     setPassword: t('set_password'),
     voiceSetting: t('voice_setting'),
+    mockTestHistory: t('mock_test_history'),
   })
 
   return (

@@ -25,7 +25,7 @@ export default function VoiceSelector({
   const selected = voices.find((voice) => voice.id === value)
 
   return (
-    <div className='flex items-center gap-2 px-3 py-1.5'>
+    <div className='flex items-center gap-2'>
       <AudioPlayer
         url={selected?.sampleAudioUrl}
         variant='minimal'
@@ -33,7 +33,7 @@ export default function VoiceSelector({
       />
 
       <Select value={value} onValueChange={(v) => onChange(v)}>
-        <SelectTrigger>
+        <SelectTrigger className='w-full'>
           <SelectValue />
         </SelectTrigger>
 

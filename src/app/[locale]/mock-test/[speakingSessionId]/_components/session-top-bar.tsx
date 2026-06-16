@@ -11,27 +11,19 @@ interface SessionTopBarProps {
   mode: SpeakingSessionType
   questionIndex: number
   totalQuestions: number
-  isPartTwo: boolean
-  prepSeconds?: number
+  part?: number
   onExit: () => void
 }
 
 function usePartBadge() {
   const t = useTranslations('mock_test.setup.modes')
 
-  return (
-    mode: SpeakingSessionType,
-    qIndex: number,
-    isPartTwo: boolean,
-  ): string => {
-    if (isPartTwo) return t('mock_p2.label')
-    if (mode === 'mock_p1') return t('mock_p1.label')
+  return (mode: SpeakingSessionType, part?: number): string => {
+    if (part === 1) return t('mock_p1.label')
+    if (part === 2) return t('mock_p2.label')
+    if (part === 3) return t('mock_p3.label')
+    if (mode === 'mock_p2') return t('mock_p2.label')
     if (mode === 'mock_p3') return t('mock_p3.label')
-    if (mode === 'full_test') {
-      if (qIndex < 4) return t('mock_p1.label')
-      if (qIndex === 4) return t('mock_p2.label')
-      return t('mock_p3.label')
-    }
     return t('mock_p1.label')
   }
 }
@@ -41,7 +33,7 @@ export function SessionTopBar({
   mode,
   questionIndex,
   totalQuestions,
-  isPartTwo,
+  part,
   onExit,
 }: SessionTopBarProps) {
   const tCommon = useTranslations('common')
@@ -50,7 +42,7 @@ export function SessionTopBar({
   return (
     <header className='flex h-12 shrink-0 items-center gap-3'>
       <div className='border-border bg-muted/50 text-foreground flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium'>
-        {getPartBadge(mode, questionIndex, isPartTwo)}
+        {getPartBadge(mode, part)}
       </div>
 
       {/* Progress dots */}

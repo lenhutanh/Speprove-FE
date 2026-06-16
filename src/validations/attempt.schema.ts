@@ -9,6 +9,7 @@ export const createAttemptSchema = z.object({
   mode: nativeEnum(SPEAKING_SESSION_MODE),
   forecastQuestionId: z.string(),
   audioFileId: z.string(),
+  speakingSessionId: z.string().optional(),
 })
 
 export const attemptQuerySchema = z.object({

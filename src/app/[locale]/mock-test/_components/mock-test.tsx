@@ -11,6 +11,13 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { SpeakingSessionType } from '@/constants'
 import { useNavigate } from '@/hooks'
@@ -22,7 +29,6 @@ import { VoiceType } from '@/types'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { MicChecker } from './mic-checker'
 import VoiceSelector from './voice-selector'
 
 export interface ExaminerOption {
@@ -108,14 +114,17 @@ export default function MockTest() {
   const current = MODES.find((m) => m.id === mode)!
   const cost = SPEAKING_PRICING[mode]
 
-  const handleStartMock = async () => {
+  const handleStartMock = async (
+    selectedMode: SpeakingSessionType,
+    selectedVoiceId: string,
+  ) => {
     if (!isAuthenticated || !user) {
       toast.error(tMsg('login_required'))
       navigate(`${route.login}?returnUrl=${encodeURIComponent(pathname)}`)
       return
     }
 
-    if (user.balance < SPEAKING_PRICING[mode]) {
+    if (user.balance < SPEAKING_PRICING[selectedMode]) {
       toast.error(tMsg('insufficient_balance'))
       navigate(`${route.payment}?returnUrl=${encodeURIComponent(pathname)}`)
       return
@@ -124,12 +133,14 @@ export default function MockTest() {
     try {
       const res = await withLoading(
         createSpeakingSessionMutation.mutateAsync({
-          type: mode,
-          voiceId: voiceId.trim() ? voiceId : undefined,
+          type: selectedMode,
+          voiceId: selectedVoiceId.trim() ? selectedVoiceId : undefined,
         }),
       )
 
       if (res.success && res.data?.id) {
+        setMode(selectedMode)
+        setVoiceId(selectedVoiceId)
         navigate(`${route.mockTest}/${res.data.id}`)
         return
       }
@@ -198,10 +209,10 @@ export default function MockTest() {
 
         <div className='flex justify-center'>
           <SetupModal
-            part={t(`modes.${mode}.label`)}
+            key={`${mode}-${voiceId}`}
+            mode={mode}
             voices={voices}
             voiceId={voiceId}
-            onVoiceChange={setVoiceId}
             onStartMock={handleStartMock}
             isStarting={createSpeakingSessionMutation.isPending}
           />
@@ -212,24 +223,29 @@ export default function MockTest() {
 }
 
 interface SetupModalProps {
-  part: string
+  mode: SpeakingSessionType
   voices: VoiceType[]
   voiceId: string
-  onVoiceChange: (value: string) => void
-  onStartMock: () => void
+  onStartMock: (
+    selectedMode: SpeakingSessionType,
+    selectedVoiceId: string,
+  ) => void
   isStarting?: boolean
 }
 
 function SetupModal({
-  part,
+  mode,
   voices,
   voiceId,
-  onVoiceChange,
   onStartMock,
   isStarting = false,
 }: SetupModalProps) {
   const t = useTranslations('mock_test.setup.modal')
+  const tSetup = useTranslations('mock_test.setup')
   const tCommon = useTranslations('common')
+
+  const [localMode, setLocalMode] = useState<SpeakingSessionType>(mode)
+  const [localVoiceId, setLocalVoiceId] = useState<string>(voiceId)
 
   return (
     <Dialog>
@@ -238,27 +254,53 @@ function SetupModal({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t('title', { part })}</DialogTitle>
+          <DialogTitle>{t('title')}</DialogTitle>
         </DialogHeader>
         <FieldGroup>
-          <Field>
-            <FieldLabel>{tCommon('microphone')}</FieldLabel>
-            <MicChecker />
-          </Field>
-          <Field>
-            <FieldLabel>{tCommon('voice')}</FieldLabel>
-            <VoiceSelector
-              voices={voices}
-              value={voiceId}
-              onChange={onVoiceChange}
-            />
-          </Field>
+          <div className='grid grid-cols-2 gap-4'>
+            <Field>
+              <FieldLabel>{tCommon('part')}</FieldLabel>
+              <Select
+                value={localMode}
+                onValueChange={(v) => setLocalMode(v as SpeakingSessionType)}
+              >
+                <SelectTrigger className='w-full'>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='mock_p1'>
+                    {tSetup('modes.mock_p1.label')}
+                  </SelectItem>
+                  <SelectItem value='mock_p2'>
+                    {tSetup('modes.mock_p2.label')}
+                  </SelectItem>
+                  <SelectItem value='mock_p3'>
+                    {tSetup('modes.mock_p3.label')}
+                  </SelectItem>
+                  <SelectItem value='full_test'>
+                    {tSetup('modes.full_test.label')}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field>
+              <FieldLabel>{tCommon('voice')}</FieldLabel>
+              <VoiceSelector
+                voices={voices}
+                value={localVoiceId}
+                onChange={setLocalVoiceId}
+              />
+            </Field>
+          </div>
         </FieldGroup>
         <DialogFooter>
           <DialogClose asChild>
             <Button variant={'outline'}>{tCommon('cancel')}</Button>
           </DialogClose>
-          <Button disabled={isStarting} onClick={onStartMock}>
+          <Button
+            disabled={isStarting}
+            onClick={() => onStartMock(localMode, localVoiceId)}
+          >
             {t('start_now')}
           </Button>
         </DialogFooter>
