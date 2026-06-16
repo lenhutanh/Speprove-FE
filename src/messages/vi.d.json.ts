@@ -256,6 +256,7 @@ declare const messages: {
       set_password: 'Thiết lập mật khẩu'
       voice_setting: 'Chỉnh giọng đọc'
       mock_test_history: 'Lịch sử thi thử'
+      mic_setting: 'Thiết lập Mic'
     }
   }
   not_found: {

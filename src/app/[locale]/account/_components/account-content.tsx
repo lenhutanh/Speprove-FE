@@ -5,6 +5,7 @@ import { AccountTabKey } from '@/constants'
 import { useTranslations } from 'next-intl'
 import { getAccountTabs } from './account-sidebar'
 import ChangePasswordTab from './change-password-tab'
+import MicSettingTab from './mic-setting-tab'
 import MockTestHistoryTab from './mock-test-history-tab'
 import ProfileTab from './profile-tab'
 import SetPasswordTab from './set-password'
@@ -26,6 +27,7 @@ export default function AccountContent({
     setPassword: t('set_password'),
     voiceSetting: t('voice_setting'),
     mockTestHistory: t('mock_test_history'),
+    micSetting: t('mic_setting'),
   })
   const currentTab = accountTabs.find((tab) => tab.key === activeTab)
 
@@ -45,6 +47,9 @@ export default function AccountContent({
 
       case 'mock-test-history':
         return <MockTestHistoryTab />
+
+      case 'mic-setting':
+        return <MicSettingTab />
 
       default:
         return null

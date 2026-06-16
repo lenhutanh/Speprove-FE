@@ -6,6 +6,7 @@ import {
   CircleUserRound,
   History,
   LockKeyhole,
+  Mic,
   Volume2,
   type LucideIcon,
 } from 'lucide-react'
@@ -17,6 +18,7 @@ export type AccountTabLabels = {
   setPassword: string
   voiceSetting: string
   mockTestHistory: string
+  micSetting: string
 }
 
 type AccountSidebarProps = {
@@ -55,6 +57,11 @@ export const getAccountTabs = (
     label: labels.mockTestHistory,
     icon: History,
   },
+  {
+    key: 'mic-setting',
+    label: labels.micSetting,
+    icon: Mic,
+  },
 ]
 
 export default function AccountSidebar({
@@ -69,6 +76,7 @@ export default function AccountSidebar({
     setPassword: t('set_password'),
     voiceSetting: t('voice_setting'),
     mockTestHistory: t('mock_test_history'),
+    micSetting: t('mic_setting'),
   })
 
   return (
