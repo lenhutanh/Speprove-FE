@@ -18,13 +18,18 @@ export default function AccountDropdown() {
   const { user } = useAuthStore()
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild className='self-center'>
-        <Avatar className='h-10 w-10 cursor-pointer border shadow-xs'>
-          <AvatarImage src={user?.avatarUrl} alt={user?.fullName} />
-          <AvatarFallback className='font-semibold'>
-            {getInitials(user?.fullName || user?.email)}
-          </AvatarFallback>
-        </Avatar>
+      <DropdownMenuTrigger asChild className='cursor-pointer self-center'>
+        <div className='flex items-center gap-2'>
+          <Avatar className='h-10 w-10 cursor-pointer border shadow-xs'>
+            <AvatarImage src={user?.avatarUrl} alt={user?.fullName} />
+            <AvatarFallback className='font-semibold'>
+              {getInitials(user?.fullName || user?.email)}
+            </AvatarFallback>
+          </Avatar>
+          <span className='hidden text-sm font-semibold lg:inline'>
+            {user?.fullName || user?.email}
+          </span>
+        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
         <DropdownMenuItem asChild>
