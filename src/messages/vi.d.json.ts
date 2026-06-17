@@ -92,7 +92,6 @@ declare const messages: {
       home: 'Trang chủ'
       forecast: 'Forecast'
       mock_test: 'Thi thử'
-      flashcards: 'Flashcards'
     }
     theme: {
       title: 'Giao diện'
@@ -266,6 +265,7 @@ declare const messages: {
     expired: 'Hết hạn'
     search_topic: 'Tìm kiếm chủ đề...'
     no_topics_yet: 'Chưa có chủ đề nào trong bộ Forecast này.'
+    no_forecasts_yet: 'Chưa có bộ Forecast nào.'
   }
   account: {
     tabs: {

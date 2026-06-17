@@ -43,7 +43,7 @@ export function PronunciationPopover({
         <span className='text-foreground text-sm font-medium'>{word.word}</span>
         <span
           className={cn(
-            'rounded-full px-1.5 py-0.5 text-[10px] font-medium',
+            'rounded-full px-1.5 py-0.5 text-xs font-medium',
             scorePillClass(word.accuracyScore),
           )}
         >
@@ -102,7 +102,7 @@ export function FluencyPopover({ pause }: { pause: PauseIssue }) {
           {t('pause')}
         </span>
         {pause.duration != null && (
-          <span className='rounded-full bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-700'>
+          <span className='rounded-full bg-amber-50 px-1.5 py-0.5 text-xs font-medium text-amber-700'>
             {pause.duration.toFixed(2)}s
           </span>
         )}

@@ -119,7 +119,7 @@ function LeaderboardItem({
       <div className='flex items-center gap-3 px-3 py-2.5'>
         <span
           className={cn(
-            'w-5 flex-shrink-0 text-center text-[11px] font-semibold',
+            'w-5 flex-shrink-0 text-center text-xs font-semibold',
             rank === 1
               ? 'text-amber-500'
               : rank === 2
@@ -141,7 +141,7 @@ function LeaderboardItem({
           <p className='text-foreground truncate text-sm font-medium'>
             {entry.user.fullName}
           </p>
-          <p className='text-muted-foreground text-[10px]'>{timeAgo}</p>
+          <p className='text-muted-foreground text-xs'>{timeAgo}</p>
         </div>
 
         <span
@@ -191,8 +191,8 @@ function LeaderboardItem({
             })}
           </div>
 
-          <p className='px-4 py-2 text-sm leading-relaxed'>
-            {entry.transcript}
+          <p className='px-4 py-2 text-sm leading-relaxed italic'>
+            &quot;{entry.transcript}&quot;
           </p>
         </div>
       )}

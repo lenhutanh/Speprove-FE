@@ -13,7 +13,6 @@ export default function NavBar() {
     { name: t('home'), href: route.home },
     { name: t('forecast'), href: route.forecast },
     { name: t('mock_test'), href: route.mockTest },
-    { name: t('flashcards'), href: '/flashcards' },
   ]
 
   return (
@@ -25,8 +24,8 @@ export default function NavBar() {
             key={item.name}
             href={item.href}
             className={cn(
-              'hover:text-primary relative pb-1 font-medium transition-colors',
-              isActive ? 'text-primary' : 'text-muted-foreground',
+              'text-muted-foreground hover:text-foreground relative pb-1.5 text-base font-medium transition-colors',
+              isActive && 'text-foreground',
             )}
           >
             {item.name}

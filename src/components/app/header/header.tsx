@@ -11,7 +11,7 @@ import ThemeToggle from './theme-toggle'
 export default function Header() {
   return (
     <header
-      className='bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b backdrop-blur'
+      className='bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b px-4 backdrop-blur sm:px-6 lg:px-8'
       style={{ height: `${HEADER_HEIGHT}px` }}
     >
       <div className='mx-auto max-w-330'>

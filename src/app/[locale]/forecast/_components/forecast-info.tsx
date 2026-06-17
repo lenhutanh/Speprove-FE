@@ -43,7 +43,7 @@ export default function ForecastInfo({ forecast }: ForecastInfoProps) {
   return (
     <div className='mb-8 space-y-4'>
       {/* Thumbnail + Info */}
-      <div className='flex items-start gap-5'>
+      <div className='flex flex-col items-center gap-5 text-center sm:flex-row sm:items-start sm:text-left'>
         {/* Thumbnail lớn bên trái */}
         <Image
           src={thumbnail || forecastThumbnail}
@@ -52,7 +52,7 @@ export default function ForecastInfo({ forecast }: ForecastInfoProps) {
         />
 
         {/* Info bên phải */}
-        <div className='min-w-0 flex-1 space-y-1.5'>
+        <div className='flex min-w-0 flex-1 flex-col items-center space-y-1.5 sm:items-start'>
           <Badge
             variant='secondary'
             className={cn(

@@ -5,6 +5,7 @@ import { Tabs as TabsPrimitive } from 'radix-ui'
 import * as React from 'react'
 
 import { cn } from '@/lib/utils'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 function Tabs({
   className,
@@ -88,4 +89,96 @@ function TabsContent({
   )
 }
 
-export { Tabs, TabsContent, TabsList, tabsListVariants, TabsTrigger }
+interface ScrollableTabsListProps
+  extends
+    React.ComponentProps<typeof TabsPrimitive.List>,
+    VariantProps<typeof tabsListVariants> {
+  containerClassName?: string
+}
+
+const ScrollableTabsList = React.forwardRef<
+  HTMLDivElement,
+  ScrollableTabsListProps
+>(
+  (
+    { className, variant = 'default', containerClassName, children, ...props },
+    _ref,
+  ) => {
+    const localRef = React.useRef<HTMLDivElement>(null)
+    const [showLeftArrow, setShowLeftArrow] = React.useState(false)
+    const [showRightArrow, setShowRightArrow] = React.useState(false)
+
+    const checkScroll = () => {
+      const el = localRef.current
+      if (!el) return
+      setShowLeftArrow(el.scrollLeft > 5)
+      setShowRightArrow(el.scrollLeft + el.clientWidth < el.scrollWidth - 5)
+    }
+
+    React.useEffect(() => {
+      checkScroll()
+      const timer = setTimeout(checkScroll, 100)
+      window.addEventListener('resize', checkScroll)
+      return () => {
+        clearTimeout(timer)
+        window.removeEventListener('resize', checkScroll)
+      }
+    }, [children])
+
+    return (
+      <div
+        className={cn('group relative w-fit max-w-full', containerClassName)}
+      >
+        {showLeftArrow && (
+          <button
+            onClick={() =>
+              localRef.current?.scrollBy({ left: -100, behavior: 'smooth' })
+            }
+            className='bg-background hover:bg-accent absolute top-1/2 left-1 z-10 flex h-6 w-6 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border shadow-md transition-all'
+            type='button'
+            aria-label='Scroll left'
+          >
+            <ChevronLeft className='size-3.5' />
+          </button>
+        )}
+
+        <div
+          ref={localRef}
+          onScroll={checkScroll}
+          className='scrollbar-none w-full overflow-x-auto'
+        >
+          <TabsList
+            variant={variant}
+            className={cn('w-max justify-start gap-1 p-[3px]', className)}
+            {...props}
+          >
+            {children}
+          </TabsList>
+        </div>
+
+        {showRightArrow && (
+          <button
+            onClick={() =>
+              localRef.current?.scrollBy({ left: 100, behavior: 'smooth' })
+            }
+            className='bg-background hover:bg-accent absolute top-1/2 right-1 z-10 flex h-6 w-6 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border shadow-md transition-all'
+            type='button'
+            aria-label='Scroll right'
+          >
+            <ChevronRight className='size-3.5' />
+          </button>
+        )}
+      </div>
+    )
+  },
+)
+ScrollableTabsList.displayName = 'ScrollableTabsList'
+
+export {
+  ScrollableTabsList,
+  Tabs,
+  TabsContent,
+  TabsList,
+  tabsListVariants,
+  TabsTrigger,
+}

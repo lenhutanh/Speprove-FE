@@ -1,11 +1,18 @@
 'use client'
 
 import { AppPagination } from '@/components/pagination'
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '@/components/ui/empty'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useValidatedParams } from '@/hooks'
 import { useForecastTopicListQuery } from '@/queries'
 import { forecastDetailQuerySchema } from '@/validations'
 import { keepPreviousData } from '@tanstack/react-query'
+import { BookOpen } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import TopicCard from './topic-card'
 
@@ -42,9 +49,14 @@ export default function TopicListSection({
 
   if (!topics.length) {
     return (
-      <div className='rounded-2xl border-2 border-dashed py-20 text-center'>
-        <p className='text-muted-foreground text-sm'>{t('no_topics_yet')}</p>
-      </div>
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant='icon'>
+            <BookOpen className='size-5' />
+          </EmptyMedia>
+          <EmptyTitle>{t('no_topics_yet')}</EmptyTitle>
+        </EmptyHeader>
+      </Empty>
     )
   }
 

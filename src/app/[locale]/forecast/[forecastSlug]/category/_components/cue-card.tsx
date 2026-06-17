@@ -69,7 +69,7 @@ export default function CueCard({
           <div className='flex items-center gap-3'>
             <Badge
               variant='secondary'
-              className='border border-indigo-200 bg-indigo-50 text-[10px] text-indigo-700 dark:border-indigo-900 dark:bg-indigo-950/40 dark:text-indigo-300'
+              className='border border-indigo-200 bg-indigo-50 text-xs text-indigo-700 dark:border-indigo-900 dark:bg-indigo-950/40 dark:text-indigo-300'
             >
               Part 3
             </Badge>

@@ -1,5 +1,6 @@
 'use client'
 
+import { Container } from '@/components/layout'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -18,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ScrollableTabsList, Tabs, TabsTrigger } from '@/components/ui/tabs'
 import { SpeakingSessionType } from '@/constants'
 import { useNavigate } from '@/hooks'
 import { usePathname } from '@/i18n/navigation'
@@ -84,7 +85,7 @@ function InfoCard({
   unit?: React.ReactNode
 }) {
   return (
-    <div className='bg-muted/40 border-border flex flex-col gap-1.5 rounded-xl border p-4'>
+    <div className='bg-muted/40 border-border flex flex-col items-center gap-1.5 rounded-xl border p-4'>
       <span className='text-muted-foreground text-xs font-medium'>{label}</span>
       <span className='text-2xl leading-none font-semibold'>{value}</span>
       {unit && (
@@ -152,73 +153,69 @@ export default function MockTest() {
   }
 
   return (
-    <div className='flex min-h-screen flex-col'>
-      <main className='flex flex-1 flex-col gap-5 px-4 py-5'>
-        <div className='flex items-center gap-3'>
-          <Tabs
-            value={mode}
-            onValueChange={(v) => setMode(v as SpeakingSessionType)}
-          >
-            <TabsList>
-              {MODES.map((m) => (
-                <TabsTrigger value={m.id} key={m.id} className='px-5'>
-                  {t(`modes.${m.id}.label`)}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
-          <div className='flex-1' />
-        </div>
+    <Container contentClassName='space-y-6'>
+      <Tabs
+        value={mode}
+        onValueChange={(v) => setMode(v as SpeakingSessionType)}
+        className='w-full'
+      >
+        <ScrollableTabsList containerClassName='w-full max-w-full'>
+          {MODES.map((m) => (
+            <TabsTrigger value={m.id} key={m.id} className='px-4'>
+              {t(`modes.${m.id}.label`)}
+            </TabsTrigger>
+          ))}
+        </ScrollableTabsList>
+      </Tabs>
 
-        <div className='grid grid-cols-4 gap-3'>
-          <InfoCard
-            label={t('info_labels.questions')}
-            value={current.questions}
-            unit={tCommon('questions')}
-          />
-          <InfoCard
-            label={t('info_labels.duration')}
-            value={current.duration}
-            unit={tCommon('minutes')}
-          />
-          <InfoCard
-            label={t('info_labels.topic')}
-            value={t(`modes.${mode}.topic`)}
-            unit={t(`modes.${mode}.topic_sub`)}
-          />
-          <InfoCard
-            label={t('info_labels.cost')}
-            value={
-              <span className='flex items-baseline gap-1.5'>
-                <span className='inline-block h-2.5 w-2.5 translate-y-[-1px] rounded-full bg-amber-400' />
-                <span>{cost}</span>
-                <span className='text-muted-foreground text-base font-normal'>
-                  {tCommon('points')}
-                </span>
+      <div className='grid grid-cols-2 gap-3 md:grid-cols-4'>
+        <InfoCard
+          label={t('info_labels.questions')}
+          value={current.questions}
+          unit={tCommon('questions')}
+        />
+        <InfoCard
+          label={t('info_labels.duration')}
+          value={current.duration}
+          unit={tCommon('minutes')}
+        />
+        <InfoCard
+          label={t('info_labels.topic')}
+          value={t(`modes.${mode}.topic`)}
+          unit={t(`modes.${mode}.topic_sub`)}
+        />
+        <InfoCard
+          label={t('info_labels.cost')}
+          value={
+            <span className='flex items-baseline gap-1.5'>
+              <span className='inline-block h-2.5 w-2.5 translate-y-[-1px] rounded-full bg-amber-400' />
+              <span>{cost}</span>
+              <span className='text-muted-foreground text-base font-normal'>
+                {tCommon('points')}
               </span>
-            }
-          />
-        </div>
+            </span>
+          }
+        />
+      </div>
 
-        <div className='bg-muted/20 border-border/30 rounded-xl border px-5 py-4 text-sm leading-relaxed'>
-          {t.rich(`modes.${mode}.description`, {
-            strong: (chunks) => <strong>{chunks}</strong>,
-            em: (chunks) => <em>{chunks}</em>,
-          })}
-        </div>
+      <div className='bg-muted/20 border-border/30 rounded-xl border px-5 py-4 text-sm leading-relaxed'>
+        {t.rich(`modes.${mode}.description`, {
+          strong: (chunks) => <strong>{chunks}</strong>,
+          em: (chunks) => <em>{chunks}</em>,
+        })}
+      </div>
 
-        <div className='flex justify-center'>
-          <SetupModal
-            key={`${mode}-${voiceId}`}
-            mode={mode}
-            voices={voices}
-            voiceId={voiceId}
-            onStartMock={handleStartMock}
-            isStarting={createSpeakingSessionMutation.isPending}
-          />
-        </div>
-      </main>
-    </div>
+      <div className='flex justify-center'>
+        <SetupModal
+          key={`${mode}-${voiceId}`}
+          mode={mode}
+          voices={voices}
+          voiceId={voiceId}
+          onStartMock={handleStartMock}
+          isStarting={createSpeakingSessionMutation.isPending}
+        />
+      </div>
+    </Container>
   )
 }
 
@@ -257,7 +254,7 @@ function SetupModal({
           <DialogTitle>{t('title')}</DialogTitle>
         </DialogHeader>
         <FieldGroup>
-          <div className='grid grid-cols-2 gap-4'>
+          <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
             <Field>
               <FieldLabel>{tCommon('part')}</FieldLabel>
               <Select
