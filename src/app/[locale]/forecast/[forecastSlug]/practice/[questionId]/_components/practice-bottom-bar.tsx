@@ -206,6 +206,7 @@ export default function PracticeBottomBar({
       }
 
       queryClient.invalidateQueries({ queryKey: ['attempt-list'] })
+      queryClient.invalidateQueries({ queryKey: ['profile'] })
       onAttemptCreated?.(attemptRes.data.id)
       deleteRecording()
     } catch {
@@ -232,7 +233,9 @@ export default function PracticeBottomBar({
                   href={`/forecast/${forecastSlug}/practice/${prev.id}${queryString}`}
                 >
                   <ChevronLeft className='h-3.5 w-3.5' />
-                  <span className='hidden md:inline'>{t('previous_question')}</span>
+                  <span className='hidden md:inline'>
+                    {t('previous_question')}
+                  </span>
                 </Link>
               </Button>
             </TooltipTrigger>
@@ -276,7 +279,11 @@ export default function PracticeBottomBar({
 
           {phase === 'recorded' && (
             <div className='flex w-full items-center justify-center gap-3'>
-              <AudioPlayer url={blobUrl!} variant='full' className='w-full max-w-md' />
+              <AudioPlayer
+                url={blobUrl!}
+                variant='full'
+                className='w-full max-w-md'
+              />
 
               <Button
                 variant='outline'
@@ -296,7 +303,7 @@ export default function PracticeBottomBar({
                 onClick={deleteRecording}
                 disabled={submitting}
                 size='icon'
-                className='shrink-0 rounded-full text-destructive'
+                className='text-destructive shrink-0 rounded-full'
               >
                 <Trash2 className='h-3.5 w-3.5' />
               </Button>

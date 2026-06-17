@@ -1,4 +1,5 @@
 import { fullLogo, fullLogoDark } from '@/assets'
+import { Container } from '@/components/layout'
 import { HEADER_HEIGHT } from '@/constants'
 import { Link } from '@/i18n/navigation'
 import route from '@/routes'
@@ -6,16 +7,17 @@ import Image from 'next/image'
 import Actions from './actions'
 import MobileMenu from './mobile-menu'
 import NavBar from './navbar'
+import PointsBadge from './points-badge'
 import ThemeToggle from './theme-toggle'
 
 export default function Header() {
   return (
     <header
-      className='bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b px-4 backdrop-blur sm:px-6 lg:px-8'
+      className='bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 border-b backdrop-blur'
       style={{ height: `${HEADER_HEIGHT}px` }}
     >
-      <div className='mx-auto max-w-330'>
-        <div className='flex justify-between py-5'>
+      <Container className='h-full py-0' contentClassName='h-full'>
+        <div className='flex h-full items-center justify-between'>
           <div className='flex items-center gap-12'>
             <Link href={route.home}>
               <Image
@@ -42,6 +44,7 @@ export default function Header() {
           </div>
 
           <div className='flex items-center gap-3'>
+            <PointsBadge />
             <ThemeToggle />
             {/* Desktop actions */}
             <div className='hidden md:flex'>
@@ -53,7 +56,7 @@ export default function Header() {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </header>
   )
 }

@@ -8,6 +8,7 @@ import { useCreditPackageListQuery } from '@/queries'
 import { useCreatePaymentMutation } from '@/queries/payment.query'
 import { useAppLoadingStore } from '@/store'
 import { CreditPackage, PaymentResponse } from '@/types'
+import { useQueryClient } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -19,6 +20,7 @@ import { SuccessDialog } from './_components/success-dialog'
 export default function PaymentPage() {
   const t = useTranslations('payment')
   const tCommon = useTranslations('common')
+  const queryClient = useQueryClient()
   const { data } = useCreditPackageListQuery()
   const createPaymentMutation = useCreatePaymentMutation()
   const { withLoading } = useAppLoadingStore()
@@ -64,6 +66,7 @@ export default function PaymentPage() {
   }
 
   const handleSuccess = (points: number) => {
+    queryClient.invalidateQueries({ queryKey: ['profile'] })
     setQrOpen(false)
     setPayment(null)
     setSuccessData({ points })
