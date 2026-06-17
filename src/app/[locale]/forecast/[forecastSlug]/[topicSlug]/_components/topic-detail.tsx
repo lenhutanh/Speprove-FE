@@ -41,7 +41,7 @@ export default function TopicDetail() {
   if (!topic) return null
 
   return (
-    <div className='mx-auto space-y-6 px-6 py-6'>
+    <>
       <Breadcrumb
         items={[
           { label: 'Forecast', href: route.forecast },
@@ -53,33 +53,33 @@ export default function TopicDetail() {
         ]}
       />
 
-      <h1 className='text-foreground text-2xl leading-snug font-semibold'>
-        {topic.name}
-      </h1>
+      <div className='space-y-6'>
+        <h1 className='text-foreground text-2xl leading-snug font-semibold'>
+          {topic.name}
+        </h1>
 
-      <Part1QuestionList
-        questions={data?.data}
-        isLoading={isLoading}
-        forecastSlug={forecastSlug}
-        topicSlug={topicSlug}
-      />
-    </div>
+        <Part1QuestionList
+          questions={data?.data}
+          isLoading={isLoading}
+          forecastSlug={forecastSlug}
+          topicSlug={topicSlug}
+        />
+      </div>
+    </>
   )
 }
 
 function TopicDetailSkeleton() {
   return (
-    <div className='mx-auto max-w-330 space-y-6 px-6 py-6'>
+    <div className='space-y-6'>
       <Skeleton className='h-4 w-20' />
-      <div className='space-y-2'>
-        <Skeleton className='h-6 w-24' />
+      <div className='space-y-6'>
         <Skeleton className='h-8 w-2/3' />
-        <Skeleton className='h-4 w-1/3' />
-      </div>
-      <div className='space-y-3'>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className='h-20 rounded-xl' />
-        ))}
+        <div className='space-y-3'>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className='h-20 rounded-xl' />
+          ))}
+        </div>
       </div>
     </div>
   )

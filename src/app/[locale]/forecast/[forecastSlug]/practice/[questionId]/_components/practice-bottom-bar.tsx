@@ -223,7 +223,7 @@ export default function PracticeBottomBar({
         onClose={() => setShowBalanceDialog(false)}
       />
 
-      <div className='bg-background flex h-26 shrink-0 items-center justify-between px-6'>
+      <div className='bg-background flex h-26 shrink-0 items-center justify-between gap-4'>
         {prev ? (
           <Tooltip>
             <TooltipTrigger asChild>
@@ -232,17 +232,20 @@ export default function PracticeBottomBar({
                   href={`/forecast/${forecastSlug}/practice/${prev.id}${queryString}`}
                 >
                   <ChevronLeft className='h-3.5 w-3.5' />
-                  {t('previous_question')}
+                  <span className='hidden md:inline'>{t('previous_question')}</span>
                 </Link>
               </Button>
             </TooltipTrigger>
             <TooltipContent>{prev.content}</TooltipContent>
           </Tooltip>
         ) : (
-          <div className='w-24' />
+          <Button variant='outline' disabled>
+            <ChevronLeft className='h-3.5 w-3.5' />
+            <span className='hidden md:inline'>{t('previous_question')}</span>
+          </Button>
         )}
 
-        <div className='flex flex-col items-center gap-1'>
+        <div className='flex w-full flex-col items-center gap-1'>
           {phase === 'idle' && (
             <RecordButton
               phase={phase}
@@ -254,7 +257,7 @@ export default function PracticeBottomBar({
           )}
 
           {phase === 'recording' && (
-            <div className='flex items-center gap-3'>
+            <div className='flex w-full items-center justify-center gap-3'>
               <span className='text-muted-foreground text-sm font-medium tabular-nums'>
                 {formatCountdown(countdown)}
               </span>
@@ -272,18 +275,8 @@ export default function PracticeBottomBar({
           )}
 
           {phase === 'recorded' && (
-            <div className='flex items-center gap-2'>
-              <Button
-                variant='outline'
-                onClick={deleteRecording}
-                disabled={submitting}
-                size='icon'
-                className='shrink-0 rounded-full'
-              >
-                <Trash2 className='text-destructive h-3.5 w-3.5' />
-              </Button>
-
-              <AudioPlayer url={blobUrl!} variant='full' className='w-lg' />
+            <div className='flex w-full items-center justify-center gap-3'>
+              <AudioPlayer url={blobUrl!} variant='full' className='w-full max-w-md' />
 
               <Button
                 variant='outline'
@@ -298,6 +291,15 @@ export default function PracticeBottomBar({
                   <Send className='h-3.5 w-3.5' />
                 )}
               </Button>
+              <Button
+                variant='outline'
+                onClick={deleteRecording}
+                disabled={submitting}
+                size='icon'
+                className='shrink-0 rounded-full text-destructive'
+              >
+                <Trash2 className='h-3.5 w-3.5' />
+              </Button>
             </div>
           )}
         </div>
@@ -309,7 +311,7 @@ export default function PracticeBottomBar({
                 <Link
                   href={`/forecast/${forecastSlug}/practice/${next.id}${queryString}`}
                 >
-                  {t('next_question')}
+                  <span className='hidden md:inline'>{t('next_question')}</span>
                   <ChevronRight className='h-3.5 w-3.5' />
                 </Link>
               </Button>
@@ -317,7 +319,10 @@ export default function PracticeBottomBar({
             <TooltipContent>{next.content}</TooltipContent>
           </Tooltip>
         ) : (
-          <div className='w-24' />
+          <Button variant='outline' disabled>
+            <span className='hidden md:inline'>{t('next_question')}</span>
+            <ChevronRight className='h-3.5 w-3.5' />
+          </Button>
         )}
       </div>
     </>

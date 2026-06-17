@@ -40,7 +40,7 @@ export default function ForecastDetail() {
   }
 
   return (
-    <div className='mx-auto px-6'>
+    <div>
       <Breadcrumb
         items={[
           { label: tNav('forecast'), href: route.forecast },
@@ -49,7 +49,7 @@ export default function ForecastDetail() {
       />
       <ForecastInfo forecast={forecast} />
       <Tabs value={String(part)} onValueChange={handleTabChange}>
-        <div className='mb-6 flex items-center justify-between'>
+        <div className='mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center'>
           <TabsList>
             <TabsTrigger value={PART_GROUP.PART1} className='cursor-pointer'>
               Part 1

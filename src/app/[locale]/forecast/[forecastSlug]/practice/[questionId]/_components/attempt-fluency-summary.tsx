@@ -193,7 +193,7 @@ export function AttemptFluencySummary({
           <p className='text-foreground text-lg font-medium'>{item.value}</p>
           <span
             className={cn(
-              'mt-1 inline-flex rounded border px-1.5 py-px text-[10px] font-medium',
+              'mt-1 inline-flex rounded border px-1.5 py-px text-xs font-medium',
               toneClass(item.tone),
             )}
           >

@@ -1,22 +1,30 @@
 'use client'
 
 import { cn } from '@/lib/utils'
+import { Tabs, ScrollableTabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ForecastQuestionType } from '@/types'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import AIAssistant from './ai-assistant'
 import PracticeLeaderboard from './practice-leaderboard'
 
+export type RightTab = 'ai' | 'leaderboard'
+
 interface PracticeRightProps {
   question: ForecastQuestionType
+  active: RightTab
+  onActiveChange: (tab: RightTab) => void
+  className?: string
 }
 
-type RightTab = 'ai' | 'leaderboard'
-
-export default function PracticeRight({ question }: PracticeRightProps) {
+export default function PracticeRight({
+  question,
+  active,
+  onActiveChange,
+  className,
+}: PracticeRightProps) {
   const tTabs = useTranslations('practice.tabs')
   const tAI = useTranslations('practice.ai')
-  const [active, setActive] = useState<RightTab>('ai')
   const [loading, setLoading] = useState(false)
   const tabs: { key: RightTab; label: string }[] = [
     { key: 'ai', label: tTabs('ai') },
@@ -33,36 +41,40 @@ export default function PracticeRight({ question }: PracticeRightProps) {
   }
 
   return (
-    <div className='border-border bg-card flex flex-1 flex-col overflow-hidden rounded-xl border shadow-sm'>
-      <div className='border-border bg-muted/40 flex flex-shrink-0 border-b'>
+    <Tabs
+      value={active}
+      onValueChange={(val) => onActiveChange(val as RightTab)}
+      className={cn('flex flex-col h-full', className)}
+    >
+      <ScrollableTabsList
+        variant='default'
+        containerClassName='hidden lg:block mb-3'
+      >
         {tabs.map((tab) => (
-          <button
+          <TabsTrigger
             key={tab.key}
-            onClick={() => setActive(tab.key)}
-            className={cn(
-              'relative px-4 py-2.5 text-sm font-medium transition-colors',
-              active === tab.key
-                ? 'bg-card text-foreground after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5 after:bg-indigo-500'
-                : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground',
-            )}
+            value={tab.key}
+            className='px-4 py-1.5 text-sm font-medium cursor-pointer'
           >
             {tab.label}
-          </button>
+          </TabsTrigger>
         ))}
-      </div>
+      </ScrollableTabsList>
 
-      <div className='flex flex-1 flex-col overflow-hidden'>
-        {active === 'ai' && (
-          <AIAssistant
-            options={aiOptions}
-            loading={loading}
-            onOption={handleOption}
-          />
-        )}
-        {active === 'leaderboard' && (
-          <PracticeLeaderboard questionId={question.id} />
-        )}
+      <div className='border-border bg-card flex flex-1 flex-col overflow-hidden rounded-xl border shadow-sm'>
+        <div className='flex flex-1 flex-col overflow-hidden'>
+          {active === 'ai' && (
+            <AIAssistant
+              options={aiOptions}
+              loading={loading}
+              onOption={handleOption}
+            />
+          )}
+          {active === 'leaderboard' && (
+            <PracticeLeaderboard questionId={question.id} />
+          )}
+        </div>
       </div>
-    </div>
+    </Tabs>
   )
 }

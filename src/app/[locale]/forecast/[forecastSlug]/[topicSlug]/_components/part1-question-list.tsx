@@ -1,5 +1,12 @@
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '@/components/ui/empty'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ForecastQuestionType } from '@/types'
+import { FileText } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Part1QuestionCard from './part1-question-card'
 
@@ -29,9 +36,14 @@ export default function Part1QuestionList({
 
   if (!questions?.length) {
     return (
-      <div className='text-muted-foreground py-16 text-center text-sm'>
-        {tCommon('no_questions')}
-      </div>
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant='icon'>
+            <FileText className='size-5' />
+          </EmptyMedia>
+          <EmptyTitle>{tCommon('no_questions')}</EmptyTitle>
+        </EmptyHeader>
+      </Empty>
     )
   }
 

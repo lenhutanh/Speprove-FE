@@ -1,6 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
+import { Tabs, ScrollableTabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AttemptDetail } from '@/types'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
@@ -27,6 +28,8 @@ export function AttemptDetailTabs({ detail }: { detail: AttemptDetail }) {
   const tAttempt = useTranslations('practice.attempt')
   const tCriteria = useTranslations('practice.attempt.criteria')
   const [activeTab, setActiveTab] = useState<CriteriaTab>('fluency')
+
+
   const words =
     detail.wordAssessments?.length != null && detail.wordAssessments.length > 0
       ? detail.wordAssessments
@@ -88,13 +91,13 @@ export function AttemptDetailTabs({ detail }: { detail: AttemptDetail }) {
       const popoverContent =
         activeTab === 'pronunciation'
           ? (isOpen: boolean) => (
-              <PronunciationPopover
-                attemptId={detail.id}
-                isOpen={isOpen}
-                word={word}
-                audioUrl={detail.audioUrl}
-              />
-            )
+            <PronunciationPopover
+              attemptId={detail.id}
+              isOpen={isOpen}
+              word={word}
+              audioUrl={detail.audioUrl}
+            />
+          )
           : undefined
 
       const token = (
@@ -117,51 +120,52 @@ export function AttemptDetailTabs({ detail }: { detail: AttemptDetail }) {
   }
 
   return (
-    <div>
-      <div className='border-border scrollbar-none flex border-b'>
+    <Tabs
+      value={activeTab}
+      onValueChange={(val) => setActiveTab(val as CriteriaTab)}
+    >
+      <ScrollableTabsList
+        variant='default'
+        containerClassName='w-full p-3 pb-0'
+      >
         {(Object.keys(TAB_LABELS) as CriteriaTab[]).map((tab) => {
           const isActive = activeTab === tab
           const score = detail.scores?.[SCORE_KEYS[tab]]
 
           return (
-            <button
+            <TabsTrigger
               key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={cn(
-                '-mb-px flex flex-shrink-0 items-center gap-1.5 border-b-2 px-3 py-2 text-base font-medium whitespace-nowrap transition-colors',
-                isActive
-                  ? 'border-emerald-500 text-emerald-700'
-                  : 'text-muted-foreground hover:text-foreground border-transparent',
-              )}
+              value={tab}
+              className='flex-1 px-3 py-1.5 text-sm font-medium gap-1.5 cursor-pointer'
             >
               {tCriteria(tab)}
               {score != null && (
                 <span
                   className={cn(
-                    'rounded-full px-2 py-px font-medium',
+                    'rounded-full px-2 py-px text-sm font-medium transition-colors',
                     isActive
-                      ? 'bg-emerald-50 text-emerald-700'
+                      ? 'bg-primary/10 text-primary'
                       : 'bg-muted text-muted-foreground',
                   )}
                 >
                   {score}
                 </span>
               )}
-            </button>
+            </TabsTrigger>
           )
         })}
-      </div>
+      </ScrollableTabsList>
 
       <div className='border-border border-b'>
-        {activeTab === 'fluency' && (
+        {/* {activeTab === 'fluency' && (
           <AttemptFluencySummary
             fluencyMetrics={detail.fluencyMetrics}
             pauses={pauseIssues}
           />
-        )}
+        )} */}
 
         <div className='px-3 py-2.5'>
-          <p className='text-muted-foreground mb-2 text-[10px] font-medium tracking-wide uppercase'>
+          <p className='text-muted-foreground mb-2 text-xs font-medium tracking-wide uppercase'>
             {tAttempt('transcript')}
           </p>
           <div className='text-foreground text-sm leading-[2.5]'>
@@ -171,6 +175,6 @@ export function AttemptDetailTabs({ detail }: { detail: AttemptDetail }) {
           </div>
         </div>
       </div>
-    </div>
+    </Tabs>
   )
 }

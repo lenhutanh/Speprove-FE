@@ -1,7 +1,9 @@
 'use client'
 
 import { Breadcrumb } from '@/components/breadcrumb'
+import { Container } from '@/components/layout'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Tabs, ScrollableTabsList, TabsTrigger } from '@/components/ui/tabs'
 import { HEADER_HEIGHT, PART2_CATEGORY_OPTIONS } from '@/constants'
 import { useForecastQuestionQuery, useGetQuestionAudioQuery } from '@/queries'
 import route from '@/routes'
@@ -11,6 +13,8 @@ import { useState } from 'react'
 import PracticeBottomBar from './practice-bottom-bar'
 import PracticeLeft, { LeftTab } from './practice-left'
 import PracticeRight from './practice-right'
+import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 
 export default function QuestionPractice() {
   const { questionId } = useParams<{
@@ -18,8 +22,33 @@ export default function QuestionPractice() {
   }>()
 
   const { voiceId } = useAppPreference()
+  const tTabs = useTranslations('practice.tabs')
   const [leftTab, setLeftTab] = useState<LeftTab>('question')
+  const [rightTab, setRightTab] = useState<'ai' | 'leaderboard'>('ai')
+  const [mobileTab, setMobileTab] =
+    useState<LeftTab | 'ai' | 'leaderboard'>('question')
   const [historyRefreshSignal, setHistoryRefreshSignal] = useState(0)
+
+
+  const handleMobileTabChange = (tab: LeftTab | 'ai' | 'leaderboard') => {
+    setMobileTab(tab)
+    if (tab === 'question' || tab === 'vocabulary' || tab === 'history') {
+      setLeftTab(tab)
+    } else {
+      setRightTab(tab)
+    }
+  }
+
+  const handleLeftTabChange = (tab: LeftTab) => {
+    setLeftTab(tab)
+    setMobileTab(tab)
+  }
+
+  const handleRightTabChange = (tab: 'ai' | 'leaderboard') => {
+    setRightTab(tab)
+    setMobileTab(tab)
+  }
+
   const questionQuery = useForecastQuestionQuery(questionId)
   const question = questionQuery.data?.data
   const questionAudioQuery = useGetQuestionAudioQuery(
@@ -65,26 +94,74 @@ export default function QuestionPractice() {
 
   const handleAttemptCreated = () => {
     setLeftTab('history')
+    setMobileTab('history')
     setHistoryRefreshSignal((signal) => signal + 1)
   }
 
+  const mobileTabs = [
+    { key: 'question', label: tTabs('question') },
+    { key: 'vocabulary', label: tTabs('vocabulary') },
+    { key: 'history', label: tTabs('history') },
+    { key: 'ai', label: tTabs('ai') },
+    { key: 'leaderboard', label: tTabs('leaderboard') },
+  ]
+
   return (
-    <div
-      className='mx-auto flex max-w-[1320px] flex-col'
+    <Container
+      className='flex flex-col overflow-hidden'
+      contentClassName='flex flex-1 flex-col overflow-hidden'
       style={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}
     >
       <Breadcrumb items={breadcrumbItems} />
 
-      <div className='flex flex-1 gap-2 overflow-hidden p-2'>
+      {/* Mobile Tab Selector */}
+      <Tabs
+        value={mobileTab}
+        onValueChange={(val) => handleMobileTabChange(val as any)}
+        className='block lg:hidden flex-shrink-0 mb-3'
+      >
+      <ScrollableTabsList
+        variant='default'
+        containerClassName='w-full'
+      >
+        {mobileTabs.map((tab) => (
+          <TabsTrigger
+            key={tab.key}
+            value={tab.key}
+            className='px-4 py-1.5 text-sm font-medium cursor-pointer'
+          >
+            {tab.label}
+          </TabsTrigger>
+        ))}
+      </ScrollableTabsList>
+      </Tabs>
+
+      <div className='flex flex-1 flex-col lg:flex-row gap-2 overflow-hidden'>
         <PracticeLeft
           question={question}
           audioUrl={questionAudioUrl}
           isAudioLoading={questionAudioQuery.isLoading}
           active={leftTab}
-          onActiveChange={setLeftTab}
+          onActiveChange={handleLeftTabChange}
           refreshSignal={historyRefreshSignal}
+          className={cn(
+            'flex flex-col h-full lg:w-[55%] w-full',
+            ['question', 'vocabulary', 'history'].includes(mobileTab)
+              ? 'flex'
+              : 'hidden lg:flex',
+          )}
         />
-        <PracticeRight question={question} />
+        <PracticeRight
+          question={question}
+          active={rightTab}
+          onActiveChange={handleRightTabChange}
+          className={cn(
+            'flex flex-col h-full lg:flex-1 w-full',
+            ['ai', 'leaderboard'].includes(mobileTab)
+              ? 'flex'
+              : 'hidden lg:flex',
+          )}
+        />
       </div>
 
       <PracticeBottomBar
@@ -96,25 +173,31 @@ export default function QuestionPractice() {
         next={question.next!}
         onAttemptCreated={handleAttemptCreated}
       />
-    </div>
+    </Container>
   )
 }
 
 function PracticeSkeleton() {
   return (
-    <div className='flex flex-1 flex-col gap-2 overflow-hidden p-2'>
-      <Skeleton className='h-8 w-2/3 rounded-lg' />
-      <div className='flex flex-1 gap-2 overflow-hidden'>
-        <div className='flex w-[55%] flex-col gap-2'>
-          <Skeleton className='h-9 rounded-xl' />
-          <Skeleton className='h-full rounded-xl' />
+    <Container
+      className='flex flex-col overflow-hidden'
+      contentClassName='flex flex-1 flex-col overflow-hidden'
+      style={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}
+    >
+      <div className='flex flex-1 flex-col gap-2 overflow-hidden'>
+        <Skeleton className='h-8 w-2/3 rounded-lg' />
+        <div className='flex flex-1 gap-2 overflow-hidden'>
+          <div className='flex w-[55%] flex-col gap-2'>
+            <Skeleton className='h-9 rounded-xl' />
+            <Skeleton className='h-full rounded-xl' />
+          </div>
+          <div className='flex flex-1 flex-col gap-2'>
+            <Skeleton className='h-9 rounded-xl' />
+            <Skeleton className='h-full rounded-xl' />
+          </div>
         </div>
-        <div className='flex flex-1 flex-col gap-2'>
-          <Skeleton className='h-9 rounded-xl' />
-          <Skeleton className='h-full rounded-xl' />
-        </div>
+        <Skeleton className='h-16 rounded-xl' />
       </div>
-      <Skeleton className='h-16 rounded-xl' />
-    </div>
+    </Container>
   )
 }
