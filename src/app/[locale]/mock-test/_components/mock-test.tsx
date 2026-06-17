@@ -27,6 +27,7 @@ import { useCreateSpeakingSessionMutation, useVoiceListQuery } from '@/queries'
 import route from '@/routes'
 import { useAppLoadingStore, useAuthStore } from '@/store'
 import { VoiceType } from '@/types'
+import { useQueryClient } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -109,6 +110,7 @@ export default function MockTest() {
   const { withLoading } = useAppLoadingStore()
   const pathname = usePathname()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const createSpeakingSessionMutation = useCreateSpeakingSessionMutation()
 
@@ -142,6 +144,7 @@ export default function MockTest() {
       if (res.success && res.data?.id) {
         setMode(selectedMode)
         setVoiceId(selectedVoiceId)
+        queryClient.invalidateQueries({ queryKey: ['profile'] })
         navigate(`${route.mockTest}/${res.data.id}`)
         return
       }
