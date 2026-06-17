@@ -7,9 +7,6 @@ export default function MockTestLayout({
 }: {
   children: React.ReactNode
 }) {
-  // const pathname = usePathname()
-  // const isTestRoom = pathname.match(/\/mock-test\/[^/]+$/)
-
   return (
     <>
       <Header />

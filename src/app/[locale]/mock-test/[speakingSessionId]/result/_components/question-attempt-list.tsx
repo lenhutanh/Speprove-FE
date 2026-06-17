@@ -55,7 +55,7 @@ export function QuestionAttemptList({ attempts }: QuestionAttemptListProps) {
       )}
 
       <div className='flex items-center justify-between py-1'>
-        <span className='text-muted-foreground text-[10px] font-bold tracking-wider uppercase sm:text-xs'>
+        <span className='text-muted-foreground text-xs font-bold tracking-wider uppercase sm:text-xs'>
           {t('questions_count', { count: String(filteredAttempts.length) })}
         </span>
       </div>

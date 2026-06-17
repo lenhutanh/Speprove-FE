@@ -115,7 +115,7 @@ export function QuestionAttemptItem({
           )}
 
           {isCompleted && (
-            <div className='px-1 py-1'>
+            <>
               {isDetailLoading && (
                 <div className='text-muted-foreground flex items-center justify-center gap-2 px-4 py-6 text-sm'>
                   <Loader2 className='size-4 animate-spin text-indigo-500' />
@@ -132,7 +132,7 @@ export function QuestionAttemptItem({
                   {t('empty_detail')}
                 </div>
               )}
-            </div>
+            </>
           )}
 
           {!isCompleted && (

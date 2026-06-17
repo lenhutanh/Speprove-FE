@@ -17,7 +17,7 @@ export function CueCardPanel({ data }: CueCardPanelProps) {
 
   return (
     <div className='bg-card flex flex-1 flex-col gap-3 overflow-y-auto rounded-xl border p-5 drop-shadow-sm'>
-      <span className='w-fit rounded-md bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-800 uppercase dark:bg-amber-950/40 dark:text-amber-400'>
+      <span className='w-fit rounded-md bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800 uppercase dark:bg-amber-950/40 dark:text-amber-400'>
         {t('title')}
       </span>
       <p className='text-base leading-relaxed font-medium'>{data.prompt}</p>
@@ -60,11 +60,11 @@ export function NotePanel({
           {t('title')}
         </span>
         {mode === 'prep' ? (
-          <span className='rounded-md bg-blue-500/20 px-2 py-0.5 text-[11px] font-semibold text-blue-400'>
+          <span className='rounded-md bg-blue-500/20 px-2 py-0.5 text-xs font-semibold text-blue-400'>
             {t('prep_status', { seconds: String(prepSeconds) })}
           </span>
         ) : (
-          <span className='rounded-md bg-red-500/20 px-2 py-0.5 text-[11px] font-semibold text-red-400'>
+          <span className='rounded-md bg-red-500/20 px-2 py-0.5 text-xs font-semibold text-red-400'>
             {t('speaking_status')}
           </span>
         )}
