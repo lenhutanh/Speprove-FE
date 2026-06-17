@@ -1,11 +1,12 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import { ForecastQuestionType } from '@/types'
 import { ChevronRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 interface CueCardProps {
@@ -19,6 +20,7 @@ export default function CueCard({
   discussions,
   forecastSlug,
 }: CueCardProps) {
+  const tCommon = useTranslations('common')
   const [discussionOpen, setDiscussionOpen] = useState(false)
   const isPracticed = !!cueCard.practicedAt
 
@@ -26,12 +28,20 @@ export default function CueCard({
     `/forecast/${forecastSlug}/practice/${questionId}`
 
   return (
-    <div
-      className={cn(
-        'overflow-hidden rounded-xl border shadow-sm transition-all',
-      )}
-    >
-      <div className='group flex items-start justify-between gap-4 p-5'>
+    <div className='flex flex-col gap-0'>
+      <Link
+        href={getPracticeUrl(cueCard.id)}
+        className={cn(
+          'group bg-card flex cursor-pointer items-start justify-between gap-4 border transition-all hover:shadow-sm',
+          isPracticed
+            ? 'border-emerald-200'
+            : 'border-border hover:border-primary/40',
+          discussions.length > 0
+            ? 'rounded-t-xl rounded-b-none border-b'
+            : 'rounded-xl',
+          'px-4 py-4',
+        )}
+      >
         <div className='min-w-0 flex-1'>
           <div className='mb-3 flex items-center gap-2'>
             <Badge
@@ -47,24 +57,31 @@ export default function CueCard({
             )}
           </div>
 
-          <p className='leading-relaxed font-bold'>{cueCard.content}</p>
+          <p className='text-foreground text-sm leading-relaxed font-bold'>
+            {cueCard.content}
+          </p>
         </div>
 
-        <Button
-          asChild
-          size='sm'
-          className='shrink-0 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100'
+        <div
+          className={cn(
+            buttonVariants({
+              variant: isPracticed ? 'outline' : 'default',
+              size: 'sm',
+            }),
+            'hidden shrink-0 transition-opacity duration-200 focus-within:opacity-100 xl:inline-flex xl:opacity-0 xl:group-hover:opacity-100',
+          )}
         >
-          <Link href={getPracticeUrl(cueCard.id)}>
-            {isPracticed ? 'Luyện lại' : 'Luyện ngay'}
-          </Link>
-        </Button>
-      </div>
+          {isPracticed ? tCommon('practice_again') : tCommon('practice_now')}
+        </div>
+      </Link>
 
       {discussions.length > 0 && (
         <button
           onClick={() => setDiscussionOpen((v) => !v)}
-          className='border-border dark:bg-muted/40 dark:hover:bg-muted flex w-full items-center justify-between border-t bg-slate-50 px-5 py-3 transition-colors hover:bg-slate-100'
+          className={cn(
+            'border-border dark:bg-muted/40 dark:hover:bg-muted flex w-full items-center justify-between border-x border-b bg-slate-50 px-5 py-3 transition-colors hover:bg-slate-100',
+            discussionOpen ? 'rounded-none border-b-0' : 'rounded-b-xl',
+          )}
         >
           <div className='flex items-center gap-3'>
             <Badge
@@ -100,11 +117,12 @@ export default function CueCard({
       )}
 
       {discussionOpen && (
-        <div className='divide-border border-border bg-card divide-y border-t'>
+        <div className='divide-border border-border bg-card divide-y overflow-hidden rounded-b-xl border-x border-b'>
           {discussions.map((q, i) => (
-            <div
+            <Link
               key={q.id}
-              className='group dark:hover:bg-muted/50 flex items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-slate-50'
+              href={getPracticeUrl(q.id)}
+              className='group dark:hover:bg-muted/50 flex items-center justify-between gap-4 px-5 py-4 transition-colors last:rounded-b-xl hover:bg-slate-50'
             >
               <div className='flex min-w-0 flex-1 items-start gap-3'>
                 <span className='text-sm font-medium'>{i + 1}.</span>
@@ -114,16 +132,20 @@ export default function CueCard({
                   </p>
                 </div>
               </div>
-              <Button
-                asChild
-                size='sm'
-                className='h-8 shrink-0 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100'
+              <div
+                className={cn(
+                  buttonVariants({
+                    variant: q.practicedAt ? 'outline' : 'default',
+                    size: 'sm',
+                  }),
+                  'hidden h-8 shrink-0 transition-opacity duration-200 focus-within:opacity-100 xl:inline-flex xl:opacity-0 xl:group-hover:opacity-100',
+                )}
               >
-                <Link href={getPracticeUrl(q.id)}>
-                  {q.practicedAt ? 'Luyện lại' : 'Luyện ngay'}
-                </Link>
-              </Button>
-            </div>
+                {q.practicedAt
+                  ? tCommon('practice_again')
+                  : tCommon('practice_now')}
+              </div>
+            </Link>
           ))}
         </div>
       )}

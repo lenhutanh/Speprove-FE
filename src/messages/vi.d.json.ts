@@ -291,7 +291,7 @@ declare const messages: {
       vocabulary: 'Từ vựng'
     }
     question: {
-      related_part_2_topic: 'Chủ đề Part 2 liên quan'
+      related_part_2_topic: 'Câu hỏi Part 2'
     }
     vocabulary: {
       empty: 'Chưa có gợi ý từ vựng cho cấp độ này.'

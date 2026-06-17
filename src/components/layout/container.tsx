@@ -32,13 +32,10 @@ export default function Container({
   ...props
 }: ContainerProps) {
   return (
-    <div
-      className={cn('relative px-4 py-4 sm:px-6 lg:px-8 xl:px-0', className)}
-      {...props}
-    >
+    <div className={cn('relative w-full py-4', className)} {...props}>
       <div
         className={cn(
-          'content mx-auto w-full',
+          'content mx-auto w-full px-4 sm:px-6 lg:px-8',
           sizeClasses[size],
           contentClassName,
         )}
