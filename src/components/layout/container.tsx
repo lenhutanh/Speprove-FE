@@ -33,7 +33,7 @@ export default function Container({
 }: ContainerProps) {
   return (
     <div
-      className={cn('relative px-4 py-4 sm:px-6 lg:px-8', className)}
+      className={cn('relative px-4 py-4 sm:px-6 lg:px-8 xl:px-0', className)}
       {...props}
     >
       <div

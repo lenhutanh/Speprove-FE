@@ -16,7 +16,7 @@ type BreadcrumbItemType = {
 
 export function Breadcrumb({ items }: { items: BreadcrumbItemType[] }) {
   return (
-    <OriginBreadcrumb className='block py-4'>
+    <OriginBreadcrumb className='hidden pt-0 pb-4 md:block'>
       <BreadcrumbList>
         {items.map((item, index) => {
           const isLast = index === items.length - 1
