@@ -1,5 +1,6 @@
 import { createSpeakingSessionSchema } from '@/validations'
 import z from 'zod'
+import { AttemptListItem } from './attempt.type'
 
 export type CreateSpeakingSessionRequest = z.infer<
   typeof createSpeakingSessionSchema
@@ -24,6 +25,24 @@ export const SESSION_STATUS = {
 export type SpeakingSessionStatus =
   (typeof SESSION_STATUS)[keyof typeof SESSION_STATUS]
 
+export type SpeakingSessionAttempt = AttemptListItem & {
+  question: {
+    id: string
+    questionId: string
+    content: string
+    part: number
+    order: number
+    bulletPoints?: string[]
+    parent?: {
+      id: string
+      questionId: string
+      content: string
+      part: number
+      category: string
+    }
+  }
+}
+
 export type SpeakingSessionResponseDto = {
   id: string
   userId: string
@@ -43,6 +62,7 @@ export type SpeakingSessionResponseDto = {
   refundedAt?: Date
   scoringQueuedAt?: Date
   retryCount?: number
+  attempts?: SpeakingSessionAttempt[]
 }
 
 export type SessionState =

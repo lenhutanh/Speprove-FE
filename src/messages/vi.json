@@ -147,6 +147,7 @@
       "submitting": "Đang ghi nhận câu trả lời...",
       "done_title": "Đã nộp bài thi thử",
       "done_desc": "Bài thi của bạn đã được nộp thành công.\nKết quả đánh giá AI đang được xử lý và thường mất khoảng 1–2 phút.",
+      "view_result": "Xem kết quả",
       "view_history": "Xem lịch sử",
       "start_new_test": "Thi thử lượt mới",
       "replay_question": "Nghe lại câu hỏi",
@@ -202,6 +203,23 @@
       "status_refunded": "Đã hoàn điểm",
       "action_resume": "Tiếp tục",
       "action_view_result": "Xem kết quả"
+    },
+    "result": {
+      "title": "Kết quả thi thử IELTS Speaking",
+      "overall_band": "Overall Band",
+      "criteria": {
+        "fluency": "Trôi chảy",
+        "pronunciation": "Phát âm",
+        "lexical": "Từ vựng",
+        "grammar": "Ngữ pháp"
+      },
+      "completed_on": "Hoàn thành lúc: {date}",
+      "examiner": "Giám khảo: {name}",
+      "total_questions": "Tổng số: {count} câu hỏi",
+      "questions_count": "{count} CÂU HỎI",
+      "loading": "Đang tải kết quả thi thử...",
+      "not_found": "Không tìm thấy thông tin phiên thi thử.",
+      "error": "Có lỗi xảy ra khi tải kết quả. Vui lòng thử lại."
     }
   },
   "balance": {
