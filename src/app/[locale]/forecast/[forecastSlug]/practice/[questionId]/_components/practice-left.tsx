@@ -2,7 +2,7 @@
 
 import { AudioPlayer } from '@/components/ui/audio-player'
 import { Badge } from '@/components/ui/badge'
-import { Tabs, ScrollableTabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ScrollableTabsList, Tabs, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
 import { ForecastQuestionType } from '@/types'
 import { useTranslations } from 'next-intl'
@@ -41,7 +41,7 @@ export default function PracticeLeft({
     <Tabs
       value={active}
       onValueChange={(val) => onActiveChange(val as LeftTab)}
-      className={cn('flex flex-col h-full', className)}
+      className={cn('flex h-full flex-col', className)}
     >
       <ScrollableTabsList
         variant='default'
@@ -51,14 +51,14 @@ export default function PracticeLeft({
           <TabsTrigger
             key={tab.key}
             value={tab.key}
-            className='px-4 py-1.5 text-sm font-medium cursor-pointer'
+            className='cursor-pointer px-4 py-1.5 text-sm font-medium'
           >
             {tab.label}
           </TabsTrigger>
         ))}
       </ScrollableTabsList>
 
-      <div className='border-border bg-card flex-1 flex flex-col overflow-hidden rounded-xl border shadow-sm'>
+      <div className='border-border bg-card flex flex-1 flex-col overflow-hidden rounded-xl border shadow-sm'>
         <div className='flex-1 overflow-hidden'>
           {active === 'question' && (
             <QuestionTab
@@ -114,17 +114,15 @@ function QuestionTab({
       </div>
 
       {question.part === 2 && question.bulletPoints && (
-        <div className='border-primary border-l-2 pl-4'>
-          <p className='text-muted-foreground mb-2.5 text-xs font-medium'>
-            You should say:
-          </p>
-          <ul className='space-y-2'>
+        <div className='mt-3 space-y-2'>
+          <p className='text-sm font-medium italic'>You should say</p>
+          <ul className='mt-1 flex flex-col gap-2'>
             {question.bulletPoints.map((cue: string, index: number) => (
               <li
                 key={index}
                 className='text-foreground flex items-start gap-2 text-sm'
               >
-                <span className='bg-accent-foreground mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full' />
+                <span className='text-muted-foreground mt-0.5'>•</span>
                 {cue}
               </li>
             ))}
@@ -133,11 +131,11 @@ function QuestionTab({
       )}
 
       {question.part === 3 && question.parent && (
-        <div className='rounded-lg border border-indigo-100 bg-indigo-50 p-3 dark:border-indigo-900/50 dark:bg-indigo-950/20'>
-          <p className='mb-1 text-xs font-semibold tracking-wider text-indigo-500 uppercase dark:text-indigo-400'>
+        <div className='bg-muted/30 mt-6 rounded-xl border p-4'>
+          <p className='text-muted-foreground mb-1.5 text-xs font-semibold tracking-wider uppercase'>
             {t('related_part_2_topic')}
           </p>
-          <p className='text-sm font-medium text-indigo-900 italic dark:text-indigo-200'>
+          <p className='text-foreground text-sm leading-relaxed font-medium italic'>
             {question.parent.content}
           </p>
         </div>

@@ -53,7 +53,7 @@ export function SessionTopBar({
       />
 
       {/* Exit */}
-      <Button size={'sm'} variant={'outline'} onClick={onExit}>
+      <Button size={'sm'} variant={'destructive'} onClick={onExit}>
         {tCommon('exit')}
       </Button>
     </header>

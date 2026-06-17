@@ -58,25 +58,25 @@ export default function CategoryDetail() {
   ]
 
   return (
-    <div className='mx-auto space-y-6 px-6 py-6'>
+    <>
       <Breadcrumb items={breadcrumbItems} />
 
-      <div className='mb-8'>
+      <div className='space-y-6'>
         <h1 className='text-foreground text-2xl leading-snug font-semibold'>
           {categoryItem.label}
         </h1>
-      </div>
 
-      {forecastQuery.isLoading || isLoading ? (
-        <CategoryDetailSkeleton />
-      ) : forecast ? (
-        <Part23Section
-          questions={data?.data}
-          isLoading={isLoading}
-          forecastSlug={forecastSlug}
-        />
-      ) : null}
-    </div>
+        {forecastQuery.isLoading || isLoading ? (
+          <CategoryDetailSkeleton />
+        ) : forecast ? (
+          <Part23Section
+            questions={data?.data}
+            isLoading={isLoading}
+            forecastSlug={forecastSlug}
+          />
+        ) : null}
+      </div>
+    </>
   )
 }
 

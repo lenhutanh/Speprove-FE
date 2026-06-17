@@ -1,5 +1,6 @@
 'use client'
 
+import { Container } from '@/components/layout'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   AlertDialog,
@@ -568,7 +569,7 @@ export default function MockTestRoom() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <div className='mx-auto flex max-w-6xl flex-col px-6 py-4'>
+      <Container>
         {state !== 'done' && (
           <SessionTopBar
             state={state}
@@ -583,7 +584,7 @@ export default function MockTestRoom() {
         <main className='mx-auto flex w-full flex-1 items-center justify-center overflow-hidden py-6'>
           {renderContent()}
         </main>
-      </div>
+      </Container>
     </>
   )
 }
