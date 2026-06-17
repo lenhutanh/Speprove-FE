@@ -28,7 +28,7 @@ import { useNavigate, useRecorder, useRecordingCountdown } from '@/hooks'
 import { useMockTestSession } from '@/hooks/use-mock-test-session'
 import { Link, usePathname } from '@/i18n/navigation'
 import route from '@/routes'
-import { AlertTriangle, Check, Headphones, History, Plus } from 'lucide-react'
+import { AlertTriangle, Check, Eye, Headphones, Plus } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useParams } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -464,9 +464,9 @@ export default function MockTestRoom() {
           variant='outline'
           className='h-10 w-full gap-2 rounded-xl px-5 sm:w-auto'
         >
-          <Link href={`${route.account}?tab=mock-test-history`}>
-            <History className='size-4' />
-            {t('view_history')}
+          <Link href={`/mock-test/${speakingSessionId}/result`}>
+            <Eye className='size-4' />
+            {t('view_result')}
           </Link>
         </Button>
         <Button asChild className='h-10 w-full gap-2 rounded-xl px-5 sm:w-auto'>
