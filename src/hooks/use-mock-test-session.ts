@@ -5,6 +5,7 @@ import { useCreateAttemptMutation } from '@/queries/attempt.query'
 import { useUploadAudioMutation } from '@/queries/file.query'
 import { useGetCurrentQuestionQuery } from '@/queries/speaking-session.query'
 import { SessionState, UploadAudioBodyType } from '@/types'
+import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -12,6 +13,7 @@ export function useMockTestSession(
   sessionId: string,
   hasEntered: boolean = true,
 ) {
+  const t = useTranslations('mock_test.room')
   const [state, setState] = useState<SessionState>('fetching')
   const [prepSeconds, setPrepSeconds] = useState(60)
   const [isReplayingQuestion, setIsReplayingQuestion] = useState(false)
@@ -143,7 +145,7 @@ export function useMockTestSession(
           }
         } catch {
           if (!active) return
-          toast.error('Khong the phat am thanh cua giam khao')
+          toast.error(t('play_examiner_audio_failed'))
 
           if (isFinished) {
             sessionStorage.setItem(`mock_${sessionId}_doneRead`, 'true')
@@ -226,7 +228,7 @@ export function useMockTestSession(
       await refetch()
       return { success: true }
     } catch {
-      toast.error('Nop cau tra loi that bai')
+      toast.error(t('submit_failed_toast'))
       setState('user_speaking')
       return { success: false }
     }
@@ -244,7 +246,7 @@ export function useMockTestSession(
       await playAudio(audioUrl)
       sessionStorage.setItem(`mock_${sessionId}_replayed_${questionId}`, 'true')
     } catch {
-      toast.error('Khong the phat lai cau hoi')
+      toast.error(t('play_question_failed'))
     } finally {
       setIsReplayingQuestion(false)
       startTransitionTimer()

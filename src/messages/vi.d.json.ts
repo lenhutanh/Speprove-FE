@@ -166,6 +166,13 @@ declare const messages: {
       lobby_desc: 'Vui lòng nói thử vào micro và nghe lại đoạn thu âm để đảm bảo micro và tai nghe hoạt động tốt trước khi thi.'
       lobby_warning: 'Lưu ý: Chỉ nên vào phòng thi khi thanh hiển thị âm lượng hoạt động khi nói và bạn có thể nghe rõ giọng ghi âm của mình.'
       enter_room: 'Vào phòng thi'
+      exit_dialog_title: 'Rời phòng thi?'
+      exit_dialog_desc: 'Bài thi đang diễn ra. Nếu thoát bây giờ, tiến trình hiện tại có thể không được lưu.'
+      exit_dialog_cancel: 'Ở lại'
+      exit_dialog_confirm: 'Thoát'
+      play_examiner_audio_failed: 'Không thể phát âm thanh của giám khảo'
+      play_question_failed: 'Không thể phát lại câu hỏi'
+      submit_failed_toast: 'Nộp câu trả lời thất bại'
     }
     components: {
       cue_card: {
@@ -181,6 +188,7 @@ declare const messages: {
       mic_checker: {
         placeholder: 'Chọn microphone'
         record: 'Ghi âm'
+        access_mic_failed: 'Không thể truy cập microphone'
       }
       voice_selector: {
         random: 'Giọng ngẫu nhiên'
