@@ -526,16 +526,15 @@ export default function MockTestRoom() {
       <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Roi phong thi?</AlertDialogTitle>
+            <AlertDialogTitle>{t('exit_dialog_title')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Bai thi dang dien ra. Neu thoat bay gio, tien trinh hien tai co
-              the khong duoc luu.
+              {t('exit_dialog_desc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>O lai</AlertDialogCancel>
+            <AlertDialogCancel>{t('exit_dialog_cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={() => navigate(route.mockTest)}>
-              Thoat
+              {t('exit_dialog_confirm')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

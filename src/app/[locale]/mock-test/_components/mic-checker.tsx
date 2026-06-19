@@ -109,7 +109,7 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
         return undefined
       })
     } catch {
-      toast.error('Khong the truy cap microphone')
+      toast.error(t('access_mic_failed'))
     }
   }
 
