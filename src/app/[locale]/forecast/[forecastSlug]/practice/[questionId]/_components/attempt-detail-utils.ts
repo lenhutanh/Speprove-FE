@@ -1,4 +1,8 @@
-import { AttemptDetail, AttemptWordAssessment } from '@/types'
+import {
+  AttemptDetail,
+  AttemptEvaluationIssue,
+  AttemptWordAssessment,
+} from '@/types'
 import {
   CriteriaTab,
   HIGHLIGHT_CLASS,
@@ -44,16 +48,14 @@ function normalizeIssueRange(
 }
 
 export function getEvaluationIssues(
-  value: unknown,
+  issues: AttemptEvaluationIssue[] | undefined,
   words: AttemptWordAssessment[],
 ) {
-  if (!isRecord(value) || !Array.isArray(value.issues)) return []
+  if (!Array.isArray(issues)) return []
 
-  return value.issues.flatMap((item): RangeIssue[] => {
-    if (!isRecord(item)) return []
-
-    const startWordIndex = asNumber(item.startWordIndex)
-    const endWordIndex = asNumber(item.endWordIndex)
+  return issues.flatMap((item): RangeIssue[] => {
+    const startWordIndex = item.startWordIndex
+    const endWordIndex = item.endWordIndex
     if (startWordIndex == null || endWordIndex == null) return []
 
     return [
@@ -61,10 +63,10 @@ export function getEvaluationIssues(
         {
           startWordIndex,
           endWordIndex,
-          suggestion: asString(item.suggestion),
-          correction: asString(item.correction),
-          feedback: asString(item.reason),
-          severity: asSeverity(item.severity),
+          suggestion: item.suggestion,
+          correction: item.correction,
+          feedback: item.reason,
+          severity: item.severity,
         },
         words,
       ),
@@ -111,8 +113,14 @@ export function getHighlightedIndexes(
   detail: AttemptDetail,
 ) {
   const indexes = new Set<number>()
-  const lexicalIssues = getEvaluationIssues(detail.evaluation?.lexical, words)
-  const grammarIssues = getEvaluationIssues(detail.evaluation?.grammar, words)
+  const lexicalIssues = getEvaluationIssues(
+    detail.evaluation?.lexical?.issues,
+    words,
+  )
+  const grammarIssues = getEvaluationIssues(
+    detail.evaluation?.grammar?.issues,
+    words,
+  )
 
   if (tab === 'pronunciation') {
     words.forEach((word) => {

@@ -12,7 +12,7 @@ export default async function Page({ params }: PageProps) {
   const { speakingSessionId } = await params
 
   return (
-    <Container size='narrow'>
+    <Container size='small'>
       <MockTestResult speakingSessionId={speakingSessionId} />
     </Container>
   )

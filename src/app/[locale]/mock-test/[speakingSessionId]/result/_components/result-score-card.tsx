@@ -1,5 +1,7 @@
 'use client'
 
+import { BAND_SCORE_TEXT_VARIANTS } from '@/constants'
+import { cn, getBandScoreMeta } from '@/lib'
 import { SpeakingSessionResponseDto, VoiceType } from '@/types'
 import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
@@ -58,6 +60,12 @@ export function ResultScoreCard({
   const lexicalScore = session.result?.lexical ?? 0
   const grammarScore = session.result?.grammar ?? 0
 
+  const overallMeta = getBandScoreMeta(overallScore)
+  const fluencyMeta = getBandScoreMeta(fluencyScore)
+  const pronunciationMeta = getBandScoreMeta(pronunciationScore)
+  const lexicalMeta = getBandScoreMeta(lexicalScore)
+  const grammarMeta = getBandScoreMeta(grammarScore)
+
   const totalQuestions = session.attempts?.length ?? 0
 
   return (
@@ -68,7 +76,12 @@ export function ResultScoreCard({
             {getTypeLabel(session.type)}
           </h1>
           <div className='flex items-baseline gap-2.5'>
-            <span className='text-4xl font-extrabold tracking-tight sm:text-5xl'>
+            <span
+              className={cn(
+                'text-4xl font-extrabold tracking-tight sm:text-5xl',
+                BAND_SCORE_TEXT_VARIANTS[overallMeta.variant],
+              )}
+            >
               {overallScore > 0 ? overallScore.toFixed(1) : '—'}
             </span>
             <span className='text-muted-foreground text-sm font-medium'>
@@ -83,7 +96,12 @@ export function ResultScoreCard({
           <span className='text-muted-foreground mb-1 text-xs font-semibold'>
             {t('criteria.fluency')}
           </span>
-          <span className='text-2xl font-bold tracking-tight'>
+          <span
+            className={cn(
+              'text-2xl font-bold tracking-tight',
+              BAND_SCORE_TEXT_VARIANTS[fluencyMeta.variant],
+            )}
+          >
             {fluencyScore > 0 ? fluencyScore.toFixed(1) : '—'}
           </span>
         </div>
@@ -91,7 +109,12 @@ export function ResultScoreCard({
           <span className='text-muted-foreground mb-1 text-xs font-semibold'>
             {t('criteria.pronunciation')}
           </span>
-          <span className='text-2xl font-bold tracking-tight'>
+          <span
+            className={cn(
+              'text-2xl font-bold tracking-tight',
+              BAND_SCORE_TEXT_VARIANTS[pronunciationMeta.variant],
+            )}
+          >
             {pronunciationScore > 0 ? pronunciationScore.toFixed(1) : '—'}
           </span>
         </div>
@@ -99,7 +122,12 @@ export function ResultScoreCard({
           <span className='text-muted-foreground mb-1 text-xs font-semibold'>
             {t('criteria.lexical')}
           </span>
-          <span className='text-2xl font-bold tracking-tight'>
+          <span
+            className={cn(
+              'text-2xl font-bold tracking-tight',
+              BAND_SCORE_TEXT_VARIANTS[lexicalMeta.variant],
+            )}
+          >
             {lexicalScore > 0 ? lexicalScore.toFixed(1) : '—'}
           </span>
         </div>
@@ -107,7 +135,12 @@ export function ResultScoreCard({
           <span className='text-muted-foreground mb-1 text-xs font-semibold'>
             {t('criteria.grammar')}
           </span>
-          <span className='text-2xl font-bold tracking-tight'>
+          <span
+            className={cn(
+              'text-2xl font-bold tracking-tight',
+              BAND_SCORE_TEXT_VARIANTS[grammarMeta.variant],
+            )}
+          >
             {grammarScore > 0 ? grammarScore.toFixed(1) : '—'}
           </span>
         </div>

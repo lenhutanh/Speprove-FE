@@ -373,6 +373,9 @@ declare const messages: {
         many_repeats: 'Lặp nhiều'
       }
       transcript: 'Bài nói'
+      strengths: 'Điểm tốt'
+      limitations: 'Điểm cần cải thiện'
+      feedback: 'Nhận xét'
       popover: {
         expected: 'Mẫu'
         spoken: 'Bạn nói'

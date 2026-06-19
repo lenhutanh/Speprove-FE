@@ -92,25 +92,23 @@ function QuestionTab({
 
   return (
     <div className='h-full overflow-y-auto p-5'>
-      <div className='mb-4 flex items-center gap-2'>
-        <Badge variant='secondary' className='text-xs'>
-          Part {question.part}
-        </Badge>
-        <span className='text-muted-foreground text-xs font-medium tracking-wide uppercase'>
-          {/* {topicSlug.split('.')[0]} */}
-        </span>
-      </div>
-
-      <div className='flex items-center gap-4'>
-        <AudioPlayer
-          url={audioUrl}
-          loading={isAudioLoading}
-          autoPlay={!!audioUrl}
-          variant='minimal'
-        />
-        <h2 className='text-foreground text-base leading-relaxed font-semibold'>
-          {question.content}
-        </h2>
+      <div className='flex items-start gap-3 sm:items-center'>
+        <div className='mt-0.5 shrink-0 sm:mt-0'>
+          <AudioPlayer
+            url={audioUrl}
+            loading={isAudioLoading}
+            autoPlay={!!audioUrl}
+            variant='minimal'
+          />
+        </div>
+        <div className='flex flex-1 flex-wrap items-center gap-2'>
+          <Badge variant='outline' className='shrink-0 text-xs'>
+            Part {question.part}
+          </Badge>
+          <h2 className='text-foreground text-base leading-relaxed font-semibold'>
+            {question.content}
+          </h2>
+        </div>
       </div>
 
       {question.part === 2 && question.bulletPoints && (

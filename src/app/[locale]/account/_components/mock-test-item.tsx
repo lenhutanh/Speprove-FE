@@ -1,6 +1,8 @@
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { BAND_SCORE_BADGE_VARIANTS } from '@/constants'
 import { Link } from '@/i18n/navigation'
+import { cn, getBandScoreMeta } from '@/lib'
 import { useRetrySpeakingSessionMutation } from '@/queries'
 import { SESSION_STATUS, SpeakingSessionResponseDto } from '@/types'
 import { useQueryClient } from '@tanstack/react-query'
@@ -9,6 +11,7 @@ import { enUS, vi } from 'date-fns/locale'
 import {
   AlertCircle,
   CircleDollarSign,
+  Clock,
   Eye,
   Loader2,
   Play,
@@ -83,16 +86,13 @@ export default function MockTestItem({ session }: MockTestItemProps) {
     session.status === SESSION_STATUS.NOT_STARTED ||
     session.status === SESSION_STATUS.IN_PROGRESS
   ) {
-    const isNotStarted = session.status === SESSION_STATUS.NOT_STARTED
     statusBadge = (
       <Badge
         variant='outline'
-        className='gap-1 rounded-md border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/20 dark:text-amber-400'
+        className='border-border text-muted-foreground gap-1 rounded-md bg-transparent px-2 py-0.5 text-sm font-normal'
       >
-        <span className='h-1.5 w-1.5 rounded-full bg-amber-500' />
-        {isNotStarted
-          ? tHistory('status_not_started')
-          : tHistory('status_in_progress')}
+        <Clock className='size-3.5' />
+        {tHistory('status_in_progress')}
       </Badge>
     )
     actionButton = (
@@ -107,31 +107,23 @@ export default function MockTestItem({ session }: MockTestItemProps) {
     statusBadge = (
       <Badge
         variant='outline'
-        className='animate-pulse gap-1 rounded-md border-blue-200 bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:border-blue-900/50 dark:bg-blue-950/20 dark:text-blue-400'
+        className='border-border text-muted-foreground gap-1 rounded-md bg-transparent px-2 py-0.5 text-sm font-normal'
       >
-        <Loader2 className='size-3 animate-spin text-blue-500 dark:text-blue-400' />
+        <Loader2 className='size-3.5 animate-spin' />
         {tHistory('status_processing')}
       </Badge>
     )
   } else if (session.status === SESSION_STATUS.COMPLETED) {
     const overallScore = session.result?.overall ?? 0
-    const isHigh = overallScore >= 7.0
+    const bandScoreMeta = getBandScoreMeta(overallScore)
     statusBadge = (
       <Badge
         variant='outline'
-        className={
-          isHigh
-            ? 'gap-1 rounded-md border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/20 dark:text-emerald-400'
-            : 'gap-1 rounded-md border-indigo-200 bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700 dark:border-indigo-900/50 dark:bg-indigo-950/20 dark:text-indigo-400'
-        }
+        className={cn(
+          'rounded-md px-2 py-0.5 text-sm font-bold',
+          BAND_SCORE_BADGE_VARIANTS[bandScoreMeta.variant],
+        )}
       >
-        <span
-          className={
-            isHigh
-              ? 'h-1.5 w-1.5 rounded-full bg-emerald-500'
-              : 'h-1.5 w-1.5 rounded-full bg-indigo-500'
-          }
-        />
         Band {overallScore.toFixed(1)}
       </Badge>
     )
@@ -147,9 +139,9 @@ export default function MockTestItem({ session }: MockTestItemProps) {
     statusBadge = (
       <Badge
         variant='outline'
-        className='gap-1 rounded-md border-red-200 bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 dark:border-red-900/50 dark:bg-red-950/20 dark:text-red-400'
+        className='border-destructive text-destructive gap-1 rounded-md bg-transparent px-2 py-0.5 text-sm font-normal'
       >
-        <AlertCircle className='size-3 text-red-500 dark:text-red-400' />
+        <AlertCircle className='size-3.5' />
         {tHistory('status_failed')}
       </Badge>
     )
@@ -173,9 +165,9 @@ export default function MockTestItem({ session }: MockTestItemProps) {
     statusBadge = (
       <Badge
         variant='outline'
-        className='gap-1 rounded-md border-slate-200 bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 dark:border-slate-700/50 dark:bg-slate-800/40 dark:text-slate-400'
+        className='border-border text-muted-foreground gap-1 rounded-md bg-transparent px-2 py-0.5 text-sm font-normal'
       >
-        <CircleDollarSign className='size-3 text-slate-500 dark:text-slate-400' />
+        <CircleDollarSign className='size-3.5' />
         {tHistory('status_refunded')}
       </Badge>
     )

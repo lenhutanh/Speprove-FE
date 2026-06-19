@@ -12,13 +12,22 @@ import {
 } from '@/components/ui/alert-dialog'
 import { AudioPlayer } from '@/components/ui/audio-player'
 import { Badge } from '@/components/ui/badge'
-import { cn } from '@/lib/utils'
+import { BAND_SCORE_BADGE_VARIANTS } from '@/constants'
+import { cn, getBandScoreMeta } from '@/lib'
 import { useAttemptQuery, useToggleShareMutation } from '@/queries'
 import { AttemptListItem } from '@/types'
 import { useQueryClient } from '@tanstack/react-query'
 import { formatDistanceToNow } from 'date-fns'
 import { vi } from 'date-fns/locale'
-import { ChevronDown, ChevronRight, Globe, Lock } from 'lucide-react'
+import {
+  AlertCircle,
+  ChevronDown,
+  ChevronRight,
+  Clock,
+  Globe,
+  Loader2,
+  Lock,
+} from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { AttemptDetailTabs } from './attempt-detail-tabs'
@@ -93,12 +102,7 @@ export default function HistoryItem({
   })
 
   const overall = scores?.overall
-  const overallColor =
-    overall != null && overall >= 7
-      ? { dot: 'bg-emerald-500', pill: 'bg-emerald-50 text-emerald-700' }
-      : overall != null && overall >= 6
-        ? { dot: 'bg-amber-500', pill: 'bg-amber-50 text-amber-700' }
-        : { dot: 'bg-muted-foreground', pill: 'bg-muted text-muted-foreground' }
+  const bandScoreMeta = getBandScoreMeta(overall)
 
   const onToggleShare = () => {
     toggleShareMutation.mutate(
@@ -129,45 +133,51 @@ export default function HistoryItem({
         <button
           onClick={() => onOpenChange(!open)}
           className={cn(
-            'hover:bg-muted/40 flex w-full items-center justify-between rounded-lg px-3 py-2.5 transition-colors',
+            'hover:bg-muted/40 flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2.5 transition-colors sm:grid sm:grid-cols-[150px_120px_1fr_100px_24px] sm:gap-3',
             open ? 'bg-muted/40' : 'bg-background',
           )}
           style={{ borderRadius: open ? '8px 8px 0 0' : undefined }}
         >
-          <div className='flex items-center gap-2'>
-            <div
-              className={cn(
-                'h-2 w-2 flex-shrink-0 rounded-full',
-                isCompleted ? overallColor.dot : statusMeta.dot,
-              )}
-            />
-            <span className='text-muted-foreground text-sm'>{timeAgo}</span>
+          <span className='text-muted-foreground truncate text-left text-sm'>
+            {timeAgo}
+          </span>
+
+          <div className='flex justify-start'>
             {isCompleted && overall != null ? (
-              <span
+              <Badge
+                variant='outline'
                 className={cn(
-                  'rounded px-1.5 py-0.5 text-sm font-medium',
-                  overallColor.pill,
+                  'rounded-md px-2 py-0.5 text-sm font-bold whitespace-nowrap',
+                  BAND_SCORE_BADGE_VARIANTS[bandScoreMeta.variant],
                 )}
               >
-                Band {overall}
-              </span>
+                Band {overall.toFixed(1)}
+              </Badge>
             ) : (
-              <span
+              <Badge
+                variant='outline'
                 className={cn(
-                  'rounded px-1.5 py-0.5 text-sm font-medium',
-                  statusMeta.pill,
+                  'gap-1 rounded-md px-2 py-0.5 text-sm font-normal whitespace-nowrap',
+                  status === 3
+                    ? 'border-destructive text-destructive'
+                    : 'border-border text-muted-foreground bg-transparent',
                 )}
               >
+                {status === 0 && <Clock className='size-3.5' />}
+                {status === 1 && <Loader2 className='size-3.5 animate-spin' />}
+                {status === 3 && <AlertCircle className='size-3.5' />}
                 {t(statusMeta.labelKey)}
-              </span>
+              </Badge>
             )}
           </div>
 
-          <div className='flex items-center gap-4'>
+          <div className='hidden sm:block' />
+
+          <div className='flex justify-end'>
             {isCompleted && (
               <Badge
                 variant={history.isPublic ? 'default' : 'secondary'}
-                className='cursor-pointer gap-1 rounded-full'
+                className='cursor-pointer gap-1 px-2 sm:px-2.5'
                 onClick={(e) => {
                   e.stopPropagation()
                   setShareDialogOpen(true)
@@ -178,9 +188,14 @@ export default function HistoryItem({
                 ) : (
                   <Lock className='h-3 w-3' />
                 )}
-                {history.isPublic ? t('public') : t('private')}
+                <span className='hidden sm:inline'>
+                  {history.isPublic ? t('public') : t('private')}
+                </span>
               </Badge>
             )}
+          </div>
+
+          <div className='flex justify-end'>
             {open ? (
               <ChevronDown className='text-muted-foreground h-3.5 w-3.5' />
             ) : (
@@ -192,7 +207,7 @@ export default function HistoryItem({
         {open && (
           <div className='border-border border-t'>
             {audioUrl && (
-              <div className='border-border bg-muted/20 border-b px-3 py-2'>
+              <div className='border-border bg-muted/20 p-4'>
                 <AudioPlayer url={audioUrl} variant='full' />
               </div>
             )}
