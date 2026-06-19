@@ -2,9 +2,11 @@
 
 import { AudioPlayer } from '@/components/ui/audio-player'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { cn } from '@/lib/utils'
+import { BAND_SCORE_BADGE_VARIANTS } from '@/constants'
+import { cn, getBandScoreMeta } from '@/lib'
 import { useLeaderboardQuery } from '@/queries'
 import { AttemptLeaderBoardType } from '@/types'
 import { getInitials } from '@/utils'
@@ -16,14 +18,6 @@ import { useState } from 'react'
 
 interface PracticeLeaderboardProps {
   questionId: string
-}
-
-function bandBg(band: number) {
-  if (band >= 7)
-    return 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/50'
-  if (band >= 6)
-    return 'bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-900/50'
-  return 'bg-muted text-muted-foreground'
 }
 
 const SCORE_BADGES = [
@@ -108,6 +102,7 @@ function LeaderboardItem({
     locale: vi,
   })
   const overall = entry.scores.overall
+  const bandScoreMeta = getBandScoreMeta(overall)
 
   return (
     <div
@@ -144,14 +139,15 @@ function LeaderboardItem({
           <p className='text-muted-foreground text-xs'>{timeAgo}</p>
         </div>
 
-        <span
+        <Badge
+          variant='outline'
           className={cn(
-            'flex-shrink-0 rounded px-1.5 py-0.5 text-xs font-semibold',
-            bandBg(overall ?? 0),
+            'flex-shrink-0 rounded-md px-2 py-0.5 text-sm font-semibold whitespace-nowrap',
+            BAND_SCORE_BADGE_VARIANTS[bandScoreMeta.variant],
           )}
         >
-          {overall}
-        </span>
+          Band {overall ? overall.toFixed(1) : '—'}
+        </Badge>
 
         <button
           onClick={() => onOpenChange(!open)}
@@ -174,19 +170,20 @@ function LeaderboardItem({
           <div className='flex flex-wrap gap-3 border-b px-4 py-2'>
             {SCORE_BADGES.map(({ key, labelKey }) => {
               const score = entry.scores[key]
-
               if (score == null) return null
+              const meta = getBandScoreMeta(score)
 
               return (
-                <span
+                <Badge
                   key={key}
+                  variant='outline'
                   className={cn(
-                    'rounded-full border px-3 py-0.5 text-sm font-medium',
-                    bandBg(score),
+                    'rounded-full px-3 py-0.5 text-sm font-medium',
+                    BAND_SCORE_BADGE_VARIANTS[meta.variant],
                   )}
                 >
                   {tCriteria(labelKey)} {score}
-                </span>
+                </Badge>
               )
             })}
           </div>

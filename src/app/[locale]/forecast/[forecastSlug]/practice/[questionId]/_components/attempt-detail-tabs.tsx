@@ -1,7 +1,8 @@
 'use client'
 
-import { cn } from '@/lib/utils'
-import { Tabs, ScrollableTabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ScrollableTabsList, Tabs, TabsTrigger } from '@/components/ui/tabs'
+import { BAND_SCORE_TEXT_VARIANTS } from '@/constants'
+import { cn, getBandScoreMeta } from '@/lib'
 import { AttemptDetail } from '@/types'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
@@ -22,22 +23,41 @@ import {
   getIssueForWord,
   getPauseIssues,
 } from './attempt-detail-utils'
-import { AttemptFluencySummary } from './attempt-fluency-summary'
 
 export function AttemptDetailTabs({ detail }: { detail: AttemptDetail }) {
   const tAttempt = useTranslations('practice.attempt')
   const tCriteria = useTranslations('practice.attempt.criteria')
   const [activeTab, setActiveTab] = useState<CriteriaTab>('fluency')
 
-
   const words =
     detail.wordAssessments?.length != null && detail.wordAssessments.length > 0
       ? detail.wordAssessments
       : buildWordsFromTranscript(detail.transcript)
   const highlightedIndexes = getHighlightedIndexes(activeTab, words, detail)
-  const lexicalIssues = getEvaluationIssues(detail.evaluation?.lexical, words)
-  const grammarIssues = getEvaluationIssues(detail.evaluation?.grammar, words)
+  const lexicalIssues = getEvaluationIssues(
+    detail.evaluation?.lexical?.issues,
+    words,
+  )
+  const grammarIssues = getEvaluationIssues(
+    detail.evaluation?.grammar?.issues,
+    words,
+  )
   const pauseIssues = getPauseIssues(detail.fluencyMetrics)
+
+  const criterionByTab = {
+    fluency: detail.evaluation?.fluency,
+    pronunciation: detail.evaluation?.pronunciation,
+    lexical: detail.evaluation?.lexical,
+    grammar: detail.evaluation?.grammar,
+  } satisfies Record<
+    CriteriaTab,
+    { strengths?: string | null; limitations?: string | null } | undefined
+  >
+
+  const activeCriterion = criterionByTab[activeTab]
+  const strengths = activeCriterion?.strengths
+  const limitations = activeCriterion?.limitations
+  const hasReview = !!strengths || !!limitations
 
   const renderRangeTokens = () => {
     const issues = activeTab === 'lexical' ? lexicalIssues : grammarIssues
@@ -91,13 +111,13 @@ export function AttemptDetailTabs({ detail }: { detail: AttemptDetail }) {
       const popoverContent =
         activeTab === 'pronunciation'
           ? (isOpen: boolean) => (
-            <PronunciationPopover
-              attemptId={detail.id}
-              isOpen={isOpen}
-              word={word}
-              audioUrl={detail.audioUrl}
-            />
-          )
+              <PronunciationPopover
+                attemptId={detail.id}
+                isOpen={isOpen}
+                word={word}
+                audioUrl={detail.audioUrl}
+              />
+            )
           : undefined
 
       const token = (
@@ -126,29 +146,27 @@ export function AttemptDetailTabs({ detail }: { detail: AttemptDetail }) {
     >
       <ScrollableTabsList
         variant='default'
-        containerClassName='w-full p-3 pb-0'
+        containerClassName='w-full px-4 py-2'
       >
         {(Object.keys(TAB_LABELS) as CriteriaTab[]).map((tab) => {
-          const isActive = activeTab === tab
           const score = detail.scores?.[SCORE_KEYS[tab]]
+          const bandScoreMeta = getBandScoreMeta(score)
 
           return (
             <TabsTrigger
               key={tab}
               value={tab}
-              className='flex-1 px-3 py-1.5 text-sm font-medium gap-1.5 cursor-pointer'
+              className='flex-1 cursor-pointer gap-1.5 px-3 py-1.5 text-sm font-medium'
             >
               {tCriteria(tab)}
               {score != null && (
                 <span
                   className={cn(
-                    'rounded-full px-2 py-px text-sm font-medium transition-colors',
-                    isActive
-                      ? 'bg-primary/10 text-primary'
-                      : 'bg-muted text-muted-foreground',
+                    'text-sm font-bold transition-colors',
+                    BAND_SCORE_TEXT_VARIANTS[bandScoreMeta.variant],
                   )}
                 >
-                  {score}
+                  {score.toFixed(1)}
                 </span>
               )}
             </TabsTrigger>
@@ -156,7 +174,7 @@ export function AttemptDetailTabs({ detail }: { detail: AttemptDetail }) {
         })}
       </ScrollableTabsList>
 
-      <div className='border-border border-b'>
+      <div>
         {/* {activeTab === 'fluency' && (
           <AttemptFluencySummary
             fluencyMetrics={detail.fluencyMetrics}
@@ -164,16 +182,46 @@ export function AttemptDetailTabs({ detail }: { detail: AttemptDetail }) {
           />
         )} */}
 
-        <div className='px-3 py-2.5'>
+        <div className='border-border border-t p-4'>
           <p className='text-muted-foreground mb-2 text-xs font-medium tracking-wide uppercase'>
             {tAttempt('transcript')}
           </p>
-          <div className='text-foreground text-sm leading-[2.5]'>
+          <div className='text-foreground text-sm leading-[1.8]'>
             {activeTab === 'lexical' || activeTab === 'grammar'
               ? renderRangeTokens()
               : renderWordTokens()}
           </div>
         </div>
+
+        {hasReview && (
+          <>
+            <div className='border-border bg-background space-y-4 border-t p-4'>
+              <p className='text-muted-foreground mb-4 text-xs font-semibold tracking-wide uppercase'>
+                {tAttempt('feedback')}
+              </p>
+              {strengths && (
+                <div className='space-y-2'>
+                  <p className='text-sm font-semibold tracking-wide text-emerald-600 dark:text-emerald-400'>
+                    {tAttempt('strengths')}
+                  </p>
+                  <p className='text-foreground text-sm leading-relaxed'>
+                    {strengths}
+                  </p>
+                </div>
+              )}
+              {limitations && (
+                <div className='space-y-2'>
+                  <p className='text-sm font-semibold tracking-wide text-amber-600 dark:text-amber-400'>
+                    {tAttempt('limitations')}
+                  </p>
+                  <p className='text-foreground text-sm leading-relaxed'>
+                    {limitations}
+                  </p>
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </Tabs>
   )

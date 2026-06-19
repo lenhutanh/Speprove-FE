@@ -44,12 +44,7 @@ export default function CueCard({
       >
         <div className='min-w-0 flex-1'>
           <div className='mb-3 flex items-center gap-2'>
-            <Badge
-              variant='secondary'
-              className='border-orange-200 bg-orange-100 text-orange-800 dark:border-orange-900/50 dark:bg-orange-950/40 dark:text-orange-400'
-            >
-              Part 2
-            </Badge>
+            <Badge variant='outline'>Part 2</Badge>
             {cueCard.category && (
               <span className='text-muted-foreground dark:bg-muted rounded-md bg-slate-100 px-2 py-0.5 text-xs'>
                 {cueCard.category}
@@ -84,12 +79,7 @@ export default function CueCard({
           )}
         >
           <div className='flex items-center gap-3'>
-            <Badge
-              variant='secondary'
-              className='border border-indigo-200 bg-indigo-50 text-xs text-indigo-700 dark:border-indigo-900 dark:bg-indigo-950/40 dark:text-indigo-300'
-            >
-              Part 3
-            </Badge>
+            <Badge variant='outline'>Part 3</Badge>
             <span className='text-foreground text-sm font-medium'>
               Discussion Questions
             </span>
