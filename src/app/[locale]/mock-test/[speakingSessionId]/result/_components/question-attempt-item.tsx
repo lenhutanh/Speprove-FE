@@ -3,10 +3,11 @@
 import { AttemptDetailTabs } from '@/app/[locale]/forecast/[forecastSlug]/practice/[questionId]/_components/attempt-detail-tabs'
 import { AudioPlayer } from '@/components/ui/audio-player'
 import { Badge } from '@/components/ui/badge'
-import { cn } from '@/lib/utils'
+import { BAND_SCORE_BADGE_VARIANTS } from '@/constants'
+import { cn, getBandScoreMeta } from '@/lib'
 import { useAttemptQuery } from '@/queries'
 import { SpeakingSessionAttempt } from '@/types'
-import { ChevronDown, ChevronUp, Loader2 } from 'lucide-react'
+import { AlertCircle, ChevronDown, ChevronUp, Loader2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 interface QuestionAttemptItemProps {
@@ -14,19 +15,6 @@ interface QuestionAttemptItemProps {
   index: number
   isOpen: boolean
   onOpenChange: (open: boolean) => void
-}
-
-function getScoreBadgeColor(score: number | null | undefined) {
-  if (score === null || score === undefined || score === 0) {
-    return 'border-border bg-muted/50 text-muted-foreground dark:border-border/50'
-  }
-  if (score >= 7.0) {
-    return 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/20 dark:text-emerald-400'
-  }
-  if (score >= 6.0) {
-    return 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/20 dark:text-amber-400'
-  }
-  return 'border-red-200 bg-red-50 text-red-700 dark:border-red-900/50 dark:bg-red-950/20 dark:text-red-400'
 }
 
 export function QuestionAttemptItem({
@@ -49,6 +37,7 @@ export function QuestionAttemptItem({
 
   const detail = detailRes?.data
   const score = attempt.scores?.overall
+  const bandScoreMeta = getBandScoreMeta(score)
 
   return (
     <div
@@ -81,8 +70,8 @@ export function QuestionAttemptItem({
             <Badge
               variant='outline'
               className={cn(
-                'rounded-md px-2 py-0.5 text-xs font-semibold whitespace-nowrap',
-                getScoreBadgeColor(score),
+                'rounded-md px-2 py-0.5 text-sm font-bold whitespace-nowrap',
+                BAND_SCORE_BADGE_VARIANTS[bandScoreMeta.variant],
               )}
             >
               Band {score ? score.toFixed(1) : '—'}
@@ -92,8 +81,18 @@ export function QuestionAttemptItem({
           {!isCompleted && (
             <Badge
               variant='outline'
-              className='rounded-md border-blue-200 bg-blue-50 px-2 py-0.5 text-xs font-semibold whitespace-nowrap text-blue-700 dark:border-blue-900/50 dark:bg-blue-950/20 dark:text-blue-400'
+              className={cn(
+                'gap-1 rounded-md px-2 py-0.5 text-sm font-normal whitespace-nowrap',
+                isFailed
+                  ? 'border-destructive text-destructive bg-transparent'
+                  : 'border-border text-muted-foreground bg-transparent',
+              )}
             >
+              {isFailed ? (
+                <AlertCircle className='size-3.5' />
+              ) : (
+                <Loader2 className='size-3.5 animate-spin' />
+              )}
               {isFailed ? t('status_failed') : t('status_processing')}
             </Badge>
           )}
@@ -109,7 +108,7 @@ export function QuestionAttemptItem({
       {isOpen && (
         <div className='border-border/60 bg-muted/5/40 border-t pb-2'>
           {attempt.audioUrl && (
-            <div className='border-border/50 bg-muted/15/30 border-b px-4 py-3 sm:px-5'>
+            <div className='bg-muted/15/30 px-4 py-3 sm:px-5'>
               <AudioPlayer url={attempt.audioUrl} variant='full' />
             </div>
           )}
