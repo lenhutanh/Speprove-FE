@@ -43,24 +43,77 @@ export type AttemptListItem = {
 
 export type AttemptResponseDto = AttemptListItem
 
+export type AttemptCriterionDetail = {
+  strengths?: string | null
+  limitations?: string | null
+}
+
+export type AttemptEvaluationIssue = {
+  spanText?: string
+  suggestion?: string
+  correction?: string
+  reason?: string
+  severity?: 'minor' | 'major'
+  startWordIndex?: number
+  endWordIndex?: number
+}
+
+export type AttemptCoherenceIssue = {
+  spanText?: string
+  reason?: string
+  severity?: 'minor' | 'major'
+}
+
+export type AttemptFluencyEvaluation = AttemptCriterionDetail & {
+  band?: number | null
+  deliveryBand?: number | null
+  coherenceBand?: number | null
+  coherenceIssues?: AttemptCoherenceIssue[]
+}
+
+export type AttemptPronunciationEvaluation = AttemptCriterionDetail & {
+  band?: number | null
+  confidence?: number | null
+}
+
+export type AttemptLexicalEvaluation = AttemptCriterionDetail & {
+  band?: number | null
+  issues?: AttemptEvaluationIssue[]
+}
+
+export type AttemptGrammarEvaluation = AttemptCriterionDetail & {
+  band?: number | null
+  issues?: AttemptEvaluationIssue[]
+}
+
 export type AttemptDetail = AttemptListItem & {
   transcript?: string
   evaluation?: {
-    fluency?: unknown
-    pronunciation?: unknown
-    lexical?: unknown
-    grammar?: unknown
     overall?: number | null
+    fluency?: AttemptFluencyEvaluation
+    pronunciation?: AttemptPronunciationEvaluation
+    lexical?: AttemptLexicalEvaluation
+    grammar?: AttemptGrammarEvaluation
     confidence?: number
     alignmentConfidence?: number
   }
   fluencyMetrics?: AttemptFluencyMetrics
   pronunciationScores?: Record<string, unknown>
   wordAssessments?: AttemptWordAssessment[]
+  question?: {
+    id: string
+    title?: string
+    content?: string
+  }
 }
 
 export type AttemptFluencyMetrics = Record<string, unknown> & {
+  speechDuration?: number
+  wordCount?: number
   speechRate?: number
+  pauseCount?: number
+  fillerCount?: number
+  fillers?: string[]
   repetitionCount?: number
   repetitions?: unknown[]
   longPauses?: AttemptPause[]
