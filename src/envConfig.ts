@@ -9,14 +9,14 @@ const configSchema = z.object({
 
   NEXT_PUBLIC_URL: z.string().url().optional(),
 
-  // NEXT_PUBLIC_API_GOOGLE_LOGIN_CALLBACK: z.string().optional(),
+  BACKEND_API_URL: z.string().url().optional(),
 })
 
 const configProject = configSchema.safeParse({
   NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
   NEXT_PUBLIC_API_ENDPOINT_URL: process.env.NEXT_PUBLIC_API_ENDPOINT_URL,
   NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL,
-  // NEXT_PUBLIC_API_GOOGLE_LOGIN_CALLBACK: process.env.NEXT_PUBLIC_API_GOOGLE_LOGIN_CALLBACK,
+  BACKEND_API_URL: process.env.BACKEND_API_URL,
 })
 
 if (!configProject.success) {
