@@ -51,13 +51,15 @@ export function AttemptDetailTabs({ detail }: { detail: AttemptDetail }) {
     grammar: detail.evaluation?.grammar,
   } satisfies Record<
     CriteriaTab,
-    { strengths?: string | null; limitations?: string | null } | undefined
+    { strengths?: string[] | null; limitations?: string[] | null } | undefined
   >
 
   const activeCriterion = criterionByTab[activeTab]
   const strengths = activeCriterion?.strengths
   const limitations = activeCriterion?.limitations
-  const hasReview = !!strengths || !!limitations
+  const hasReview =
+    (strengths != null && strengths.length > 0) ||
+    (limitations != null && limitations.length > 0)
 
   const renderRangeTokens = () => {
     const issues = activeTab === 'lexical' ? lexicalIssues : grammarIssues
@@ -199,24 +201,28 @@ export function AttemptDetailTabs({ detail }: { detail: AttemptDetail }) {
               <p className='text-muted-foreground mb-4 text-xs font-semibold tracking-wide uppercase'>
                 {tAttempt('feedback')}
               </p>
-              {strengths && (
+              {strengths && strengths.length > 0 && (
                 <div className='space-y-2'>
                   <p className='text-sm font-semibold tracking-wide text-emerald-600 dark:text-emerald-400'>
                     {tAttempt('strengths')}
                   </p>
-                  <p className='text-foreground text-sm leading-relaxed'>
-                    {strengths}
-                  </p>
+                  <ul className='text-foreground list-disc space-y-1 pl-5 text-sm leading-relaxed'>
+                    {strengths.map((str, idx) => (
+                      <li key={idx}>{str}</li>
+                    ))}
+                  </ul>
                 </div>
               )}
-              {limitations && (
+              {limitations && limitations.length > 0 && (
                 <div className='space-y-2'>
                   <p className='text-sm font-semibold tracking-wide text-amber-600 dark:text-amber-400'>
                     {tAttempt('limitations')}
                   </p>
-                  <p className='text-foreground text-sm leading-relaxed'>
-                    {limitations}
-                  </p>
+                  <ul className='text-foreground list-disc space-y-1 pl-5 text-sm leading-relaxed'>
+                    {limitations.map((lim, idx) => (
+                      <li key={idx}>{lim}</li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>

@@ -183,6 +183,11 @@ const apiConfig = defineApiConfig({
       method: 'GET',
       headers: baseHeader,
     },
+    retry: {
+      baseUrl: `${AppConstants.apiUrl}v1/attempt/:id/retry`,
+      method: 'POST',
+      headers: baseHeader,
+    },
   },
   voice: {
     getDefault: {

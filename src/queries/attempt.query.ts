@@ -86,3 +86,10 @@ export const useGetWordAudioQuery = ({
     enabled,
   })
 }
+
+export const useRetryAttemptMutation = () => {
+  return useMutation({
+    mutationKey: ['retry-attempt'],
+    mutationFn: (id: string) => attemptApiRequest.retry(id),
+  })
+}

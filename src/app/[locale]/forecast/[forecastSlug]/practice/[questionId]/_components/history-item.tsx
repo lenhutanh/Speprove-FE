@@ -14,8 +14,12 @@ import { AudioPlayer } from '@/components/ui/audio-player'
 import { Badge } from '@/components/ui/badge'
 import { BAND_SCORE_BADGE_VARIANTS } from '@/constants'
 import { cn, getBandScoreMeta } from '@/lib'
-import { useAttemptQuery, useToggleShareMutation } from '@/queries'
-import { AttemptListItem } from '@/types'
+import {
+  useAttemptQuery,
+  useRetryAttemptMutation,
+  useToggleShareMutation,
+} from '@/queries'
+import { AttemptDetail, AttemptListItem } from '@/types'
 import { useQueryClient } from '@tanstack/react-query'
 import { formatDistanceToNow } from 'date-fns'
 import { vi } from 'date-fns/locale'
@@ -27,9 +31,11 @@ import {
   Globe,
   Loader2,
   Lock,
+  RotateCcw,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { AttemptDetailTabs } from './attempt-detail-tabs'
 
 interface HistoryItemProps {
@@ -79,6 +85,8 @@ export default function HistoryItem({
   onOpenChange,
 }: HistoryItemProps) {
   const t = useTranslations('practice.history')
+  const tAttempt = useTranslations('practice.attempt')
+  const MAX_RETRY = 1
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
   const toggleShareMutation = useToggleShareMutation()
   const queryClient = useQueryClient()
@@ -86,6 +94,33 @@ export default function HistoryItem({
   const isCompleted = status === 2
   const isFailed = status === 3
   const statusMeta = getAttemptStatusMeta(status)
+  const isRefunded = !!history.refundedAt
+  const labelKey =
+    isFailed && isRefunded ? 'status_refunded' : statusMeta.labelKey
+  const retryMutation = useRetryAttemptMutation()
+
+  const handleRetry = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (retryMutation.isPending) return
+
+    toast.promise(
+      retryMutation.mutateAsync(history.id, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: [
+              'attempt-list',
+              { forecastQuestionId: history.forecastQuestionId },
+            ],
+          })
+        },
+      }),
+      {
+        loading: 'Đang gửi yêu cầu chấm lại...',
+        success: 'Đã gửi yêu cầu chấm lại thành công!',
+        error: 'Gửi yêu cầu chấm lại thất bại.',
+      },
+    )
+  }
   const { data: detailRes, isLoading: isDetailLoading } = useAttemptQuery(
     history.id,
     {
@@ -94,6 +129,10 @@ export default function HistoryItem({
   )
 
   const detail = detailRes?.data
+  const partialDetail: AttemptDetail = {
+    ...history,
+    transcript: history.transcriptPreview || '',
+  }
   const scores = detail?.scores ?? history.scores
   const { audioUrl, createdAt } = history
   const timeAgo = formatDistanceToNow(new Date(createdAt), {
@@ -159,14 +198,16 @@ export default function HistoryItem({
                 className={cn(
                   'gap-1 rounded-md px-2 py-0.5 text-sm font-normal whitespace-nowrap',
                   status === 3
-                    ? 'border-destructive text-destructive'
+                    ? isRefunded
+                      ? 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/20 dark:text-amber-400'
+                      : 'border-destructive text-destructive'
                     : 'border-border text-muted-foreground bg-transparent',
                 )}
               >
                 {status === 0 && <Clock className='size-3.5' />}
                 {status === 1 && <Loader2 className='size-3.5 animate-spin' />}
                 {status === 3 && <AlertCircle className='size-3.5' />}
-                {t(statusMeta.labelKey)}
+                {t(labelKey)}
               </Badge>
             )}
           </div>
@@ -174,7 +215,7 @@ export default function HistoryItem({
           <div className='hidden sm:block' />
 
           <div className='flex justify-end'>
-            {isCompleted && (
+            {isCompleted ? (
               <Badge
                 variant={history.isPublic ? 'default' : 'secondary'}
                 className='cursor-pointer gap-1 px-2 sm:px-2.5'
@@ -192,6 +233,23 @@ export default function HistoryItem({
                   {history.isPublic ? t('public') : t('private')}
                 </span>
               </Badge>
+            ) : (
+              isFailed &&
+              !isRefunded &&
+              (history.retryCount ?? 0) < MAX_RETRY && (
+                <button
+                  onClick={handleRetry}
+                  disabled={retryMutation.isPending}
+                  className='border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive flex shrink-0 items-center gap-1.5 rounded-md border bg-transparent px-2.5 py-1 text-xs font-semibold transition-colors disabled:opacity-50'
+                >
+                  {retryMutation.isPending ? (
+                    <Loader2 className='size-3.5 animate-spin' />
+                  ) : (
+                    <RotateCcw className='size-3.5' />
+                  )}
+                  <span>{t('retry')}</span>
+                </button>
+              )
             )}
           </div>
 
@@ -212,32 +270,16 @@ export default function HistoryItem({
               </div>
             )}
 
-            {!isCompleted && (
-              <div
-                className={cn(
-                  'px-3 py-3 text-sm',
-                  isFailed ? 'text-red-700' : 'text-muted-foreground',
-                )}
-              >
-                {t(statusMeta.labelKey)}
-              </div>
-            )}
-
-            {isCompleted && isDetailLoading && (
+            {isCompleted && isDetailLoading ? (
               <div className='text-muted-foreground px-3 py-3 text-sm'>
                 {t('loading_analysis')}
               </div>
-            )}
-
-            {isCompleted && !isDetailLoading && (
-              <>
-                {detail && <AttemptDetailTabs detail={detail} />}
-                {!detail && (
-                  <div className='text-muted-foreground px-3 py-3 text-sm'>
-                    {t('empty_detail')}
-                  </div>
-                )}
-              </>
+            ) : (
+              (isCompleted ? detail : partialDetail) && (
+                <AttemptDetailTabs
+                  detail={isCompleted ? detail! : partialDetail}
+                />
+              )
             )}
           </div>
         )}
