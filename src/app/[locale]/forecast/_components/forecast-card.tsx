@@ -4,12 +4,9 @@ import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import route from '@/routes'
 import { ForecastType } from '@/types'
-import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 
 export default function ForecastCard({ forecast }: { forecast: ForecastType }) {
-  const tCommon = useTranslations('common')
-
   return (
     <Link
       href={`${route.forecast}/${forecast.slug}.${forecast.id}`}
@@ -31,9 +28,6 @@ export default function ForecastCard({ forecast }: { forecast: ForecastType }) {
         <div className='line-clamp-2 text-sm leading-snug font-semibold'>
           {forecast?.name}
         </div>
-        <span className='text-muted-foreground text-xs'>
-          5 {tCommon('topics')}
-        </span>
       </div>
     </Link>
   )

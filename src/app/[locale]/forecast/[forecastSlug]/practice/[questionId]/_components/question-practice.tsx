@@ -3,18 +3,18 @@
 import { Breadcrumb } from '@/components/breadcrumb'
 import { Container } from '@/components/layout'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Tabs, ScrollableTabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ScrollableTabsList, Tabs, TabsTrigger } from '@/components/ui/tabs'
 import { HEADER_HEIGHT, PART2_CATEGORY_OPTIONS } from '@/constants'
+import { cn } from '@/lib/utils'
 import { useForecastQuestionQuery, useGetQuestionAudioQuery } from '@/queries'
 import route from '@/routes'
 import { useAppPreference } from '@/store'
+import { useTranslations } from 'next-intl'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import PracticeBottomBar from './practice-bottom-bar'
 import PracticeLeft, { LeftTab } from './practice-left'
 import PracticeRight from './practice-right'
-import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
 
 export default function QuestionPractice() {
   const { questionId } = useParams<{
@@ -24,11 +24,11 @@ export default function QuestionPractice() {
   const { voiceId } = useAppPreference()
   const tTabs = useTranslations('practice.tabs')
   const [leftTab, setLeftTab] = useState<LeftTab>('question')
-  const [rightTab, setRightTab] = useState<'ai' | 'leaderboard'>('ai')
-  const [mobileTab, setMobileTab] =
-    useState<LeftTab | 'ai' | 'leaderboard'>('question')
+  const [rightTab, setRightTab] = useState<'ai' | 'leaderboard'>('leaderboard')
+  const [mobileTab, setMobileTab] = useState<LeftTab | 'ai' | 'leaderboard'>(
+    'question',
+  )
   const [historyRefreshSignal, setHistoryRefreshSignal] = useState(0)
-
 
   const handleMobileTabChange = (tab: LeftTab | 'ai' | 'leaderboard') => {
     setMobileTab(tab)
@@ -102,7 +102,7 @@ export default function QuestionPractice() {
     { key: 'question', label: tTabs('question') },
     { key: 'vocabulary', label: tTabs('vocabulary') },
     { key: 'history', label: tTabs('history') },
-    { key: 'ai', label: tTabs('ai') },
+    // { key: 'ai', label: tTabs('ai') },
     { key: 'leaderboard', label: tTabs('leaderboard') },
   ]
 
@@ -118,25 +118,22 @@ export default function QuestionPractice() {
       <Tabs
         value={mobileTab}
         onValueChange={(val) => handleMobileTabChange(val as any)}
-        className='block lg:hidden flex-shrink-0 mb-3'
+        className='mb-3 block flex-shrink-0 lg:hidden'
       >
-      <ScrollableTabsList
-        variant='default'
-        containerClassName='w-full'
-      >
-        {mobileTabs.map((tab) => (
-          <TabsTrigger
-            key={tab.key}
-            value={tab.key}
-            className='px-4 py-1.5 text-sm font-medium cursor-pointer'
-          >
-            {tab.label}
-          </TabsTrigger>
-        ))}
-      </ScrollableTabsList>
+        <ScrollableTabsList variant='default' containerClassName='w-full'>
+          {mobileTabs.map((tab) => (
+            <TabsTrigger
+              key={tab.key}
+              value={tab.key}
+              className='cursor-pointer px-4 py-1.5 text-sm font-medium'
+            >
+              {tab.label}
+            </TabsTrigger>
+          ))}
+        </ScrollableTabsList>
       </Tabs>
 
-      <div className='flex flex-1 flex-col lg:flex-row gap-2 overflow-hidden'>
+      <div className='flex flex-1 flex-col gap-2 overflow-hidden lg:flex-row'>
         <PracticeLeft
           question={question}
           audioUrl={questionAudioUrl}
@@ -145,7 +142,7 @@ export default function QuestionPractice() {
           onActiveChange={handleLeftTabChange}
           refreshSignal={historyRefreshSignal}
           className={cn(
-            'flex flex-col h-full lg:w-[55%] w-full',
+            'flex h-full w-full flex-col lg:w-[60%]',
             ['question', 'vocabulary', 'history'].includes(mobileTab)
               ? 'flex'
               : 'hidden lg:flex',
@@ -156,7 +153,7 @@ export default function QuestionPractice() {
           active={rightTab}
           onActiveChange={handleRightTabChange}
           className={cn(
-            'flex flex-col h-full lg:flex-1 w-full',
+            'flex h-full w-full flex-col lg:flex-1',
             ['ai', 'leaderboard'].includes(mobileTab)
               ? 'flex'
               : 'hidden lg:flex',
@@ -187,7 +184,7 @@ function PracticeSkeleton() {
       <div className='flex flex-1 flex-col gap-2 overflow-hidden'>
         <Skeleton className='h-8 w-2/3 rounded-lg' />
         <div className='flex flex-1 gap-2 overflow-hidden'>
-          <div className='flex w-[55%] flex-col gap-2'>
+          <div className='flex w-[60%] flex-col gap-2'>
             <Skeleton className='h-9 rounded-xl' />
             <Skeleton className='h-full rounded-xl' />
           </div>

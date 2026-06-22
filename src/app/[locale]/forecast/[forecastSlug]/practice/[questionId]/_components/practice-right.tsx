@@ -1,7 +1,7 @@
 'use client'
 
+import { ScrollableTabsList, Tabs, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
-import { Tabs, ScrollableTabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ForecastQuestionType } from '@/types'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
@@ -27,7 +27,7 @@ export default function PracticeRight({
   const tAI = useTranslations('practice.ai')
   const [loading, setLoading] = useState(false)
   const tabs: { key: RightTab; label: string }[] = [
-    { key: 'ai', label: tTabs('ai') },
+    // { key: 'ai', label: tTabs('ai') },
     { key: 'leaderboard', label: tTabs('leaderboard') },
   ]
   const aiOptions = [
@@ -44,7 +44,7 @@ export default function PracticeRight({
     <Tabs
       value={active}
       onValueChange={(val) => onActiveChange(val as RightTab)}
-      className={cn('flex flex-col h-full', className)}
+      className={cn('flex h-full flex-col', className)}
     >
       <ScrollableTabsList
         variant='default'
@@ -54,7 +54,7 @@ export default function PracticeRight({
           <TabsTrigger
             key={tab.key}
             value={tab.key}
-            className='px-4 py-1.5 text-sm font-medium cursor-pointer'
+            className='cursor-pointer px-4 py-1.5 text-sm font-medium'
           >
             {tab.label}
           </TabsTrigger>

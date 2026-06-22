@@ -383,6 +383,8 @@
       "strengths": "Điểm tốt",
       "limitations": "Điểm cần cải thiện",
       "feedback": "Nhận xét",
+      "minor_error": "Lỗi nhẹ",
+      "major_error": "Lỗi nặng",
       "popover": {
         "expected": "Mẫu",
         "spoken": "Bạn nói",

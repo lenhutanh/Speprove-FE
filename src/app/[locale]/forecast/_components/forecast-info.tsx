@@ -1,7 +1,6 @@
 'use client'
 
 import { forecastThumbnail } from '@/assets'
-import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { ForecastType } from '@/types'
 import { BookOpen, CalendarDays, Layers, TrendingUp } from 'lucide-react'
@@ -14,17 +13,8 @@ interface ForecastInfoProps {
 
 export default function ForecastInfo({ forecast }: ForecastInfoProps) {
   const locale = useLocale()
-  const t = useTranslations('forecast')
   const tCommon = useTranslations('common')
-  const {
-    name,
-    description,
-    thumbnail,
-    validFrom,
-    validTo,
-    isActive = true,
-    stats,
-  } = forecast
+  const { name, description, thumbnail, validFrom, validTo, stats } = forecast
 
   const progressPct =
     stats && stats.totalQuestions > 0
@@ -53,24 +43,6 @@ export default function ForecastInfo({ forecast }: ForecastInfoProps) {
 
         {/* Info bên phải */}
         <div className='flex min-w-0 flex-1 flex-col items-center space-y-1.5 sm:items-start'>
-          <Badge
-            variant='secondary'
-            className={cn(
-              'gap-1.5 text-xs font-medium',
-              isActive
-                ? 'border border-emerald-200 bg-emerald-50 text-emerald-700'
-                : 'bg-muted text-muted-foreground',
-            )}
-          >
-            <span
-              className={cn(
-                'h-1.5 w-1.5 rounded-full',
-                isActive ? 'bg-emerald-500' : 'bg-muted-foreground',
-              )}
-            />
-            {isActive ? t('active') : t('expired')}
-          </Badge>
-
           <h1 className='text-foreground text-2xl leading-snug font-semibold'>
             {name}
           </h1>
