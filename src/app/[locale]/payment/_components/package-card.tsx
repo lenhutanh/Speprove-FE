@@ -1,7 +1,8 @@
+import { logo } from '@/assets'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { CreditPackage } from '@/types'
-import { useTranslations } from 'next-intl'
+import Image from 'next/image'
 
 interface PackageCardProps {
   pkg: CreditPackage
@@ -10,8 +11,6 @@ interface PackageCardProps {
 }
 
 export function PackageCard({ pkg, selected, onSelect }: PackageCardProps) {
-  const tCommon = useTranslations('common')
-
   return (
     <button
       onClick={() => onSelect(pkg)}
@@ -41,11 +40,12 @@ export function PackageCard({ pkg, selected, onSelect }: PackageCardProps) {
       </span>
       <span
         className={cn(
-          'mt-0.5 text-sm',
-          selected ? 'text-primary/70' : 'text-muted-foreground',
+          'mt-1.5 flex items-center gap-1.5 text-sm',
+          selected ? 'text-primary/80' : 'text-muted-foreground',
         )}
       >
-        {pkg.points} {tCommon('points')}
+        <Image src={logo} alt='Points' width={14} height={14} />
+        <span className='font-medium'>{pkg.points}</span>
       </span>
     </button>
   )

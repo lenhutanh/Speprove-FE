@@ -1,11 +1,13 @@
 'use client'
 
+import { logo } from '@/assets'
 import { AudioPlayer } from '@/components/ui/audio-player'
 import { Badge } from '@/components/ui/badge'
 import { ScrollableTabsList, Tabs, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
 import { ForecastQuestionType } from '@/types'
 import { useTranslations } from 'next-intl'
+import Image from 'next/image'
 import PracticeHistory from './practice-history'
 import VocabularyTab from './vocabulary-tab'
 
@@ -79,6 +81,12 @@ export default function PracticeLeft({
   )
 }
 
+const PRACTICE_PRICING: Record<number, number> = {
+  1: 5,
+  2: 20,
+  3: 10,
+}
+
 function QuestionTab({
   question,
   audioUrl,
@@ -89,9 +97,25 @@ function QuestionTab({
   isAudioLoading?: boolean
 }) {
   const t = useTranslations('practice.question')
+  const pointsCost = PRACTICE_PRICING[question.part] || 0
 
   return (
-    <div className='h-full overflow-y-auto p-5'>
+    <div className='h-full space-y-3.5 overflow-y-auto p-5'>
+      {/* Row 1: Part and Points badge (with logo icon, no text) */}
+      <div className='flex items-center gap-2'>
+        <Badge variant='outline' className='shrink-0 text-xs'>
+          Part {question.part}
+        </Badge>
+        <Badge
+          variant='outline'
+          className='border-border bg-muted/30 text-foreground flex items-center gap-1.5 px-2 py-0.5 text-xs font-semibold'
+        >
+          <Image src={logo} alt='Points' width={12} height={12} />
+          <span className='tabular-nums'>{pointsCost}</span>
+        </Badge>
+      </div>
+
+      {/* Row 2: Audio Player + Question Content (styled exactly as before) */}
       <div className='flex items-start gap-3 sm:items-center'>
         <div className='mt-0.5 shrink-0 sm:mt-0'>
           <AudioPlayer
@@ -101,10 +125,7 @@ function QuestionTab({
             variant='minimal'
           />
         </div>
-        <div className='flex flex-1 flex-wrap items-center gap-2'>
-          <Badge variant='outline' className='shrink-0 text-xs'>
-            Part {question.part}
-          </Badge>
+        <div className='flex-1'>
           <h2 className='text-foreground text-base leading-relaxed font-semibold'>
             {question.content}
           </h2>
