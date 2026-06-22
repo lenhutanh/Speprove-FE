@@ -1,5 +1,6 @@
 'use client'
 
+import { logo } from '@/assets'
 import { Container } from '@/components/layout'
 import { Button } from '@/components/ui/button'
 import {
@@ -29,6 +30,7 @@ import { useAppLoadingStore, useAuthStore } from '@/store'
 import { VoiceType } from '@/types'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
+import Image from 'next/image'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import VoiceSelector from './voice-selector'
@@ -41,10 +43,10 @@ export interface ExaminerOption {
 }
 
 export const SPEAKING_PRICING: Record<SpeakingSessionType, number> = {
-  mock_p1: 3,
-  mock_p2: 5,
-  mock_p3: 5,
-  full_test: 10,
+  mock_p1: 40,
+  mock_p2: 20,
+  mock_p3: 50,
+  full_test: 100,
 }
 
 interface ModeConfig {
@@ -56,7 +58,7 @@ interface ModeConfig {
 const MODES: ModeConfig[] = [
   {
     id: 'mock_p1',
-    questions: '4–6',
+    questions: '9',
     duration: '4–5',
   },
   {
@@ -66,12 +68,12 @@ const MODES: ModeConfig[] = [
   },
   {
     id: 'mock_p3',
-    questions: '4–5',
+    questions: '4',
     duration: '4–5',
   },
   {
     id: 'full_test',
-    questions: '10–14',
+    questions: '14',
     duration: '11–14',
   },
 ]
@@ -190,12 +192,9 @@ export default function MockTest() {
         <InfoCard
           label={t('info_labels.cost')}
           value={
-            <span className='flex items-baseline gap-1.5'>
-              <span className='inline-block h-2.5 w-2.5 translate-y-[-1px] rounded-full bg-amber-400' />
+            <span className='flex items-center gap-1.5'>
+              <Image src={logo} alt='Points' width={20} height={20} />
               <span>{cost}</span>
-              <span className='text-muted-foreground text-base font-normal'>
-                {tCommon('points')}
-              </span>
             </span>
           }
         />
