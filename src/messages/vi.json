@@ -53,7 +53,68 @@
   },
   "home": {
     "title": "Trang chủ",
-    "description": "Nền tảng luyện thi IELTS Speaking với AI"
+    "description": "Nền tảng luyện thi IELTS Speaking với AI",
+    "hero": {
+      "title": "Luyện IELTS Speaking hiệu quả hơn cùng AI",
+      "subtitle": "Nền tảng tự luyện nói IELTS Speaking theo sát bộ đề Forecast thực tế. Hệ thống AI phân tích độ trôi chảy, phát âm chuẩn IPA và chỉ rõ lỗi từ vựng, ngữ pháp giúp bạn cải thiện ngay lập tức.",
+      "cta_practice": "Luyện tập ngay",
+      "cta_mock": "Thi thử Mock Test"
+    },
+    "stats": {
+      "analyzed_answers": "50,000+ Câu trả lời đã phân tích",
+      "criteria": "Chấm điểm theo 4 tiêu chí IELTS",
+      "forecast_sync": "Cập nhật theo xu hướng đề thi thật"
+    },
+    "features": {
+      "title": "Tính năng nổi bật",
+      "forecast": {
+        "title": "Forecast Topics",
+        "desc": "Luyện tập trực tiếp với danh sách câu hỏi Part 1, 2 & 3 cập nhật liên tục từ đề thi thật."
+      },
+      "mock": {
+        "title": "Simulated Mock Test",
+        "desc": "Phòng thi thử giả lập đầy đủ 3 part, có audio câu hỏi từ giám khảo AI và thời gian chuẩn bị (cho Part 2) tương tự như khi thi thật."
+      },
+      "diagnostic": {
+        "title": "Detailed AI Diagnostic",
+        "desc": "Nhận diện cụ thể lỗi phát âm sai IPA, lỗi từ vựng/ngữ pháp (lỗi nhẹ/lỗi nặng) kèm cách sửa chi tiết."
+      }
+    },
+    "how_it_works": {
+      "title": "Quy trình hoạt động",
+      "forecast_tab": "Luyện tập theo Forecast",
+      "mock_tab": "Thi thử Mock Test",
+      "forecast": {
+        "step1_title": "Chọn đề & Chủ đề",
+        "step1_desc": "Lựa chọn bộ đề Forecast hoạt động và chủ đề muốn luyện tập.",
+        "step2_title": "Chọn câu hỏi",
+        "step2_desc": "Lựa chọn câu hỏi cụ thể trong Part 1, Part 2, hoặc Part 3.",
+        "step3_title": "Ghi âm trả lời",
+        "step3_desc": "Nói và thu âm trực tiếp câu trả lời của bạn.",
+        "step4_title": "Nhận kết quả AI",
+        "step4_desc": "AI phân tích chi tiết và đề xuất sửa lỗi sau 1-2 phút."
+      },
+      "mock": {
+        "step1_title": "Chọn chế độ thi",
+        "step1_desc": "Lựa chọn làm bài thi thử Part 1, Part 2, Part 3 hoặc Full Test.",
+        "step2_title": "Giao tiếp với AI",
+        "step2_desc": "Nghe giám khảo AI đọc câu hỏi và trả lời (có chuẩn bị ở Part 2).",
+        "step3_title": "Xem đánh giá tổng thể",
+        "step3_desc": "Nhận điểm số Overall Band và feedback chi tiết sau khi nộp bài."
+      }
+    },
+    "pricing": {
+      "title": "Chọn gói nạp phù hợp để bắt đầu ôn luyện",
+      "pkg1": "Gói trải nghiệm, phù hợp để làm quen hệ thống",
+      "pkg2": "Gói cơ bản, thích hợp luyện tập nhẹ nhàng hàng tuần",
+      "pkg3": "Gói phổ biến, tối ưu cho nhu cầu ôn luyện liên tục",
+      "pkg4": "Gói tiết kiệm nhất, dành cho giai đoạn ôn thi chuyên sâu",
+      "points_short": "{points} điểm"
+    },
+    "final_cta": {
+      "title": "Sẵn sàng nâng band IELTS Speaking của bạn?",
+      "btn": "Bắt đầu luyện tập ngay"
+    }
   },
   "auth": {
     "login": {
@@ -96,6 +157,17 @@
       "dark": "Giao diện tối",
       "system": "Theo hệ thống"
     }
+  },
+  "footer": {
+    "about": "Nền tảng tự luyện nói IELTS Speaking hàng đầu với công nghệ AI chấm điểm chi tiết và bộ đề Forecast cập nhật liên tục.",
+    "product": "Sản phẩm",
+    "support": "Hỗ trợ",
+    "legal": "Pháp lý",
+    "terms": "Điều khoản dịch vụ",
+    "privacy": "Chính sách bảo mật",
+    "instructions": "Hướng dẫn sử dụng",
+    "contact": "Liên hệ hỗ trợ",
+    "copyright": "© {year} Speprove. Bảo lưu mọi quyền."
   },
   "mock_test": {
     "setup": {
