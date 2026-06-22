@@ -45,6 +45,10 @@ const attemptApiRequest = {
         params,
       },
     ),
+  retry: (id: string) =>
+    http.post<ApiResponse<AttemptResponseDto>>(apiConfig.attempt.retry, {
+      pathParams: { id },
+    }),
 }
 
 export default attemptApiRequest

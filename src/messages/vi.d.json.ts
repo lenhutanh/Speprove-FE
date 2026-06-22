@@ -322,6 +322,8 @@ declare const messages: {
       status_processing: 'Đang chấm'
       status_completed: 'Hoàn thành'
       status_failed: 'Chấm lỗi'
+      status_refunded: 'Đã hoàn điểm'
+      retry: 'Thử lại'
       loading_analysis: 'Đang tải phân tích...'
       empty_detail: 'Chưa có dữ liệu phân tích chi tiết.'
       make_private_title: 'Chuyển sang riêng tư?'

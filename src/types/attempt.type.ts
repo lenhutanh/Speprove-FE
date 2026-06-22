@@ -19,6 +19,8 @@ export type AttemptListItem = {
   order: number
   status: number
   isPublic: boolean
+  retryCount?: number
+  refundedAt?: string
   analysisProfile?: string
   analysisVersion?: string
   transcriptPreview?: string
@@ -44,8 +46,8 @@ export type AttemptListItem = {
 export type AttemptResponseDto = AttemptListItem
 
 export type AttemptCriterionDetail = {
-  strengths?: string | null
-  limitations?: string | null
+  strengths?: string[] | null
+  limitations?: string[] | null
 }
 
 export type AttemptEvaluationIssue = {
@@ -66,9 +68,6 @@ export type AttemptCoherenceIssue = {
 
 export type AttemptFluencyEvaluation = AttemptCriterionDetail & {
   band?: number | null
-  deliveryBand?: number | null
-  coherenceBand?: number | null
-  coherenceIssues?: AttemptCoherenceIssue[]
 }
 
 export type AttemptPronunciationEvaluation = AttemptCriterionDetail & {
