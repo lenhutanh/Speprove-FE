@@ -40,13 +40,28 @@ export function useRecorder() {
 
       const { deviceId } = useAppPreference.getState()
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: deviceId ? { deviceId: { exact: deviceId } } : true,
-      })
+      let stream: MediaStream
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: deviceId ? { deviceId: { exact: deviceId } } : true,
+        })
+      } catch (err) {
+        if (deviceId) {
+          // Fallback if deviceId constraint is not satisfied or invalid on Safari
+          stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+        } else {
+          throw err
+        }
+      }
       streamRef.current = stream
 
-      const audioCtx = new AudioContext()
+      const AudioContextClass =
+        window.AudioContext || (window as any).webkitAudioContext
+      const audioCtx = new AudioContextClass()
       audioCtxRef.current = audioCtx
+      if (audioCtx.state === 'suspended') {
+        await audioCtx.resume()
+      }
       const source = audioCtx.createMediaStreamSource(stream)
       const analyserNode = audioCtx.createAnalyser()
       analyserNode.fftSize = 256

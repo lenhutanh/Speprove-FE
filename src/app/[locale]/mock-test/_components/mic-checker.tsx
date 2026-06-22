@@ -14,6 +14,25 @@ import { useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
+function getSupportedMimeType() {
+  const types = [
+    'audio/webm;codecs=opus',
+    'audio/webm',
+    'audio/ogg;codecs=opus',
+    'audio/mp4',
+    'audio/aac',
+  ]
+  for (const type of types) {
+    if (
+      typeof MediaRecorder !== 'undefined' &&
+      MediaRecorder.isTypeSupported(type)
+    ) {
+      return type
+    }
+  }
+  return ''
+}
+
 interface MicCheckerProps {
   onDeviceChange?: (deviceId: string) => void
   className?: string
@@ -70,13 +89,27 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
 
   async function startRecording() {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: deviceId ? { deviceId: { exact: deviceId } } : true,
-      })
+      let stream: MediaStream
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: deviceId ? { deviceId: { exact: deviceId } } : true,
+        })
+      } catch (err) {
+        if (deviceId) {
+          stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+        } else {
+          throw err
+        }
+      }
       streamRef.current = stream
 
-      const ctx = new AudioContext()
+      const AudioContextClass =
+        window.AudioContext || (window as any).webkitAudioContext
+      const ctx = new AudioContextClass()
       audioCtxRef.current = ctx
+      if (ctx.state === 'suspended') {
+        await ctx.resume()
+      }
       const analyser = ctx.createAnalyser()
       analyser.fftSize = 256
       const data = new Uint8Array(analyser.frequencyBinCount)
@@ -91,10 +124,16 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
       tick()
 
       chunksRef.current = []
-      const recorder = new MediaRecorder(stream)
+      const mimeType = getSupportedMimeType()
+      const recorder = new MediaRecorder(
+        stream,
+        mimeType ? { mimeType } : undefined,
+      )
       recorder.ondataavailable = (e) => chunksRef.current.push(e.data)
       recorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
+        const blob = new Blob(chunksRef.current, {
+          type: recorder.mimeType || 'audio/webm',
+        })
         setAudioUrl((prev) => {
           if (prev) URL.revokeObjectURL(prev)
           return URL.createObjectURL(blob)
@@ -108,7 +147,8 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
         if (prev) URL.revokeObjectURL(prev)
         return undefined
       })
-    } catch {
+    } catch (err) {
+      console.error('Error starting mic recording:', err)
       toast.error(t('access_mic_failed'))
     }
   }
