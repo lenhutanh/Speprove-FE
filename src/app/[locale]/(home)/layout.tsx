@@ -1,5 +1,5 @@
+import { Footer } from '@/components/app/footer'
 import { Header } from '@/components/app/header'
-import { Container } from '@/components/layout'
 
 export default function HomeLayout({
   children,
@@ -7,9 +7,10 @@ export default function HomeLayout({
   children: React.ReactNode
 }) {
   return (
-    <>
+    <div className='flex min-h-screen flex-col'>
       <Header />
-      <Container>{children}</Container>
-    </>
+      <main className='flex flex-1 flex-col'>{children}</main>
+      <Footer />
+    </div>
   )
 }

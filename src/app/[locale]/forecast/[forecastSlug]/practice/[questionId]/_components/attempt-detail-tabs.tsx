@@ -185,9 +185,25 @@ export function AttemptDetailTabs({ detail }: { detail: AttemptDetail }) {
         )} */}
 
         <div className='border-border border-t p-4'>
-          <p className='text-muted-foreground mb-2 text-xs font-medium tracking-wide uppercase'>
-            {tAttempt('transcript')}
-          </p>
+          <div className='mb-2 flex flex-wrap items-center justify-between gap-2'>
+            <p className='text-muted-foreground text-xs font-medium tracking-wide uppercase'>
+              {tAttempt('transcript')}
+            </p>
+            <div className='flex items-center gap-4 text-xs'>
+              <div className='flex items-center gap-1.5'>
+                <span className='h-2.5 w-2.5 rounded-full bg-amber-400 dark:bg-amber-500' />
+                <span className='text-muted-foreground'>
+                  {tAttempt('minor_error')}
+                </span>
+              </div>
+              <div className='flex items-center gap-1.5'>
+                <span className='h-2.5 w-2.5 rounded-full bg-red-400 dark:bg-red-500' />
+                <span className='text-muted-foreground'>
+                  {tAttempt('major_error')}
+                </span>
+              </div>
+            </div>
+          </div>
           <div className='text-foreground text-sm leading-[1.8]'>
             {activeTab === 'lexical' || activeTab === 'grammar'
               ? renderRangeTokens()
