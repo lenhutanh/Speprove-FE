@@ -53,8 +53,15 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
   const audioCtxRef = useRef<AudioContext | null>(null)
   const volBarRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then((all) => {
+  const loadDevices = async (requestPermission = false) => {
+    try {
+      if (requestPermission) {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        })
+        stream.getTracks().forEach((track) => track.stop())
+      }
+      const all = await navigator.mediaDevices.enumerateDevices()
       const mics = all.filter(
         (d) => d.kind === 'audioinput' && d.deviceId !== '',
       )
@@ -63,7 +70,25 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
       if (!hasSavedDevice && mics[0]) {
         setDeviceId(mics[0].deviceId)
       }
-    })
+      return mics
+    } catch (err) {
+      console.error('Error loading devices:', err)
+      try {
+        const all = await navigator.mediaDevices.enumerateDevices()
+        const mics = all.filter(
+          (d) => d.kind === 'audioinput' && d.deviceId !== '',
+        )
+        setDevices(mics)
+        return mics
+      } catch {
+        return []
+      }
+    }
+  }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadDevices(true)
 
     return () => stopStream()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -160,6 +185,23 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
     setRecording(false)
   }
 
+  async function handleRecordClick() {
+    if (recording) {
+      stopRecording()
+      return
+    }
+
+    if (devices.length === 0) {
+      const mics = await loadDevices(true)
+      if (mics.length === 0) {
+        toast.error(t('access_mic_failed'))
+      }
+      return
+    }
+
+    startRecording()
+  }
+
   function handleDeviceChange(id: string) {
     setDeviceId(id)
     onDeviceChange?.(id)
@@ -195,7 +237,7 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
         <Button
           size='sm'
           variant={recording ? 'destructive' : 'outline'}
-          onClick={recording ? stopRecording : startRecording}
+          onClick={handleRecordClick}
           className='w-18'
         >
           {recording ? tCommon('stop') : t('record')}
