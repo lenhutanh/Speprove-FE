@@ -1,37 +1,28 @@
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
-import { useCountDown, useNavigate } from '@/hooks'
-import route from '@/routes'
+import { useNavigate } from '@/hooks'
 import { CheckCircle2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useEffect } from 'react'
 
 interface SuccessDialogProps {
   open: boolean
   points: number
   onClose: () => void
+  returnUrl: string
 }
 
-const AUTO_REDIRECT_SECONDS = 5
-
-export function SuccessDialog({ open, points, onClose }: SuccessDialogProps) {
+export function SuccessDialog({
+  open,
+  points,
+  onClose,
+  returnUrl,
+}: SuccessDialogProps) {
   const t = useTranslations('payment')
   const navigate = useNavigate()
 
-  const { remaining, isExpired } = useCountDown(
-    open ? AUTO_REDIRECT_SECONDS : 0,
-  )
-
-  useEffect(() => {
-    if (open && isExpired) {
-      onClose()
-      navigate(route.forecast)
-    }
-  }, [open, isExpired])
-
-  const handlePractice = () => {
+  const handleContinue = () => {
     onClose()
-    navigate(route.forecast)
+    navigate(returnUrl)
   }
 
   return (
@@ -52,12 +43,12 @@ export function SuccessDialog({ open, points, onClose }: SuccessDialogProps) {
           </div>
 
           <div className='w-full space-y-2'>
-            <Button className='w-full' onClick={handlePractice}>
-              {t('start_practice')}
+            <Button className='w-full' onClick={handleContinue}>
+              {t('continue_experience')}
             </Button>
-            <p className='text-muted-foreground text-xs'>
-              {t('auto_redirect', { remaining: String(remaining) })}
-            </p>
+            <Button variant='outline' className='w-full' onClick={onClose}>
+              {t('close')}
+            </Button>
           </div>
         </div>
       </DialogContent>
