@@ -332,6 +332,8 @@
     "success_title": "Nạp điểm thành công",
     "success_message": "+{points} điểm đã được cộng vào tài khoản",
     "start_practice": "Bắt đầu luyện tập",
+    "continue_experience": "Tiếp tục trải nghiệm",
+    "close": "Đóng",
     "auto_redirect": "Tự động chuyển hướng sau {remaining} giây...",
     "methods": {
       "bank_transfer": "Chuyển khoản ngân hàng"

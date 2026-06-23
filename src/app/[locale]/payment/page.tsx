@@ -3,13 +3,15 @@
 import { Container } from '@/components/layout'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { PAYMENT_METHOD } from '@/constants'
+import { HEADER_HEIGHT, PAYMENT_METHOD } from '@/constants'
 import { useCreditPackageListQuery } from '@/queries'
 import { useCreatePaymentMutation } from '@/queries/payment.query'
+import route from '@/routes'
 import { useAppLoadingStore } from '@/store'
 import { CreditPackage, PaymentResponse } from '@/types'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
+import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { PackageCard } from './_components/package-card'
@@ -25,6 +27,8 @@ export default function PaymentPage() {
   const createPaymentMutation = useCreatePaymentMutation()
   const { withLoading } = useAppLoadingStore()
   const packages = data?.data || []
+  const searchParams = useSearchParams()
+  const returnUrl = searchParams.get('returnUrl') || route.home
 
   const [selectedPackage, setSelectedPackage] = useState<CreditPackage | null>(
     null,
@@ -83,7 +87,11 @@ export default function PaymentPage() {
   }
 
   return (
-    <Container size='medium' className='bg-background min-h-screen py-6'>
+    <Container
+      size='medium'
+      className='bg-background py-6'
+      style={{ minHeight: `calc(100vh - ${HEADER_HEIGHT}px)` }}
+    >
       <div className='mb-8'>
         <h1 className='text-foreground text-2xl font-bold'>{t('title')}</h1>
         <p className='text-muted-foreground mt-1 text-sm'>{t('subtitle')}</p>
@@ -94,7 +102,7 @@ export default function PaymentPage() {
           <p className='text-foreground mb-3 text-sm font-medium'>
             {t('select_package')}
           </p>
-          <div className='grid grid-cols-3 gap-2'>
+          <div className='grid grid-cols-2 gap-2'>
             {packages.map((pkg) => (
               <PackageCard
                 key={pkg._id}
@@ -136,19 +144,25 @@ export default function PaymentPage() {
           {createPaymentMutation.isPending ? t('creating_qr') : t('create_qr')}
         </Button>
       </div>
-      <QRModal
-        open={qrOpen}
-        onClose={handleCloseQR}
-        payment={payment}
-        onSuccess={handleSuccess}
-        onFailed={handleFailed}
-      />
 
-      <SuccessDialog
-        open={successOpen}
-        points={successData.points}
-        onClose={() => setSuccessOpen(false)}
-      />
+      {payment && (
+        <QRModal
+          open={qrOpen}
+          onClose={handleCloseQR}
+          payment={payment}
+          onSuccess={handleSuccess}
+          onFailed={handleFailed}
+        />
+      )}
+
+      {successOpen && (
+        <SuccessDialog
+          open={successOpen}
+          points={successData.points}
+          onClose={() => setSuccessOpen(false)}
+          returnUrl={returnUrl}
+        />
+      )}
     </Container>
   )
 }

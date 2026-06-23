@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Link } from '@/i18n/navigation'
+import { Link, usePathname } from '@/i18n/navigation'
 import { useLogoutMutation } from '@/queries'
 import route from '@/routes'
 import { useAuthStore } from '@/store'
@@ -16,6 +16,7 @@ export default function AccountDropdown() {
   const common = useTranslations('common')
   const { mutate } = useLogoutMutation()
   const { user } = useAuthStore()
+  const pathname = usePathname()
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className='cursor-pointer self-center'>
@@ -45,8 +46,11 @@ export default function AccountDropdown() {
             </span>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href={route.payment} className='font-medium'>
+        <DropdownMenuItem asChild>
+          <Link
+            href={`${route.payment}?returnUrl=${encodeURIComponent(pathname)}`}
+            className='w-full cursor-pointer font-medium'
+          >
             {common('recharge')}
           </Link>
         </DropdownMenuItem>

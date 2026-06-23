@@ -1,3 +1,4 @@
+import { logo } from '@/assets'
 import {
   Dialog,
   DialogContent,
@@ -12,8 +13,9 @@ import { usePaymentQuery } from '@/queries'
 import { PaymentResponse } from '@/types'
 import { Clock, Copy } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import Image from 'next/image'
 import { QRCodeSVG } from 'qrcode.react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 interface QRModalProps {
@@ -24,8 +26,6 @@ interface QRModalProps {
   onFailed: () => void
 }
 
-const PAYMENT_EXPIRE_SECONDS = 15 * 60
-
 export function QRModal({
   open,
   onClose,
@@ -34,7 +34,14 @@ export function QRModal({
   onFailed,
 }: QRModalProps) {
   const t = useTranslations('payment')
-  const { display, isExpired } = useCountDown(open ? PAYMENT_EXPIRE_SECONDS : 0)
+  const [initialSeconds] = useState(() => {
+    if (!payment?.expiredAt) return 0
+    const expireTime = new Date(payment.expiredAt).getTime()
+    const diff = Math.floor((expireTime - Date.now()) / 1000)
+    return diff > 0 ? diff : 0
+  })
+
+  const { display, isExpired } = useCountDown(open ? initialSeconds : 0)
 
   const paymentQuery = usePaymentQuery(payment?.id ?? '', {
     enabled: !!payment?.id && open && !isExpired,
@@ -62,11 +69,10 @@ export function QRModal({
     if (!payment) return
 
     if (isExpired) {
-      onFailed()
       onClose()
       toast.error(t('qr_expired_error'))
     }
-  }, [isExpired, payment, onFailed, onClose, t])
+  }, [isExpired, payment, onClose, t])
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text)
@@ -81,14 +87,17 @@ export function QRModal({
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className='w-full gap-0 overflow-hidden p-0 sm:max-w-md'>
         <DialogHeader className='border-b px-5 pt-5 pb-4'>
-          <DialogTitle className='text-base font-semibold'>
+          <DialogTitle className='text-xl font-semibold'>
             {t('dialog_title')}
           </DialogTitle>
-          <p className='text-muted-foreground mt-1 text-sm'>
+          <div className='mt-1 flex items-center justify-center text-sm sm:justify-start'>
             {payment.amount.toLocaleString('vi-VN')}đ
             <span className='text-muted-foreground/40 mx-1.5'>·</span>
-            {payment.description}
-          </p>
+            <span className='flex items-center gap-1.5 text-sm'>
+              <Image src={logo} alt='Points' width={14} height={14} />
+              <span className='font-medium'>{payment.points}</span>
+            </span>
+          </div>
         </DialogHeader>
 
         <div className='space-y-4 px-5 py-4'>
@@ -116,7 +125,7 @@ export function QRModal({
 
           {/* Bank info */}
           <div className='space-y-1'>
-            <p className='text-muted-foreground mb-2 text-xs font-medium'>
+            <p className='text-muted-foreground mb-2 text-sm font-medium'>
               {t('transfer_info')}
             </p>
             <InfoRow label={t('bank')} value={bankName} />
@@ -167,9 +176,9 @@ interface InfoRowProps {
 function InfoRow({ label, value, onCopy, valueClassName }: InfoRowProps) {
   return (
     <div className='flex items-center justify-between border-b py-2 last:border-0'>
-      <span className='text-muted-foreground text-xs'>{label}</span>
+      <span className='text-muted-foreground text-sm'>{label}</span>
       <div className='flex items-center gap-1.5'>
-        <span className={cn('text-xs font-medium', valueClassName)}>
+        <span className={cn('text-sm font-medium', valueClassName)}>
           {value}
         </span>
         {onCopy && (
