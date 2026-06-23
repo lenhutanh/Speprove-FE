@@ -55,7 +55,9 @@ export function MicChecker({ onDeviceChange, className }: MicCheckerProps) {
 
   useEffect(() => {
     navigator.mediaDevices.enumerateDevices().then((all) => {
-      const mics = all.filter((d) => d.kind === 'audioinput')
+      const mics = all.filter(
+        (d) => d.kind === 'audioinput' && d.deviceId !== '',
+      )
       setDevices(mics)
       const hasSavedDevice = mics.some((d) => d.deviceId === deviceId)
       if (!hasSavedDevice && mics[0]) {
