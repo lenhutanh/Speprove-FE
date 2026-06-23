@@ -5,15 +5,29 @@ import type { AccountTabKey } from '@/constants'
 import { HEADER_HEIGHT } from '@/constants'
 import { useQueryParams, useValidatedParams } from '@/hooks'
 import { useAuthStore } from '@/store'
-import { accountPageSchema } from '@/validations/account.schema'
+import {
+  accountPageSchema,
+  creditLogPageSchema,
+} from '@/validations/account.schema'
+import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import AccountContent from './_components/account-content'
 import AccountSidebar from './_components/account-sidebar'
 
 export default function AccountPage() {
-  const { tab } = useValidatedParams(accountPageSchema)
+  const searchParams = useSearchParams()
+  const currentTab = searchParams.get('tab') || 'profile'
+  const schema =
+    currentTab === 'credit-log' ? creditLogPageSchema : accountPageSchema
+
+  const { tab } = useValidatedParams(schema) as { tab: AccountTabKey }
   const { user } = useAuthStore()
-  const { setQueryParams } = useQueryParams<{ tab: AccountTabKey }>()
+  const { setQueryParams } = useQueryParams<{
+    tab: AccountTabKey
+    search?: string
+    refType?: string
+    page?: number | string
+  }>()
 
   const hasPassword = user?.hasPassword ?? false
 

@@ -2,470 +2,491 @@
 // See: https://next-intl.dev/docs/workflows/typescript#messages-arguments
 
 declare const messages: {
-  "common": {
-    "confirm": "Xác nhận",
-    "cancel": "Hủy",
-    "save": "Lưu",
-    "delete": "Xóa",
-    "edit": "Chỉnh sửa",
-    "create": "Tạo mới",
-    "email": "Email",
-    "password": "Mật khẩu",
-    "confirm_password": "Xác nhận mật khẩu",
-    "email_placeholder": "example@gmail.com",
-    "password_placeholder": "••••••••",
-    "login": "Đăng nhập",
-    "back_to_login": "Quay lại đăng nhập",
-    "or_continue_with": "Hoặc tiếp tục với",
-    "sign_up": "Đăng ký",
-    "send": "Gửi",
-    "verify": "Xác minh",
-    "resend": "Gửi lại",
-    "logout": "Đăng xuất",
-    "recharge": "Nạp điểm",
-    "start": "Bắt đầu",
-    "stop": "Dừng",
-    "exit": "Thoát",
-    "part": "Phần thi",
-    "loading": "Đang tải...",
-    "error_occurred": "Có lỗi xảy ra",
-    "please_try_again": "Vui lòng thử lại",
-    "generic_error": "Có lỗi xảy ra, vui lòng thử lại",
-    "minutes": "phút",
-    "points": "điểm",
-    "questions": "câu hỏi",
-    "microphone": "Microphone",
-    "voice": "Giọng đọc",
-    "topics": "chủ đề",
-    "progress": "Tiến độ",
-    "practiced": "đã luyện",
-    "completed": "hoàn thành",
-    "practice_now": "Luyện ngay",
-    "practice_again": "Luyện lại",
-    "no_questions": "Không có câu hỏi nào.",
-    "previous": "Trước",
-    "next": "Sau",
-    "forgot_password": "Quên mật khẩu?",
-    "already_have_account": "Đã có tài khoản?",
-    "dont_have_account": "Chưa có tài khoản?",
-    "search": "Tìm kiếm...",
-    "clear_search": "Xoá tìm kiếm",
-    "current_password": "Mật khẩu hiện tại",
-    "new_password": "Mật khẩu mới",
-    "full_name": "Họ và tên"
-  },
-  "home": {
-    "title": "Trang chủ",
-    "description": "Nền tảng luyện thi IELTS Speaking với AI",
-    "hero": {
-      "title": "Luyện IELTS Speaking hiệu quả hơn cùng AI",
-      "subtitle": "Nền tảng tự luyện nói IELTS Speaking theo sát bộ đề Forecast thực tế. Hệ thống AI phân tích độ trôi chảy, phát âm chuẩn IPA và chỉ rõ lỗi từ vựng, ngữ pháp giúp bạn cải thiện ngay lập tức.",
-      "cta_practice": "Luyện tập ngay",
-      "cta_mock": "Thi thử Mock Test"
-    },
-    "stats": {
-      "analyzed_answers": "50,000+ Câu trả lời đã phân tích",
-      "criteria": "Chấm điểm theo 4 tiêu chí IELTS",
-      "forecast_sync": "Cập nhật theo xu hướng đề thi thật"
-    },
-    "features": {
-      "title": "Tính năng nổi bật",
-      "forecast": {
-        "title": "Forecast Topics",
-        "desc": "Luyện tập trực tiếp với danh sách câu hỏi Part 1, 2 & 3 cập nhật liên tục từ đề thi thật."
-      },
-      "mock": {
-        "title": "Simulated Mock Test",
-        "desc": "Phòng thi thử giả lập đầy đủ 3 part, có audio câu hỏi từ giám khảo AI và thời gian chuẩn bị (cho Part 2) tương tự như khi thi thật."
-      },
-      "diagnostic": {
-        "title": "Detailed AI Diagnostic",
-        "desc": "Nhận diện cụ thể lỗi phát âm sai IPA, lỗi từ vựng/ngữ pháp (lỗi nhẹ/lỗi nặng) kèm cách sửa chi tiết."
+  common: {
+    confirm: 'Xác nhận'
+    cancel: 'Hủy'
+    save: 'Lưu'
+    delete: 'Xóa'
+    edit: 'Chỉnh sửa'
+    create: 'Tạo mới'
+    email: 'Email'
+    password: 'Mật khẩu'
+    confirm_password: 'Xác nhận mật khẩu'
+    email_placeholder: 'example@gmail.com'
+    password_placeholder: '••••••••'
+    login: 'Đăng nhập'
+    back_to_login: 'Quay lại đăng nhập'
+    or_continue_with: 'Hoặc tiếp tục với'
+    sign_up: 'Đăng ký'
+    send: 'Gửi'
+    verify: 'Xác minh'
+    resend: 'Gửi lại'
+    logout: 'Đăng xuất'
+    recharge: 'Nạp điểm'
+    start: 'Bắt đầu'
+    stop: 'Dừng'
+    exit: 'Thoát'
+    part: 'Phần thi'
+    loading: 'Đang tải...'
+    error_occurred: 'Có lỗi xảy ra'
+    please_try_again: 'Vui lòng thử lại'
+    generic_error: 'Có lỗi xảy ra, vui lòng thử lại'
+    minutes: 'phút'
+    points: 'điểm'
+    questions: 'câu hỏi'
+    microphone: 'Microphone'
+    voice: 'Giọng đọc'
+    topics: 'chủ đề'
+    progress: 'Tiến độ'
+    practiced: 'đã luyện'
+    completed: 'hoàn thành'
+    practice_now: 'Luyện ngay'
+    practice_again: 'Luyện lại'
+    no_questions: 'Không có câu hỏi nào.'
+    previous: 'Trước'
+    next: 'Sau'
+    forgot_password: 'Quên mật khẩu?'
+    already_have_account: 'Đã có tài khoản?'
+    dont_have_account: 'Chưa có tài khoản?'
+    search: 'Tìm kiếm...'
+    clear_search: 'Xoá tìm kiếm'
+    current_password: 'Mật khẩu hiện tại'
+    new_password: 'Mật khẩu mới'
+    full_name: 'Họ và tên'
+  }
+  home: {
+    title: 'Trang chủ'
+    description: 'Nền tảng luyện thi IELTS Speaking với AI'
+    hero: {
+      title: 'Luyện IELTS Speaking hiệu quả hơn cùng AI'
+      subtitle: 'Nền tảng tự luyện nói IELTS Speaking theo sát bộ đề Forecast thực tế. Hệ thống AI phân tích độ trôi chảy, phát âm chuẩn IPA và chỉ rõ lỗi từ vựng, ngữ pháp giúp bạn cải thiện ngay lập tức.'
+      cta_practice: 'Luyện tập ngay'
+      cta_mock: 'Thi thử Mock Test'
+    }
+    stats: {
+      analyzed_answers: '50,000+ Câu trả lời đã phân tích'
+      criteria: 'Chấm điểm theo 4 tiêu chí IELTS'
+      forecast_sync: 'Cập nhật theo xu hướng đề thi thật'
+    }
+    features: {
+      title: 'Tính năng nổi bật'
+      forecast: {
+        title: 'Forecast Topics'
+        desc: 'Luyện tập trực tiếp với danh sách câu hỏi Part 1, 2 & 3 cập nhật liên tục từ đề thi thật.'
       }
-    },
-    "how_it_works": {
-      "title": "Quy trình hoạt động",
-      "forecast_tab": "Luyện tập theo Forecast",
-      "mock_tab": "Thi thử Mock Test",
-      "forecast": {
-        "step1_title": "Chọn đề & Chủ đề",
-        "step1_desc": "Lựa chọn bộ đề Forecast hoạt động và chủ đề muốn luyện tập.",
-        "step2_title": "Chọn câu hỏi",
-        "step2_desc": "Lựa chọn câu hỏi cụ thể trong Part 1, Part 2, hoặc Part 3.",
-        "step3_title": "Ghi âm trả lời",
-        "step3_desc": "Nói và thu âm trực tiếp câu trả lời của bạn.",
-        "step4_title": "Nhận kết quả AI",
-        "step4_desc": "AI phân tích chi tiết và đề xuất sửa lỗi sau 1-2 phút."
-      },
-      "mock": {
-        "step1_title": "Chọn chế độ thi",
-        "step1_desc": "Lựa chọn làm bài thi thử Part 1, Part 2, Part 3 hoặc Full Test.",
-        "step2_title": "Giao tiếp với AI",
-        "step2_desc": "Nghe giám khảo AI đọc câu hỏi và trả lời (có chuẩn bị ở Part 2).",
-        "step3_title": "Xem đánh giá tổng thể",
-        "step3_desc": "Nhận điểm số Overall Band và feedback chi tiết sau khi nộp bài."
+      mock: {
+        title: 'Simulated Mock Test'
+        desc: 'Phòng thi thử giả lập đầy đủ 3 part, có audio câu hỏi từ giám khảo AI và thời gian chuẩn bị (cho Part 2) tương tự như khi thi thật.'
       }
-    },
-    "pricing": {
-      "title": "Chọn gói nạp phù hợp để bắt đầu ôn luyện",
-      "pkg1": "Gói trải nghiệm, phù hợp để làm quen hệ thống",
-      "pkg2": "Gói cơ bản, thích hợp luyện tập nhẹ nhàng hàng tuần",
-      "pkg3": "Gói phổ biến, tối ưu cho nhu cầu ôn luyện liên tục",
-      "pkg4": "Gói tiết kiệm nhất, dành cho giai đoạn ôn thi chuyên sâu",
-      "points_short": "{points} điểm"
-    },
-    "final_cta": {
-      "title": "Sẵn sàng nâng band IELTS Speaking của bạn?",
-      "btn": "Bắt đầu luyện tập ngay"
+      diagnostic: {
+        title: 'Detailed AI Diagnostic'
+        desc: 'Nhận diện cụ thể lỗi phát âm sai IPA, lỗi từ vựng/ngữ pháp (lỗi nhẹ/lỗi nặng) kèm cách sửa chi tiết.'
+      }
     }
-  },
-  "auth": {
-    "login": {
-      "title": "Đăng nhập vào tài khoản",
-      "description": "Nhập email của bạn bên dưới để đăng nhập vào tài khoản",
-      "forgot_password": "Quên mật khẩu?",
-      "login_with": "Đăng nhập với {name}",
-      "dont_have_account": "Chưa có tài khoản?"
-    },
-    "register": {
-      "title": "Tạo tài khoản",
-      "description": "Nhập email của bạn bên dưới để tạo tài khoản mới",
-      "already_have_account": "Đã có tài khoản?",
-      "sign_up_with": "Đăng ký với {name}"
-    },
-    "forgot_password": {
-      "title": "Quên mật khẩu?",
-      "description": "Nhập email của bạn và chúng tôi sẽ gửi mã OTP cho bạn."
-    },
-    "reset_password": {
-      "title": "Đặt lại mật khẩu",
-      "description": "Điền vào biểu mẫu bên dưới để đặt lại mật khẩu của bạn"
-    },
-    "verify_otp": {
-      "title": "Nhập mã xác minh",
-      "description": "Chúng tôi đã gửi mã gồm 6 chữ số đến email của bạn.",
-      "didnt_receive_code": "Không nhận được mã?",
-      "invalid_target": "Mục tiêu xác minh không hợp lệ"
+    how_it_works: {
+      title: 'Quy trình hoạt động'
+      forecast_tab: 'Luyện tập theo Forecast'
+      mock_tab: 'Thi thử Mock Test'
+      forecast: {
+        step1_title: 'Chọn đề & Chủ đề'
+        step1_desc: 'Lựa chọn bộ đề Forecast hoạt động và chủ đề muốn luyện tập.'
+        step2_title: 'Chọn câu hỏi'
+        step2_desc: 'Lựa chọn câu hỏi cụ thể trong Part 1, Part 2, hoặc Part 3.'
+        step3_title: 'Ghi âm trả lời'
+        step3_desc: 'Nói và thu âm trực tiếp câu trả lời của bạn.'
+        step4_title: 'Nhận kết quả AI'
+        step4_desc: 'AI phân tích chi tiết và đề xuất sửa lỗi sau 1-2 phút.'
+      }
+      mock: {
+        step1_title: 'Chọn chế độ thi'
+        step1_desc: 'Lựa chọn làm bài thi thử Part 1, Part 2, Part 3 hoặc Full Test.'
+        step2_title: 'Giao tiếp với AI'
+        step2_desc: 'Nghe giám khảo AI đọc câu hỏi và trả lời (có chuẩn bị ở Part 2).'
+        step3_title: 'Xem đánh giá tổng thể'
+        step3_desc: 'Nhận điểm số Overall Band và feedback chi tiết sau khi nộp bài.'
+      }
     }
-  },
-  "header": {
-    "nav": {
-      "home": "Trang chủ",
-      "forecast": "Forecast",
-      "mock_test": "Thi thử"
-    },
-    "theme": {
-      "title": "Giao diện",
-      "light": "Giao diện sáng",
-      "dark": "Giao diện tối",
-      "system": "Theo hệ thống"
+    pricing: {
+      title: 'Chọn gói nạp phù hợp để bắt đầu ôn luyện'
+      pkg1: 'Gói trải nghiệm, phù hợp để làm quen hệ thống'
+      pkg2: 'Gói cơ bản, thích hợp luyện tập nhẹ nhàng hàng tuần'
+      pkg3: 'Gói phổ biến, tối ưu cho nhu cầu ôn luyện liên tục'
+      pkg4: 'Gói tiết kiệm nhất, dành cho giai đoạn ôn thi chuyên sâu'
+      points_short: '{points} điểm'
     }
-  },
-  "footer": {
-    "about": "Nền tảng tự luyện nói IELTS Speaking hàng đầu với công nghệ AI chấm điểm chi tiết và bộ đề Forecast cập nhật liên tục.",
-    "product": "Sản phẩm",
-    "support": "Hỗ trợ",
-    "legal": "Pháp lý",
-    "terms": "Điều khoản dịch vụ",
-    "privacy": "Chính sách bảo mật",
-    "instructions": "Hướng dẫn sử dụng",
-    "contact": "Liên hệ hỗ trợ",
-    "copyright": "© {year} Speprove. Bảo lưu mọi quyền."
-  },
-  "mock_test": {
-    "setup": {
-      "title": "Thi thử IELTS Speaking",
-      "info_labels": {
-        "questions": "Số câu hỏi",
-        "duration": "Thời gian",
-        "topic": "Chủ đề",
-        "cost": "Chi phí"
-      },
-      "modes": {
-        "mock_p1": {
-          "label": "Part 1",
-          "topic": "Ngẫu nhiên",
-          "topic_sub": "chủ đề ngẫu nhiên",
-          "description": "<strong>Part 1 — Giới thiệu & Hỏi đáp ngắn.</strong> Giám khảo sẽ hỏi các câu hỏi về bản thân và các chủ đề quen thuộc. Câu hỏi sẽ <em>không hiển thị</em> — bạn chỉ nghe và trả lời như thi thật."
-        },
-        "mock_p2": {
-          "label": "Part 2",
-          "topic": "Cue Card",
-          "topic_sub": "có phần ghi chú",
-          "description": "<strong>Part 2 — Trình bày dài (Long Turn).</strong> Bạn sẽ nhận một cue card và có 1 phút chuẩn bị, sau đó nói 1–2 phút. Cue card và phần ghi chú sẽ hiển thị đầy đủ."
-        },
-        "mock_p3": {
-          "label": "Part 3",
-          "topic": "Thảo luận",
-          "topic_sub": "liên quan Part 2",
-          "description": "<strong>Part 3 — Thảo luận chuyên sâu.</strong> Các câu hỏi mang tính trừu tượng hơn, liên quan đến chủ đề Part 2. Câu hỏi sẽ <em>không hiển thị</em> — nghe và trả lời tự nhiên."
-        },
-        "full_test": {
-          "label": "Full Test",
-          "topic": "Full Test",
-          "topic_sub": "Part 1 + 2 + 3",
-          "description": "<strong>Full Test — Mô phỏng thi thật.</strong> Hoàn thành toàn bộ 3 parts liên tiếp đúng như format thi IELTS thật. Part 1, Part 2 (có cue card + ghi chú), và Part 3."
+    final_cta: {
+      title: 'Sẵn sàng nâng band IELTS Speaking của bạn?'
+      btn: 'Bắt đầu luyện tập ngay'
+    }
+  }
+  auth: {
+    login: {
+      title: 'Đăng nhập vào tài khoản'
+      description: 'Nhập email của bạn bên dưới để đăng nhập vào tài khoản'
+      forgot_password: 'Quên mật khẩu?'
+      login_with: 'Đăng nhập với {name}'
+      dont_have_account: 'Chưa có tài khoản?'
+    }
+    register: {
+      title: 'Tạo tài khoản'
+      description: 'Nhập email của bạn bên dưới để tạo tài khoản mới'
+      already_have_account: 'Đã có tài khoản?'
+      sign_up_with: 'Đăng ký với {name}'
+    }
+    forgot_password: {
+      title: 'Quên mật khẩu?'
+      description: 'Nhập email của bạn và chúng tôi sẽ gửi mã OTP cho bạn.'
+    }
+    reset_password: {
+      title: 'Đặt lại mật khẩu'
+      description: 'Điền vào biểu mẫu bên dưới để đặt lại mật khẩu của bạn'
+    }
+    verify_otp: {
+      title: 'Nhập mã xác minh'
+      description: 'Chúng tôi đã gửi mã gồm 6 chữ số đến email của bạn.'
+      didnt_receive_code: 'Không nhận được mã?'
+      invalid_target: 'Mục tiêu xác minh không hợp lệ'
+    }
+  }
+  header: {
+    nav: {
+      home: 'Trang chủ'
+      forecast: 'Forecast'
+      mock_test: 'Thi thử'
+    }
+    theme: {
+      title: 'Giao diện'
+      light: 'Giao diện sáng'
+      dark: 'Giao diện tối'
+      system: 'Theo hệ thống'
+    }
+  }
+  footer: {
+    about: 'Nền tảng tự luyện nói IELTS Speaking hàng đầu với công nghệ AI chấm điểm chi tiết và bộ đề Forecast cập nhật liên tục.'
+    product: 'Sản phẩm'
+    support: 'Hỗ trợ'
+    legal: 'Pháp lý'
+    terms: 'Điều khoản dịch vụ'
+    privacy: 'Chính sách bảo mật'
+    instructions: 'Hướng dẫn sử dụng'
+    contact: 'Liên hệ hỗ trợ'
+    copyright: '© {year} Speprove. Bảo lưu mọi quyền.'
+  }
+  mock_test: {
+    setup: {
+      title: 'Thi thử IELTS Speaking'
+      info_labels: {
+        questions: 'Số câu hỏi'
+        duration: 'Thời gian'
+        topic: 'Chủ đề'
+        cost: 'Chi phí'
+      }
+      modes: {
+        mock_p1: {
+          label: 'Part 1'
+          topic: 'Ngẫu nhiên'
+          topic_sub: 'chủ đề ngẫu nhiên'
+          description: '<strong>Part 1 — Giới thiệu & Hỏi đáp ngắn.</strong> Giám khảo sẽ hỏi các câu hỏi về bản thân và các chủ đề quen thuộc. Câu hỏi sẽ <em>không hiển thị</em> — bạn chỉ nghe và trả lời như thi thật.'
         }
-      },
-      "start_button": "Bắt đầu thi thử",
-      "modal": {
-        "title": "Thiết lập bài thi",
-        "start_now": "Vào thi ngay"
+        mock_p2: {
+          label: 'Part 2'
+          topic: 'Cue Card'
+          topic_sub: 'có phần ghi chú'
+          description: '<strong>Part 2 — Trình bày dài (Long Turn).</strong> Bạn sẽ nhận một cue card và có 1 phút chuẩn bị, sau đó nói 1–2 phút. Cue card và phần ghi chú sẽ hiển thị đầy đủ.'
+        }
+        mock_p3: {
+          label: 'Part 3'
+          topic: 'Thảo luận'
+          topic_sub: 'liên quan Part 2'
+          description: '<strong>Part 3 — Thảo luận chuyên sâu.</strong> Các câu hỏi mang tính trừu tượng hơn, liên quan đến chủ đề Part 2. Câu hỏi sẽ <em>không hiển thị</em> — nghe và trả lời tự nhiên.'
+        }
+        full_test: {
+          label: 'Full Test'
+          topic: 'Full Test'
+          topic_sub: 'Part 1 + 2 + 3'
+          description: '<strong>Full Test — Mô phỏng thi thật.</strong> Hoàn thành toàn bộ 3 parts liên tiếp đúng như format thi IELTS thật. Part 1, Part 2 (có cue card + ghi chú), và Part 3.'
+        }
       }
-    },
-    "room": {
-      "loading_room": "Đang tải phòng thi...",
-      "loading_question": "Đang tải câu hỏi...",
-      "examiner_speaking": "Giám khảo đang nói...",
-      "listen_carefully": "Hãy lắng nghe cẩn thận",
-      "submitting": "Đang ghi nhận câu trả lời...",
-      "done_title": "Đã nộp bài thi thử",
-      "done_desc": "Bài thi của bạn đã được nộp thành công.\nKết quả đánh giá AI đang được xử lý và thường mất khoảng 1–2 phút.",
-      "view_result": "Xem kết quả",
-      "view_history": "Xem lịch sử",
-      "start_new_test": "Thi thử lượt mới",
-      "replay_question": "Nghe lại câu hỏi",
-      "min_speaking_time": "Nói ít nhất 10 giây",
-      "prep_time": "Chuẩn bị {seconds}s...",
-      "start_recording_in": "Bắt đầu ghi âm sau {seconds}s...",
-      "fetch_error_title": "Tải câu hỏi thất bại",
-      "fetch_error_desc": "Không thể kết nối tới máy chủ để tải thông tin câu hỏi. Vui lòng kiểm tra kết nối internet hoặc thử lại.",
-      "submit_failed_title": "Nộp câu trả lời thất bại",
-      "submit_failed_desc": "Không thể tải lên file ghi âm của bạn. Bạn muốn thử nộp lại file ghi âm này hay hủy để ghi âm lại?",
-      "retry_submit": "Thử gửi lại",
-      "re_record": "Ghi âm lại",
-      "lobby_title": "Kiểm tra thiết bị âm thanh",
-      "lobby_desc": "Vui lòng nói thử vào micro và nghe lại đoạn thu âm để đảm bảo micro và tai nghe hoạt động tốt trước khi thi.",
-      "lobby_warning": "Lưu ý: Chỉ nên vào phòng thi khi thanh hiển thị âm lượng hoạt động khi nói và bạn có thể nghe rõ giọng ghi âm của mình.",
-      "enter_room": "Vào phòng thi",
-      "exit_dialog_title": "Rời phòng thi?",
-      "exit_dialog_desc": "Bài thi đang diễn ra. Nếu thoát bây giờ, tiến trình hiện tại có thể không được lưu.",
-      "exit_dialog_cancel": "Ở lại",
-      "exit_dialog_confirm": "Thoát",
-      "play_examiner_audio_failed": "Không thể phát âm thanh của giám khảo",
-      "play_question_failed": "Không thể phát lại câu hỏi",
-      "submit_failed_toast": "Nộp câu trả lời thất bại"
-    },
-    "components": {
-      "cue_card": {
-        "title": "Cue Card"
-      },
-      "notes": {
-        "title": "Ghi chú của bạn",
-        "placeholder": "Ghi chú nhanh...",
-        "no_notes": "Không có ghi chú",
-        "prep_status": "Chuẩn bị · {seconds}s",
-        "speaking_status": "Đang nói"
-      },
-      "mic_checker": {
-        "placeholder": "Chọn microphone",
-        "record": "Ghi âm",
-        "access_mic_failed": "Không thể truy cập microphone"
-      },
-      "voice_selector": {
-        "random": "Giọng ngẫu nhiên"
+      start_button: 'Bắt đầu thi thử'
+      modal: {
+        title: 'Thiết lập bài thi'
+        start_now: 'Vào thi ngay'
       }
-    },
-    "messages": {
-      "login_required": "Vui lòng đăng nhập để thi thử",
-      "insufficient_balance": "Số dư không đủ! Vui lòng nạp thêm",
-      "create_session_error": "Có lỗi xảy ra khi tạo phòng thi. Vui lòng thử lại!"
-    },
-    "history": {
-      "no_sessions": "Chưa có lượt thi thử nào",
-      "no_sessions_desc": "Hãy bắt đầu lượt thi thử IELTS Speaking đầu tiên của bạn để nhận đánh giá AI và điểm số.",
-      "start_test": "Bắt đầu thi thử",
-      "loading_error": "Có lỗi xảy ra khi tải lịch sử thi thử.",
-      "retry": "Thử lại",
-      "status_not_started": "Chưa bắt đầu",
-      "status_in_progress": "Đang làm bài",
-      "status_processing": "Đang chấm điểm",
-      "status_completed": "Hoàn thành",
-      "status_failed": "Thất bại",
-      "status_refunded": "Đã hoàn điểm",
-      "action_resume": "Tiếp tục",
-      "action_view_result": "Xem kết quả"
-    },
-    "result": {
-      "title": "Kết quả thi thử IELTS Speaking",
-      "overall_band": "Overall Band",
-      "criteria": {
-        "fluency": "Trôi chảy",
-        "pronunciation": "Phát âm",
-        "lexical": "Từ vựng",
-        "grammar": "Ngữ pháp"
-      },
-      "completed_on": "Hoàn thành lúc: {date}",
-      "examiner": "Giám khảo: {name}",
-      "total_questions": "Tổng số: {count} câu hỏi",
-      "questions_count": "{count} CÂU HỎI",
-      "loading": "Đang tải kết quả thi thử...",
-      "not_found": "Không tìm thấy thông tin phiên thi thử.",
-      "error": "Có lỗi xảy ra khi tải kết quả. Vui lòng thử lại."
     }
-  },
-  "balance": {
-    "insufficient_title": "Không đủ số dư",
-    "insufficient_desc": "Số dư của bạn không đủ số dư để thực hiện chấm điểm. Vui lòng nạp thêm để tiếp tục.",
-    "recharge_now": "Nạp điểm ngay",
-    "later": "Để sau"
-  },
-  "payment": {
-    "title": "Nạp điểm",
-    "subtitle": "Chọn gói phù hợp để bắt đầu luyện tập",
-    "select_package": "Chọn gói nạp",
-    "payment_method": "Phương thức thanh toán",
-    "total_payment": "Tổng thanh toán",
-    "creating_qr": "Đang tạo mã...",
-    "create_qr": "Tạo mã",
-    "select_package_error": "Vui lòng chọn gói nạp",
-    "payment_failed": "Thanh toán thất bại. Vui lòng thử lại.",
-    "qr_expired_error": "Mã QR đã hết hạn. Vui lòng tạo mã mới.",
-    "copied": "Đã sao chép {label}",
-    "dialog_title": "Thanh toán",
-    "expired": "Đã hết hạn",
-    "expires_in": "Hết hạn sau {display}",
-    "transfer_info": "Thông tin chuyển khoản",
-    "bank": "Ngân hàng",
-    "account_holder": "Chủ tài khoản",
-    "account_number": "Số tài khoản",
-    "amount": "Số tiền",
-    "transfer_content": "Nội dung CK",
-    "waiting_confirmation": "Đang chờ xác nhận thanh toán...",
-    "success_title": "Nạp điểm thành công",
-    "success_message": "+{points} điểm đã được cộng vào tài khoản",
-    "start_practice": "Bắt đầu luyện tập",
-    "auto_redirect": "Tự động chuyển hướng sau {remaining} giây...",
-    "methods": {
-      "bank_transfer": "Chuyển khoản ngân hàng"
+    room: {
+      loading_room: 'Đang tải phòng thi...'
+      loading_question: 'Đang tải câu hỏi...'
+      examiner_speaking: 'Giám khảo đang nói...'
+      listen_carefully: 'Hãy lắng nghe cẩn thận'
+      submitting: 'Đang ghi nhận câu trả lời...'
+      done_title: 'Đã nộp bài thi thử'
+      done_desc: 'Bài thi của bạn đã được nộp thành công.\nKết quả đánh giá AI đang được xử lý và thường mất khoảng 1–2 phút.'
+      view_result: 'Xem kết quả'
+      view_history: 'Xem lịch sử'
+      start_new_test: 'Thi thử lượt mới'
+      replay_question: 'Nghe lại câu hỏi'
+      min_speaking_time: 'Nói ít nhất 10 giây'
+      prep_time: 'Chuẩn bị {seconds}s...'
+      start_recording_in: 'Bắt đầu ghi âm sau {seconds}s...'
+      fetch_error_title: 'Tải câu hỏi thất bại'
+      fetch_error_desc: 'Không thể kết nối tới máy chủ để tải thông tin câu hỏi. Vui lòng kiểm tra kết nối internet hoặc thử lại.'
+      submit_failed_title: 'Nộp câu trả lời thất bại'
+      submit_failed_desc: 'Không thể tải lên file ghi âm của bạn. Bạn muốn thử nộp lại file ghi âm này hay hủy để ghi âm lại?'
+      retry_submit: 'Thử gửi lại'
+      re_record: 'Ghi âm lại'
+      lobby_title: 'Kiểm tra thiết bị âm thanh'
+      lobby_desc: 'Vui lòng nói thử vào micro và nghe lại đoạn thu âm để đảm bảo micro và tai nghe hoạt động tốt trước khi thi.'
+      lobby_warning: 'Lưu ý: Chỉ nên vào phòng thi khi thanh hiển thị âm lượng hoạt động khi nói và bạn có thể nghe rõ giọng ghi âm của mình.'
+      enter_room: 'Vào phòng thi'
+      exit_dialog_title: 'Rời phòng thi?'
+      exit_dialog_desc: 'Bài thi đang diễn ra. Nếu thoát bây giờ, tiến trình hiện tại có thể không được lưu.'
+      exit_dialog_cancel: 'Ở lại'
+      exit_dialog_confirm: 'Thoát'
+      play_examiner_audio_failed: 'Không thể phát âm thanh của giám khảo'
+      play_question_failed: 'Không thể phát lại câu hỏi'
+      submit_failed_toast: 'Nộp câu trả lời thất bại'
     }
-  },
-  "forecast": {
-    "active": "Đang hiệu lực",
-    "expired": "Hết hạn",
-    "search_topic": "Tìm kiếm chủ đề...",
-    "no_topics_yet": "Chưa có chủ đề nào trong bộ Forecast này.",
-    "no_forecasts_yet": "Chưa có bộ Forecast nào."
-  },
-  "account": {
-    "tabs": {
-      "profile": "Thông tin cá nhân",
-      "change_password": "Đổi mật khẩu",
-      "set_password": "Thiết lập mật khẩu",
-      "voice_setting": "Chỉnh giọng đọc",
-      "mock_test_history": "Lịch sử thi thử",
-      "mic_setting": "Thiết lập Mic"
-    }
-  },
-  "not_found": {
-    "title": "Không tìm thấy trang",
-    "description": "Đường dẫn bạn truy cập không tồn tại hoặc đã bị xóa.",
-    "back_home": "Quay lại trang chủ"
-  },
-  "practice": {
-    "tabs": {
-      "question": "Câu hỏi",
-      "history": "Lịch sử luyện tập",
-      "ai": "Trợ lý AI",
-      "leaderboard": "Bảng vàng",
-      "vocabulary": "Từ vựng"
-    },
-    "question": {
-      "related_part_2_topic": "Câu hỏi Part 2"
-    },
-    "vocabulary": {
-      "empty": "Chưa có gợi ý từ vựng cho cấp độ này.",
-      "levels": {
-        "basic": "Cơ bản",
-        "intermediate": "Trung cấp",
-        "advanced": "Nâng cao"
+    components: {
+      cue_card: {
+        title: 'Cue Card'
       }
-    },
-    "history": {
-      "login_prefix": "Vui lòng",
-      "login_link": "đăng nhập",
-      "login_suffix": "để xem",
-      "login_history": "lịch sử luyện tập của bạn.",
-      "empty": "Chưa có lịch sử luyện tập.",
-      "empty_hint": "Hãy ghi âm câu đầu tiên!",
-      "public": "Công khai",
-      "private": "Riêng tư",
-      "status_preparing": "Đang chuẩn bị",
-      "status_processing": "Đang chấm",
-      "status_completed": "Hoàn thành",
-      "status_failed": "Chấm lỗi",
-      "status_refunded": "Đã hoàn điểm",
-      "retry": "Thử lại",
-      "loading_analysis": "Đang tải phân tích...",
-      "empty_detail": "Chưa có dữ liệu phân tích chi tiết.",
-      "make_private_title": "Chuyển sang riêng tư?",
-      "make_public_title": "Chuyển sang công khai?",
-      "make_private_desc": "Bài làm này sẽ không còn hiển thị với người dùng khác.",
-      "make_public_desc": "Bài làm này sẽ hiển thị với người dùng khác.",
-      "cancel": "Hủy",
-      "confirm": "Xác nhận"
-    },
-    "ai": {
-      "improve": "Cải thiện câu trả lời",
-      "vocabulary": "Gợi ý từ vựng nâng cao",
-      "ideas": "Ý tưởng mở rộng câu trả lời",
-      "analyzing": "Đang phân tích..."
-    },
-    "leaderboard": {
-      "band_label": "Band {band}",
-      "empty": "Chưa có bài nào được chia sẻ.",
-      "empty_hint": "Hãy là người đầu tiên!"
-    },
-    "bottom_bar": {
-      "preparing": "Đang chuẩn bị...",
-      "processing": "Đang xử lý...",
-      "completed": "Hoàn thành!",
-      "failed": "Có lỗi xảy ra, vui lòng thử lại.",
-      "login_prefix": "Vui lòng",
-      "login_link": "đăng nhập",
-      "login_suffix": "để luyện tập",
-      "too_short": "Bài nói quá ngắn, vui lòng thử lại.",
-      "upload_failed": "Tải file lên thất bại, vui lòng thử lại.",
-      "submit_failed": "Gửi bài thất bại, vui lòng thử lại.",
-      "scoring_failed": "Chấm điểm thất bại. Vui lòng thử lại.",
-      "previous_question": "Câu trước",
-      "next_question": "Câu sau",
-      "min_speaking_time": "Nói ít nhất 10 giây"
-    },
-    "attempt": {
-      "criteria": {
-        "fluency": "Trôi chảy",
-        "pronunciation": "Phát âm",
-        "lexical": "Từ vựng",
-        "grammar": "Ngữ pháp"
-      },
-      "fluency": {
-        "speech_rate": "Tốc độ nói",
-        "long_pauses": "Ngắt nghỉ dài",
-        "repetitions": "Lặp từ",
-        "no_data": "Chưa có dữ liệu",
-        "slow": "Chậm",
-        "fast": "Nhanh",
-        "good": "Tốt",
-        "smooth": "Mượt",
-        "some_pauses": "Có vài lần ngắt",
-        "many_pauses": "Ngắt nhiều",
-        "low_repeats": "Ít lặp",
-        "some_repeats": "Có lặp",
-        "many_repeats": "Lặp nhiều"
-      },
-      "transcript": "Bài nói",
-      "strengths": "Điểm tốt",
-      "limitations": "Điểm cần cải thiện",
-      "feedback": "Nhận xét",
-      "minor_error": "Lỗi nhẹ",
-      "major_error": "Lỗi nặng",
-      "popover": {
-        "expected": "Mẫu",
-        "spoken": "Bạn nói",
-        "pause": "Ngắt nghỉ"
+      notes: {
+        title: 'Ghi chú của bạn'
+        placeholder: 'Ghi chú nhanh...'
+        no_notes: 'Không có ghi chú'
+        prep_status: 'Chuẩn bị · {seconds}s'
+        speaking_status: 'Đang nói'
+      }
+      mic_checker: {
+        placeholder: 'Chọn microphone'
+        record: 'Ghi âm'
+        access_mic_failed: 'Không thể truy cập microphone'
+      }
+      voice_selector: {
+        random: 'Giọng ngẫu nhiên'
+      }
+    }
+    messages: {
+      login_required: 'Vui lòng đăng nhập để thi thử'
+      insufficient_balance: 'Số dư không đủ! Vui lòng nạp thêm'
+      create_session_error: 'Có lỗi xảy ra khi tạo phòng thi. Vui lòng thử lại!'
+    }
+    history: {
+      no_sessions: 'Chưa có lượt thi thử nào'
+      no_sessions_desc: 'Hãy bắt đầu lượt thi thử IELTS Speaking đầu tiên của bạn để nhận đánh giá AI và điểm số.'
+      start_test: 'Bắt đầu thi thử'
+      loading_error: 'Có lỗi xảy ra khi tải lịch sử thi thử.'
+      retry: 'Thử lại'
+      status_not_started: 'Chưa bắt đầu'
+      status_in_progress: 'Đang làm bài'
+      status_processing: 'Đang chấm điểm'
+      status_completed: 'Hoàn thành'
+      status_failed: 'Thất bại'
+      status_refunded: 'Đã hoàn điểm'
+      action_resume: 'Tiếp tục'
+      action_view_result: 'Xem kết quả'
+    }
+    result: {
+      title: 'Kết quả thi thử IELTS Speaking'
+      overall_band: 'Overall Band'
+      criteria: {
+        fluency: 'Trôi chảy'
+        pronunciation: 'Phát âm'
+        lexical: 'Từ vựng'
+        grammar: 'Ngữ pháp'
+      }
+      completed_on: 'Hoàn thành lúc: {date}'
+      examiner: 'Giám khảo: {name}'
+      total_questions: 'Tổng số: {count} câu hỏi'
+      questions_count: '{count} CÂU HỎI'
+      loading: 'Đang tải kết quả thi thử...'
+      not_found: 'Không tìm thấy thông tin phiên thi thử.'
+      error: 'Có lỗi xảy ra khi tải kết quả. Vui lòng thử lại.'
+    }
+  }
+  balance: {
+    insufficient_title: 'Không đủ số dư'
+    insufficient_desc: 'Số dư của bạn không đủ số dư để thực hiện chấm điểm. Vui lòng nạp thêm để tiếp tục.'
+    recharge_now: 'Nạp điểm ngay'
+    later: 'Để sau'
+  }
+  payment: {
+    title: 'Nạp điểm'
+    subtitle: 'Chọn gói phù hợp để bắt đầu luyện tập'
+    select_package: 'Chọn gói nạp'
+    payment_method: 'Phương thức thanh toán'
+    total_payment: 'Tổng thanh toán'
+    creating_qr: 'Đang tạo mã...'
+    create_qr: 'Tạo mã'
+    select_package_error: 'Vui lòng chọn gói nạp'
+    payment_failed: 'Thanh toán thất bại. Vui lòng thử lại.'
+    qr_expired_error: 'Mã QR đã hết hạn. Vui lòng tạo mã mới.'
+    copied: 'Đã sao chép {label}'
+    dialog_title: 'Thanh toán'
+    expired: 'Đã hết hạn'
+    expires_in: 'Hết hạn sau {display}'
+    transfer_info: 'Thông tin chuyển khoản'
+    bank: 'Ngân hàng'
+    account_holder: 'Chủ tài khoản'
+    account_number: 'Số tài khoản'
+    amount: 'Số tiền'
+    transfer_content: 'Nội dung CK'
+    waiting_confirmation: 'Đang chờ xác nhận thanh toán...'
+    success_title: 'Nạp điểm thành công'
+    success_message: '+{points} điểm đã được cộng vào tài khoản'
+    start_practice: 'Bắt đầu luyện tập'
+    continue_experience: 'Tiếp tục trải nghiệm'
+    close: 'Đóng'
+    auto_redirect: 'Tự động chuyển hướng sau {remaining} giây...'
+    methods: {
+      bank_transfer: 'Chuyển khoản ngân hàng'
+    }
+  }
+  forecast: {
+    active: 'Đang hiệu lực'
+    expired: 'Hết hạn'
+    search_topic: 'Tìm kiếm chủ đề...'
+    no_topics_yet: 'Chưa có chủ đề nào trong bộ Forecast này.'
+    no_forecasts_yet: 'Chưa có bộ Forecast nào.'
+  }
+  account: {
+    tabs: {
+      profile: 'Thông tin cá nhân'
+      change_password: 'Đổi mật khẩu'
+      set_password: 'Thiết lập mật khẩu'
+      voice_setting: 'Chỉnh giọng đọc'
+      mock_test_history: 'Lịch sử thi thử'
+      mic_setting: 'Thiết lập Mic'
+      credit_log: 'Biến động số dư'
+    }
+  }
+  credit_log: {
+    title: 'Biến động số dư'
+    description: 'Theo dõi lịch sử thay đổi số dư và giao dịch tài khoản của bạn.'
+    search_placeholder: 'Tìm kiếm mô tả giao dịch...'
+    filter_all: 'Tất cả giao dịch'
+    filter_payment: 'Nạp điểm'
+    filter_usage: 'Sử dụng'
+    filter_refund: 'Hoàn điểm'
+    filter_manual: 'Thủ công'
+    balance_label: 'Số dư: {balance} điểm'
+    empty: 'Không tìm thấy giao dịch nào'
+    empty_desc: 'Thử điều chỉnh điều kiện lọc hoặc tìm kiếm để có kết quả mong muốn.'
+    loading_error: 'Không thể tải lịch sử biến động số dư.'
+    retry: 'Thử lại'
+    prev_page: 'Trang trước'
+    next_page: 'Trang sau'
+    page_info: 'Trang {current} / {total}'
+  }
+  not_found: {
+    title: 'Không tìm thấy trang'
+    description: 'Đường dẫn bạn truy cập không tồn tại hoặc đã bị xóa.'
+    back_home: 'Quay lại trang chủ'
+  }
+  practice: {
+    tabs: {
+      question: 'Câu hỏi'
+      history: 'Lịch sử luyện tập'
+      ai: 'Trợ lý AI'
+      leaderboard: 'Bảng vàng'
+      vocabulary: 'Từ vựng'
+    }
+    question: {
+      related_part_2_topic: 'Câu hỏi Part 2'
+    }
+    vocabulary: {
+      empty: 'Chưa có gợi ý từ vựng cho cấp độ này.'
+      levels: {
+        basic: 'Cơ bản'
+        intermediate: 'Trung cấp'
+        advanced: 'Nâng cao'
+      }
+    }
+    history: {
+      login_prefix: 'Vui lòng'
+      login_link: 'đăng nhập'
+      login_suffix: 'để xem'
+      login_history: 'lịch sử luyện tập của bạn.'
+      empty: 'Chưa có lịch sử luyện tập.'
+      empty_hint: 'Hãy ghi âm câu đầu tiên!'
+      public: 'Công khai'
+      private: 'Riêng tư'
+      status_preparing: 'Đang chuẩn bị'
+      status_processing: 'Đang chấm'
+      status_completed: 'Hoàn thành'
+      status_failed: 'Chấm lỗi'
+      status_refunded: 'Đã hoàn điểm'
+      retry: 'Thử lại'
+      loading_analysis: 'Đang tải phân tích...'
+      empty_detail: 'Chưa có dữ liệu phân tích chi tiết.'
+      make_private_title: 'Chuyển sang riêng tư?'
+      make_public_title: 'Chuyển sang công khai?'
+      make_private_desc: 'Bài làm này sẽ không còn hiển thị với người dùng khác.'
+      make_public_desc: 'Bài làm này sẽ hiển thị với người dùng khác.'
+      cancel: 'Hủy'
+      confirm: 'Xác nhận'
+    }
+    ai: {
+      improve: 'Cải thiện câu trả lời'
+      vocabulary: 'Gợi ý từ vựng nâng cao'
+      ideas: 'Ý tưởng mở rộng câu trả lời'
+      analyzing: 'Đang phân tích...'
+    }
+    leaderboard: {
+      band_label: 'Band {band}'
+      empty: 'Chưa có bài nào được chia sẻ.'
+      empty_hint: 'Hãy là người đầu tiên!'
+    }
+    bottom_bar: {
+      preparing: 'Đang chuẩn bị...'
+      processing: 'Đang xử lý...'
+      completed: 'Hoàn thành!'
+      failed: 'Có lỗi xảy ra, vui lòng thử lại.'
+      login_prefix: 'Vui lòng'
+      login_link: 'đăng nhập'
+      login_suffix: 'để luyện tập'
+      too_short: 'Bài nói quá ngắn, vui lòng thử lại.'
+      upload_failed: 'Tải file lên thất bại, vui lòng thử lại.'
+      submit_failed: 'Gửi bài thất bại, vui lòng thử lại.'
+      scoring_failed: 'Chấm điểm thất bại. Vui lòng thử lại.'
+      previous_question: 'Câu trước'
+      next_question: 'Câu sau'
+      min_speaking_time: 'Nói ít nhất 10 giây'
+    }
+    attempt: {
+      criteria: {
+        fluency: 'Trôi chảy'
+        pronunciation: 'Phát âm'
+        lexical: 'Từ vựng'
+        grammar: 'Ngữ pháp'
+      }
+      fluency: {
+        speech_rate: 'Tốc độ nói'
+        long_pauses: 'Ngắt nghỉ dài'
+        repetitions: 'Lặp từ'
+        no_data: 'Chưa có dữ liệu'
+        slow: 'Chậm'
+        fast: 'Nhanh'
+        good: 'Tốt'
+        smooth: 'Mượt'
+        some_pauses: 'Có vài lần ngắt'
+        many_pauses: 'Ngắt nhiều'
+        low_repeats: 'Ít lặp'
+        some_repeats: 'Có lặp'
+        many_repeats: 'Lặp nhiều'
+      }
+      transcript: 'Bài nói'
+      strengths: 'Điểm tốt'
+      limitations: 'Điểm cần cải thiện'
+      feedback: 'Nhận xét'
+      minor_error: 'Lỗi nhẹ'
+      major_error: 'Lỗi nặng'
+      popover: {
+        expected: 'Mẫu'
+        spoken: 'Bạn nói'
+        pause: 'Ngắt nghỉ'
       }
     }
   }
-};
-export default messages;
+}
+export default messages
