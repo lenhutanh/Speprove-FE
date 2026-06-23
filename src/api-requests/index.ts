@@ -1,6 +1,7 @@
 export { default as accountApiRequest } from './account.api-request'
 export { default as attemptApiResponse } from './attempt.api-request'
 export { default as authApiRequest } from './auth.api-request'
+export { default as creditLogApiRequest } from './credit-log.api-request'
 export { default as creditPackageApiRequest } from './credit-package.api-request'
 export { default as forecastQuestionApiRequest } from './forecast-question.api-request'
 export { default as forecastTopicApiRequest } from './forecast-topic.api-request'

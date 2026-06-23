@@ -1,6 +1,7 @@
 export * from './account.query'
 export * from './attempt.query'
 export * from './auth.query'
+export * from './credit-log.query'
 export * from './credit-package.query'
 export * from './forecast-question.query'
 export * from './forecast-topic.query'

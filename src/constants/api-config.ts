@@ -220,6 +220,13 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
     },
   },
+  creditLog: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/credit-log`,
+      method: 'GET',
+      headers: baseHeader,
+    },
+  },
   question: {
     getQuestionAudio: {
       baseUrl: `${AppConstants.apiUrl}v1/question/:id/audio`,

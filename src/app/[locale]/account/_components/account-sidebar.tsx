@@ -7,6 +7,7 @@ import {
   History,
   LockKeyhole,
   Mic,
+  ReceiptText,
   Volume2,
   type LucideIcon,
 } from 'lucide-react'
@@ -19,6 +20,7 @@ export type AccountTabLabels = {
   voiceSetting: string
   mockTestHistory: string
   micSetting: string
+  creditLog: string
 }
 
 type AccountSidebarProps = {
@@ -58,6 +60,11 @@ export const getAccountTabs = (
     icon: History,
   },
   {
+    key: 'credit-log',
+    label: labels.creditLog,
+    icon: ReceiptText,
+  },
+  {
     key: 'mic-setting',
     label: labels.micSetting,
     icon: Mic,
@@ -77,6 +84,7 @@ export default function AccountSidebar({
     voiceSetting: t('voice_setting'),
     mockTestHistory: t('mock_test_history'),
     micSetting: t('mic_setting'),
+    creditLog: t('credit_log'),
   })
 
   return (

@@ -9,6 +9,12 @@ export const accountPageSchema = z.object({
   tab: z.enum(ACCOUNT_TAB_KEYS).default('profile'),
 })
 
+export const creditLogPageSchema = accountPageSchema.extend({
+  search: z.string().optional(),
+  refType: z.enum(['payment', 'usage', 'refund']).optional(),
+  page: z.string().optional(),
+})
+
 export const updateProfileSchema = z.object({
   avatarId: z
     .string()

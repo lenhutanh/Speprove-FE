@@ -353,8 +353,27 @@
       "set_password": "Thiết lập mật khẩu",
       "voice_setting": "Chỉnh giọng đọc",
       "mock_test_history": "Lịch sử thi thử",
-      "mic_setting": "Thiết lập Mic"
+      "mic_setting": "Thiết lập Mic",
+      "credit_log": "Biến động số dư"
     }
+  },
+  "credit_log": {
+    "title": "Biến động số dư",
+    "description": "Theo dõi lịch sử thay đổi số dư và giao dịch tài khoản của bạn.",
+    "search_placeholder": "Tìm kiếm mô tả giao dịch...",
+    "filter_all": "Tất cả giao dịch",
+    "filter_payment": "Nạp điểm",
+    "filter_usage": "Sử dụng",
+    "filter_refund": "Hoàn điểm",
+    "filter_manual": "Thủ công",
+    "balance_label": "Số dư: {balance} điểm",
+    "empty": "Không tìm thấy giao dịch nào",
+    "empty_desc": "Thử điều chỉnh điều kiện lọc hoặc tìm kiếm để có kết quả mong muốn.",
+    "loading_error": "Không thể tải lịch sử biến động số dư.",
+    "retry": "Thử lại",
+    "prev_page": "Trang trước",
+    "next_page": "Trang sau",
+    "page_info": "Trang {current} / {total}"
   },
   "not_found": {
     "title": "Không tìm thấy trang",

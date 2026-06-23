@@ -171,6 +171,7 @@ export const ACCOUNT_TAB_KEYS = [
   'voice-setting',
   'mock-test-history',
   'mic-setting',
+  'credit-log',
 ] as const
 
 export type AccountTabKey = (typeof ACCOUNT_TAB_KEYS)[number]
