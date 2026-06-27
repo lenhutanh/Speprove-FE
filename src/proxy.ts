@@ -4,8 +4,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { storageKeys } from './constants'
 import { routing } from './i18n/routing'
 
-const publicPaths = [route.login, route.register, route.verifyOtp]
-const privatePaths = [route.account, route.resetPassword, route.payment]
+const publicPaths = [
+  route.login,
+  route.register,
+  route.verifyOtp,
+  route.resetPassword,
+]
+const privatePaths = [route.account, route.payment]
 
 const intlMiddleware = createMiddleware(routing)
 
