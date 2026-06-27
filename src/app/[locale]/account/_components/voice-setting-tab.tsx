@@ -1,3 +1,4 @@
+import { voiceApiRequest } from '@/api-requests'
 import { AudioPlayer } from '@/components/ui/audio-player'
 import { Field } from '@/components/ui/field'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -211,13 +212,20 @@ function VoiceRow({ voice, checked, disabled, onSelect }: VoiceRowProps) {
         onClick={(event) => event.stopPropagation()}
         onKeyDown={(event) => event.stopPropagation()}
       >
-        {voice.sampleAudioUrl && (
-          <AudioPlayer
-            url={voice.sampleAudioUrl}
-            variant='minimal'
-            iconVariant='volume'
-          />
-        )}
+        <AudioPlayer
+          url={voice.sampleAudioUrl}
+          resolveUrl={async () => {
+            try {
+              const res = await voiceApiRequest.getSampleAudio(voice.id)
+              return res.data?.audioUrl
+            } catch (err) {
+              console.error(err)
+              return undefined
+            }
+          }}
+          variant='minimal'
+          iconVariant='volume'
+        />
       </div>
     </Field>
   )
