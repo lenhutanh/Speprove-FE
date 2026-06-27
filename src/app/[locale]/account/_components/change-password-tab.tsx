@@ -1,7 +1,7 @@
 import { Col, InputField, Row } from '@/components/form'
 import { BaseForm } from '@/components/form/base-form'
 import Button from '@/components/form/button'
-import { useChangePasswordMutation } from '@/queries'
+import { useChangePasswordMutation, useLogoutMutation } from '@/queries'
 import { useAppLoadingStore } from '@/store'
 import { ChangePasswordType } from '@/types'
 import { changePasswordSchema } from '@/validations'
@@ -13,6 +13,7 @@ export default function ChangePasswordTab() {
   const common = useTranslations('common')
   const changePasswordMutation = useChangePasswordMutation()
   const { withLoading } = useAppLoadingStore()
+  const { mutate } = useLogoutMutation()
 
   const defaultValues: ChangePasswordType = {
     currentPassword: '',
@@ -30,6 +31,7 @@ export default function ChangePasswordTab() {
           if (res.success) {
             toast.success(res.message)
             form.reset(defaultValues)
+            mutate()
           } else {
             toast.error(res.message)
           }
