@@ -365,7 +365,7 @@
     "filter_payment": "Nạp điểm",
     "filter_usage": "Sử dụng",
     "filter_refund": "Hoàn điểm",
-    "filter_manual": "Thủ công",
+    "filter_manual": "Khác",
     "balance_label": "Số dư: {balance} điểm",
     "empty": "Không tìm thấy giao dịch nào",
     "empty_desc": "Thử điều chỉnh điều kiện lọc hoặc tìm kiếm để có kết quả mong muốn.",

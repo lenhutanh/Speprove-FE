@@ -157,6 +157,7 @@ export default function CreditLogTab() {
             <SelectItem value='payment'>{t('filter_payment')}</SelectItem>
             <SelectItem value='usage'>{t('filter_usage')}</SelectItem>
             <SelectItem value='refund'>{t('filter_refund')}</SelectItem>
+            <SelectItem value='manual'>{t('filter_manual')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
