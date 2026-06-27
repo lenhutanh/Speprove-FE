@@ -125,7 +125,7 @@ function LeaderboardItem({
           {rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank}
         </span>
 
-        <Avatar className='size-10'>
+        <Avatar className='size-10 border'>
           <AvatarImage src={entry.user.avatar} alt={entry.user.fullName} />
           <AvatarFallback className='text-sm font-semibold'>
             {getInitials(entry.user.fullName)}

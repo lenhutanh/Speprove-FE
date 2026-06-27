@@ -11,7 +11,7 @@ export const accountPageSchema = z.object({
 
 export const creditLogPageSchema = accountPageSchema.extend({
   search: z.string().optional(),
-  refType: z.enum(['payment', 'usage', 'refund']).optional(),
+  refType: z.enum(['payment', 'usage', 'refund', 'manual']).optional(),
   page: z.string().optional(),
 })
 

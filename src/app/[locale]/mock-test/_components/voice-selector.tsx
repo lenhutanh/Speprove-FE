@@ -1,3 +1,4 @@
+import { voiceApiRequest } from '@/api-requests'
 import { AudioPlayer } from '@/components/ui/audio-player'
 import {
   Select,
@@ -28,6 +29,19 @@ export default function VoiceSelector({
     <div className='flex items-center gap-2'>
       <AudioPlayer
         url={selected?.sampleAudioUrl}
+        resolveUrl={
+          selected
+            ? async () => {
+                try {
+                  const res = await voiceApiRequest.getSampleAudio(selected.id)
+                  return res.data?.audioUrl
+                } catch (err) {
+                  console.error(err)
+                  return undefined
+                }
+              }
+            : undefined
+        }
         variant='minimal'
         iconVariant='volume'
       />

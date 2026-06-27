@@ -200,6 +200,11 @@ const apiConfig = defineApiConfig({
       method: 'GET',
       headers: baseHeader,
     },
+    getSampleAudio: {
+      baseUrl: `${AppConstants.apiUrl}v1/voice/:id/sample-audio`,
+      method: 'GET',
+      headers: baseHeader,
+    },
   },
   creditPackage: {
     getAll: {
