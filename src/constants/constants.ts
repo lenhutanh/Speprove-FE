@@ -190,3 +190,8 @@ export const VOCABULARY_SUGGESTION_LEVEL_OPTIONS = [
   { label: 'Intermediate', value: VOCABULARY_SUGGESTION_LEVEL.INTERMEDIATE },
   { label: 'Advanced', value: VOCABULARY_SUGGESTION_LEVEL.ADVANCED },
 ]
+
+export const SOCKET_EVENTS = {
+  ATTEMPT_UPDATED: 'attempt:updated',
+  MOCK_TEST_UPDATED: 'mock-test:updated',
+} as const

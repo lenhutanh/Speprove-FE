@@ -170,3 +170,11 @@ export type AttemptLeaderBoardType = {
 
 export type GetLeaderboardQueryType = z.infer<typeof getLeaderboardQuerySchema>
 export type GetWordAudioQueryType = z.infer<typeof getWordAudioQuerySchema>
+
+export type AttemptUpdatedPayload = {
+  attemptId: string
+  forecastQuestionId: string
+  speakingSessionId?: string
+  status: number
+  currentStage?: string
+}

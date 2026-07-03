@@ -57,6 +57,11 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'PUT',
     },
+    generateSocketTicket: {
+      baseUrl: `${AppConstants.apiUrl}v1/auth/socket-ticket`,
+      headers: baseHeader,
+      method: 'POST',
+    },
   },
   account: {
     getMe: {

@@ -1,10 +1,13 @@
 'use client'
 
+import { useSocket } from '@/components/providers/socket-provider'
 import { Skeleton } from '@/components/ui/skeleton'
+import { SOCKET_EVENTS } from '@/constants'
 import { Link, usePathname } from '@/i18n/navigation'
 import { useAttemptListQuery } from '@/queries'
 import route from '@/routes'
 import { useAuthStore } from '@/store'
+import { AttemptUpdatedPayload } from '@/types'
 import { useQueryClient } from '@tanstack/react-query'
 import { CalendarIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -22,10 +25,12 @@ export default function PracticeHistory({
   const [openAttemptId, setOpenAttemptId] = useState<string | null>(null)
   const { isAuthenticated } = useAuthStore()
   const queryClient = useQueryClient()
+  const { socket, isConnected } = useSocket()
   const { data, isLoading } = useAttemptListQuery({
     enabled: !!questionId && isAuthenticated,
     params: { forecastQuestionId: questionId },
     refetchInterval: (query) => {
+      if (isConnected) return false
       const histories = query.state.data?.data ?? []
 
       return histories.some((item) => [0, 1].includes(item.status))
@@ -44,6 +49,24 @@ export default function PracticeHistory({
       queryKey: ['attempt-list', { forecastQuestionId: questionId }],
     })
   }, [queryClient, questionId, refreshSignal])
+
+  useEffect(() => {
+    if (!socket) return
+
+    const handleAttemptUpdated = (payload: AttemptUpdatedPayload) => {
+      if (payload.forecastQuestionId === questionId) {
+        queryClient.invalidateQueries({
+          queryKey: ['attempt-list', { forecastQuestionId: questionId }],
+        })
+      }
+    }
+
+    socket.on(SOCKET_EVENTS.ATTEMPT_UPDATED, handleAttemptUpdated)
+
+    return () => {
+      socket.off(SOCKET_EVENTS.ATTEMPT_UPDATED, handleAttemptUpdated)
+    }
+  }, [socket, queryClient, questionId])
 
   if (!isAuthenticated) {
     return (

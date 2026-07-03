@@ -48,6 +48,10 @@ const authApiRequest = {
     http.put<ApiResponse<any>>(apiConfig.auth.setPassword, {
       body,
     }),
+  generateSocketTicket: () =>
+    http.post<ApiResponse<{ ticket: string }>>(
+      apiConfig.auth.generateSocketTicket,
+    ),
 }
 
 export default authApiRequest
