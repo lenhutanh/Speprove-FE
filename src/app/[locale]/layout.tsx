@@ -3,6 +3,7 @@ import {
   QueryProvider,
   ThemeProvider,
 } from '@/components/providers'
+import { SocketProvider } from '@/components/providers/socket-provider'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { routing } from '@/i18n/routing'
@@ -57,10 +58,12 @@ export default async function LocaleLayout({ children, params }: Props) {
               disableTransitionOnChange
             >
               <AppProvider>
-                <TooltipProvider>
-                  <Suspense>{children}</Suspense>
-                  <Toaster position='bottom-right' richColors closeButton />
-                </TooltipProvider>
+                <SocketProvider>
+                  <TooltipProvider>
+                    <Suspense>{children}</Suspense>
+                    <Toaster position='bottom-right' richColors closeButton />
+                  </TooltipProvider>
+                </SocketProvider>
               </AppProvider>
             </ThemeProvider>
           </QueryProvider>

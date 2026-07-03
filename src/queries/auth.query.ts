@@ -83,3 +83,10 @@ export const useSetPasswordMutation = () => {
     mutationFn: (body: SetPasswordType) => authApiRequest.setPassword(body),
   })
 }
+
+export const useGenerateSocketTicketMutation = () => {
+  return useMutation({
+    mutationKey: ['generate-socket-ticket'],
+    mutationFn: () => authApiRequest.generateSocketTicket(),
+  })
+}

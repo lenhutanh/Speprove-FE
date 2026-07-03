@@ -11,11 +11,14 @@ import {
 } from '@/components/ui/empty'
 import { Skeleton } from '@/components/ui/skeleton'
 
+import { useSocket } from '@/components/providers/socket-provider'
+import { SOCKET_EVENTS } from '@/constants'
 import { Link } from '@/i18n/navigation'
 import { useSpeakingSessionListQuery } from '@/queries'
 import route from '@/routes'
 import { History, Plus } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { useEffect } from 'react'
 import MockTestItem from './mock-test-item'
 
 function MockTestItemSkeleton() {
@@ -47,6 +50,17 @@ export default function MockTestHistoryTab() {
     isError,
     refetch,
   } = useSpeakingSessionListQuery()
+  const { socket } = useSocket()
+
+  useEffect(() => {
+    if (!socket) return
+
+    socket.on(SOCKET_EVENTS.MOCK_TEST_UPDATED, refetch)
+
+    return () => {
+      socket.off(SOCKET_EVENTS.MOCK_TEST_UPDATED, refetch)
+    }
+  }, [refetch, socket])
 
   if (isLoading) {
     return (
