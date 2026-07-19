@@ -1,0 +1,22 @@
+services:
+  web:
+    container_name: speprove-web-dev
+    image: speprove-fe-dev:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_URL=http://localhost:3000
+        - NEXT_PUBLIC_API_ENDPOINT_URL=http://localhost:3000
+        - NEXT_PUBLIC_BACKEND_API_URL=http://speprove-api-dev:8017
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    networks:
+      - speprove-net
+
+networks:
+  speprove-net:
+    name: speprove-net
