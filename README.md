@@ -181,14 +181,11 @@ pnpm start
 
 ### Docker
 
-To run the containerized frontend:
+To build and run the containerized frontend using Docker Compose:
 
 ```bash
-# Build the Docker image
-docker build -t speprove-fe .
-
-# Run the container
-docker run -p 3000:3000 --env-file .env speprove-fe
+# Build and run using Docker Compose Dev configuration
+docker compose -f docker-compose.dev.yaml up -d --build
 ```
 
 ---
